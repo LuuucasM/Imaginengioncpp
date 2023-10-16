@@ -71,8 +71,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Dev\RockPaperScissorsFromScratch\Imaginengion\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Dev\RockPaperScissorsFromScratch\Imaginengion\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)Imaginengion\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Imaginengion\lib;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(Platform)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)bin-int\$(Configuration)-$(Platform)\$(ProjectName)\</IntDir>
   </PropertyGroup>
@@ -114,6 +114,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>IMAGINE_PLATFORM_WINDOWS;IMAGINE_BUILD_DLL;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Imaginengion\Vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -147,6 +148,7 @@
     <ClCompile Include="ECS\ParticleSystem.cpp" />
     <ClCompile Include="ECS\RenderSystem2D.cpp" />
     <ClCompile Include="ECS\SystemManager.cpp" />
+    <ClCompile Include="Log.cpp" />
     <ClCompile Include="Rendering\RenderManager.cpp" />
     <ClCompile Include="Resources\ResourceManager.cpp" />
     <ClCompile Include="Time\Timer.cpp" />
@@ -169,6 +171,7 @@
     <ClInclude Include="Entry.h" />
     <ClInclude Include="Imagine.h" />
     <ClInclude Include="Levels\GameLevel.h" />
+    <ClInclude Include="Log.h" />
     <ClInclude Include="Math\Math.h" />
     <ClInclude Include="Rendering\RenderManager.h" />
     <ClInclude Include="Resources\ResourceManager.h" />
