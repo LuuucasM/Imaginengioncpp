@@ -14,6 +14,7 @@ namespace IM {
 	};
 
 	//to be defined in client
+	//comment
 	Application* CreateApplication();
 }
 
