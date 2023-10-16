@@ -1,0 +1,3 @@
+[submodule "Imaginengion/Vendor/spdlog"]
+	path = Imaginengion/Vendor/spdlog
+	url = https://github.com/gabime/spdlog

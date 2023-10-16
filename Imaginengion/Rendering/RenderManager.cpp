@@ -1,13 +1,14 @@
-
+#include <glad/glad.h>
 
 #include "RenderManager.h"
 
 #include <iostream>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
-    glViewport(0, 0, width, height);
+    //glViewport(0, 0, width, height);
 }
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode) {
+    /*
     RenderManager* manager = (RenderManager*)glfwGetWindowUserPointer(window);
     if (key >= 0 && key < 1024)
     {
@@ -16,6 +17,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         else if (action == GLFW_RELEASE)
             manager->Keys.reset(key);
     }
+    */
 }
 
 RenderManager::RenderManager(RenderInterfaceType type, int window_width, int window_height, const char *window_name) {
@@ -30,6 +32,7 @@ RenderManager::~RenderManager(){
 }
 
 int RenderManager::Init(){
+    /*
     switch(GraphicInterface){
         case RenderInterfaceType::OPENGL:
             glfwInit();
@@ -55,11 +58,12 @@ int RenderManager::Init(){
             glfwSetFramebufferSizeCallback(Window, framebuffer_size_callback);
     }
     Keys.reset();
+    */
     return 0;
 }
 
 void RenderManager::SetWindowShouldClose(bool val) {
-    glfwSetWindowShouldClose(Window, val);
+    //glfwSetWindowShouldClose(Window, val);
 }
 
 bool RenderManager::GetWindowShouldClose() {
@@ -67,14 +71,16 @@ bool RenderManager::GetWindowShouldClose() {
 }
 
 void RenderManager::ClearBuffer() {
+    /*
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
+    */
 }
 
 void RenderManager::SwapBuffers() {
-    glfwSwapBuffers(Window);
+    //glfwSwapBuffers(Window);
 }
 
 void RenderManager::PollEvents() {
-    glfwPollEvents();
+    //glfwPollEvents();
 }

@@ -21,7 +21,7 @@ void SystemManager::InitSystems() {
 	}
 	GetSystem<RenderSystem2D>()->Init();
 
-	//CollisionSystem
+	//Collision system
 	RegisterSystem<CollisionSystem>();
 	{
 		ComponentMask mask;

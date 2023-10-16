@@ -13,6 +13,7 @@
 extern ECSCoordinator ECSCoord;
 
 void RenderSystem2D::Init(){
+    /*
     float vertices[] = {
         // pos      // tex
         0.0f, 1.0f, 0.0f, 1.0f,
@@ -36,10 +37,11 @@ void RenderSystem2D::Init(){
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
+    */
 }
 
 void RenderSystem2D::Update() {
-    
+    /*
     for (auto entity : Entities) {
         //std::cout << "this happens" << std::endl;
         auto rigidBody = ECSCoord.GetComponent<C_RigidBody>(entity);
@@ -68,4 +70,5 @@ void RenderSystem2D::Update() {
             glBindVertexArray(0);
         }
     }
+    */
 }
