@@ -25,6 +25,7 @@
       <Filter>Events</Filter>
     </ClInclude>
     <ClInclude Include="src\Imagine.h" />
+    <ClInclude Include="src\impch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Application.cpp">
@@ -33,5 +34,6 @@
     <ClCompile Include="src\Core\Log.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="src\impch.cpp" />
   </ItemGroup>
 </Project>

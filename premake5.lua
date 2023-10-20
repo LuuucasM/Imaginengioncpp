@@ -17,6 +17,9 @@ project "Imaginengion"
     targetdir ("bin/" .. outputdir .. "/%{prj.name}")
     objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
+    pchheader "impch.h"
+    pchsource "Imaginengion/src/impch.cpp"
+    
     files{
         "%{prj.name}/src/**.h",
         "%{prj.name}/src/**.cpp"

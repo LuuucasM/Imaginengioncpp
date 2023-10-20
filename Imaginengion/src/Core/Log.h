@@ -3,8 +3,6 @@
 #include "Core.h"
 #include "spdlog/spdlog.h"
 
-#include <memory>
-
 namespace IM {
 	class IMAGINE_API Log
 	{
