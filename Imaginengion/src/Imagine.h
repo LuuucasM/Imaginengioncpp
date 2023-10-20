@@ -2,9 +2,11 @@
 
 //For use by applications only. Not used by engine
 
-#include "Application.h"
-#include "Log.h"
+#include "Core/Application.h"
+#include "Core/Log.h"
+
+#include "Events/Event.h"
 
 //-----------ENTRY POINT-----------
-#include "Entry.h"
+#include "Core/Entry.h"
 //-----------END ENTRY POINT-----------

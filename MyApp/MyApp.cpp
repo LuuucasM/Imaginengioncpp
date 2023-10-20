@@ -1,15 +1,15 @@
 #include "Imagine.h"
 
-class RockPaperScissors : public IM::Application {
+class MyApp : public IM::Application {
 public:
-	RockPaperScissors() {
+	MyApp() {
 
 	}
-	~RockPaperScissors() {
+	~MyApp() {
 
 	}
 };
 
 IM::Application* IM::CreateApplication() {
-	return new RockPaperScissors();
+	return new MyApp();
 }

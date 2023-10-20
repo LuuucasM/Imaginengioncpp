@@ -23,7 +23,8 @@ project "Imaginengion"
     }
 
     includedirs{
-        "%{prj.name}/Vendor/spdlog/include/"
+        "%{prj.name}/src",
+        "%{prj.name}/Vendor/spdlog/include"
     }
 
     filter "system:windows"
