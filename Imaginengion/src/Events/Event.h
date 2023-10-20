@@ -68,7 +68,7 @@ namespace IM {
 		EventCategory event_category;
 
 		struct Listener {
-			std::weak_ptr<std::any> object;
+			std::any object;
 			std::function<void(Args...)> func;
 		};
 
