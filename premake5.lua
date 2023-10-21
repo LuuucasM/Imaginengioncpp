@@ -60,9 +60,13 @@ project "Imaginengion"
     filter "configurations:Debug"
         defines "IMAGINE_DEBUG"
         symbols "On"
+        staticruntime "off"
+        runtime "Debug"
+
     filter "configurations:Release"
         defines "IMAGINE_RELEASE"
         optimize "On"
+        
     filter "configurations:Dist"
         defines "IMAGINE_DIST"
         optimize "On"

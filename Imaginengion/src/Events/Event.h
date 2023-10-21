@@ -1,10 +1,12 @@
 #pragma once
 
-#include "../Core/Core.h"
+#include "Core/Core.h"
+#include "Core/Log.h"
 
 #include <any>
 #include <functional>
 #include <vector>
+#include <string>
 
 namespace IM {
 	enum class EventType {
@@ -29,23 +31,20 @@ namespace IM {
 	class Event {
 
 	public:
-		Event(EventType type, EventCategory category)
-			: event_type(type), event_category(category) { }
+		Event(EventType type, EventCategory category, std::string name)
+			: event_type(type), event_category(category), event_name(name) { }
 		~Event() { }
 
-		void AddListener(std::any object, std::function<void(Args...)> func) {
-			//check if object is valid
-			if (!object.has_value()) {
-				return;
-			}
-			listeners.emplace_back(object, func);
+		template<typename T>
+		void AddListener(T *object, void (T::*func)(Args...)) {
+			std::any listenerObj = object;
+			std::function<void(Args...)> listenerFunc = [object, func](Args... args) {
+				(object->*func)(args...);
+			};
+			listeners.emplace_back(listenerObj, listenerFunc);
 		}
 
 		void RemoveListener(std::any object) {
-			//remove any invalid objects
-			listeners.erase(std::remove_if(listeners.begin(), listeners.end(),
-				[](const Listener& listener) {return !listener.object.has_value(); }),
-				listeners.end());
 			//remove specified object
 			listeners.erase(std::remove_if(listeners.begin(), listeners.end(),
 				[object](const Listener& listener) {return listener.object == object; }),
@@ -60,6 +59,7 @@ namespace IM {
 			for (auto const listener : listeners) {
 				listener.func(args...);
 			}
+			IMAGINE_CORE_INFO("Invoked: {0} Args: ", event_name);
 		}
 		EventType GetEventType() const {
 			return event_type;
@@ -69,6 +69,7 @@ namespace IM {
 		}	
 
 	private:
+		std::string event_name;
 		EventType event_type;
 		EventCategory event_category;
 

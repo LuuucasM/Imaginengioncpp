@@ -15,12 +15,8 @@ namespace IM {
 		virtual ~Application();
 		void Run();
 		std::unique_ptr<Window> _Window;
-
-		static void testFunc(int width, int height) {
-			IMAGINE_CORE_INFO("this is a test to see if event system adds correctly!");
-		}
+		void OnWindowCloseEvent();
 	private:
-		
 		bool bRunning = true;
 	};
 
