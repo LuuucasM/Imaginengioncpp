@@ -9,6 +9,12 @@ workspace "Imaginengion"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
+-- include directories relative to root folder (solution dir)
+IncludeDir = {}
+IncludeDir["GLFW"] = "Imaginengion/Vendor/GLFW/include"
+
+include "Imaginengion/Vendor/GLFW"
+
 project "Imaginengion"
     location "Imaginengion"
     kind "SharedLib"
@@ -27,7 +33,14 @@ project "Imaginengion"
 
     includedirs{
         "%{prj.name}/src",
-        "%{prj.name}/Vendor/spdlog/include"
+        "%{prj.name}/Vendor/spdlog/include",
+        "%{IncludeDir.GLFW}"
+    }
+
+    links{
+        "GLFW",
+        "opengl32.lib",
+        "dwmapi.lib"
     }
 
     filter "system:windows"
@@ -86,10 +99,16 @@ project "MyApp"
     }
     
     filter "configurations:Debug"
-        defines "IMAGINE_DEBUG"
+        defines {
+            "IMAGINE_DEBUG",
+            "IMAGINE_ENABLE_ASSERTS"
+        }
         symbols "On"
     filter "configurations:Release"
-        defines "IMAGINE_RELEASE"
+        defines {
+            "IMAGINE_RELEASE",
+            "IMAGINE_ENABLE_ASSERTS"
+        }
         optimize "On"
     filter "configurations:Dist"
         defines "IMAGINE_DIST"

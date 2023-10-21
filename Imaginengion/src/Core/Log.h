@@ -24,8 +24,8 @@ namespace IM {
 #define IMAGINE_CORE_TRACE(...) ::IM::Log::GetCoreLogger()->trace(__VA_ARGS__)
 
 //client log macros
-#define IMAGINE_CLIENT_CRITICAL(...) ::IM::Log::GetClientLogger()->critical(__VA_ARGS__)
-#define IMAGINE_CLIENT_ERROR(...) ::IM::Log::GetClientLogger()->error(__VA_ARGS__)
-#define IMAGINE_CLIENT_WARN(...) ::IM::Log::GetClientLogger()->warn(__VA_ARGS__)
-#define IMAGINE_CLIENT_INFO(...) ::IM::Log::GetClientLogger()->info(__VA_ARGS__)
-#define IMAGINE_CLIENT_TRACE(...) ::IM::Log::GetClientLogger()->trace(__VA_ARGS__)
+#define IMAGINE_CRITICAL(...) ::IM::Log::GetClientLogger()->critical(__VA_ARGS__)
+#define IMAGINE_ERROR(...) ::IM::Log::GetClientLogger()->error(__VA_ARGS__)
+#define IMAGINE_WARN(...) ::IM::Log::GetClientLogger()->warn(__VA_ARGS__)
+#define IMAGINE_INFO(...) ::IM::Log::GetClientLogger()->info(__VA_ARGS__)
+#define IMAGINE_TRACE(...) ::IM::Log::GetClientLogger()->trace(__VA_ARGS__)

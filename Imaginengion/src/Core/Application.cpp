@@ -3,7 +3,7 @@
 
 namespace IM {
 	Application::Application() {
-
+		_Window = std::unique_ptr<Window> (Window::Create());
 	}
 
 	Application::~Application() {
@@ -11,6 +11,8 @@ namespace IM {
 	}
 
 	void Application::Run() {
-		while (true);
+		while (bRunning) {
+			_Window->OnUpdate();
+		}
 	}
 }
