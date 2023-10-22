@@ -10,3 +10,6 @@
 [submodule "Imaginengion/Vendor/GLFW"]
 	path = Imaginengion/Vendor/GLFW
 	url = https://github.com/glfw/glfw
+[submodule "Imaginengion/Vendor/imgui"]
+	path = Imaginengion/Vendor/imgui
+	url = https://github.com/ocornut/imgui

@@ -3,6 +3,7 @@
 //For use by applications only. Not used by engine
 
 #include "Core/Application.h"
+#include "Core/Layer.h"
 #include "Core/Log.h"
 
 #include "Events/Event.h"

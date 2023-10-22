@@ -1,6 +1,8 @@
 #include "impch.h"
 #include "WindowsWindow.h"
 
+#include <glad/glad.h>
+
 namespace IM {
 	static bool bGLFWInitialized = false;
 
@@ -34,8 +36,11 @@ namespace IM {
 
 		_Window = glfwCreateWindow((int)props.Width, (int)props.Height, Data.Title.c_str(), nullptr, nullptr);
 		IMAGINE_CORE_ASSERT(_Window, "Could not create GLFW window!");
-
 		glfwMakeContextCurrent(_Window);
+
+		int success = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+		IMAGINE_ASSERT(success, "Failed to initialize Glad!");
+
 		glfwSetWindowUserPointer(_Window, &Data);
 		SetVSync(true);
 

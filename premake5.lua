@@ -12,8 +12,12 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 -- include directories relative to root folder (solution dir)
 IncludeDir = {}
 IncludeDir["GLFW"] = "Imaginengion/Vendor/GLFW/include"
+IncludeDir["Glad"] = "Imaginengion/Vendor/Glad/include"
+IncludeDir["imgui"] = "Imaginengion/Vendor/imgui"
 
 include "Imaginengion/Vendor/GLFW"
+include "Imaginengion/Vendor/Glad"
+include "Imaginengion/Vendor/imgui"
 
 project "Imaginengion"
     location "Imaginengion"
@@ -34,11 +38,15 @@ project "Imaginengion"
     includedirs{
         "%{prj.name}/src",
         "%{prj.name}/Vendor/spdlog/include",
-        "%{IncludeDir.GLFW}"
+        "%{IncludeDir.GLFW}",
+        "%{IncludeDir.Glad}",
+        "%{IncludeDir.imgui}"
     }
 
     links{
         "GLFW",
+        "Glad",
+        "Imgui",
         "opengl32.lib",
         "dwmapi.lib"
     }
@@ -50,7 +58,8 @@ project "Imaginengion"
 
         defines{
             "IMAGINE_PLATFORM_WINDOWS",
-            "IMAGINE_BUILD_DLL"
+            "IMAGINE_BUILD_DLL",
+            "GLFW_INCLUDE_NONE"
         }
 
         postbuildcommands{
