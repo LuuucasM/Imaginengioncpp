@@ -54,19 +54,19 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>bin-int\Debug-windows-x86_64\Glad\</OutDir>
+    <OutDir>..\bin-int\Debug-windows-x86_64\Glad\</OutDir>
     <IntDir>obj\Debug\</IntDir>
     <TargetName>Glad</TargetName>
     <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>bin-int\Release-windows-x86_64\Glad\</OutDir>
+    <OutDir>..\bin-int\Release-windows-x86_64\Glad\</OutDir>
     <IntDir>obj\Release\</IntDir>
     <TargetName>Glad</TargetName>
     <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
-    <OutDir>bin-int\Dist-windows-x86_64\Glad\</OutDir>
+    <OutDir>..\bin-int\Dist-windows-x86_64\Glad\</OutDir>
     <IntDir>obj\Dist\</IntDir>
     <TargetName>Glad</TargetName>
     <TargetExt>.lib</TargetExt>

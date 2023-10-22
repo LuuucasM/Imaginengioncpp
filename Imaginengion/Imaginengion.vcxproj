@@ -152,11 +152,11 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Core\LayerManager.h" />
-    <ClInclude Include="src\Core\Layer.h" />
     <ClInclude Include="src\Core\Application.h" />
     <ClInclude Include="src\Core\Core.h" />
     <ClInclude Include="src\Core\Entry.h" />
+    <ClInclude Include="src\Core\Layer.h" />
+    <ClInclude Include="src\Core\LayerManager.h" />
     <ClInclude Include="src\Core\Log.h" />
     <ClInclude Include="src\Core\Window.h" />
     <ClInclude Include="src\Events\Event.h" />
@@ -165,9 +165,9 @@
     <ClInclude Include="src\impch.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Core\LayerManager.cpp" />
-    <ClCompile Include="src\Core\Layer.cpp" />
     <ClCompile Include="src\Core\Application.cpp" />
+    <ClCompile Include="src\Core\Layer.cpp" />
+    <ClCompile Include="src\Core\LayerManager.cpp" />
     <ClCompile Include="src\Core\Log.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\impch.cpp">
@@ -181,7 +181,7 @@
     <ProjectReference Include="Vendor\Glad\Glad.vcxproj">
       <Project>{BDD6857C-A90D-870D-52FA-6C103E10030F}</Project>
     </ProjectReference>
-    <ProjectReference Include="Vendor\imgui\Imgui.vcxproj">
+    <ProjectReference Include="Vendor\Imgui\Imgui.vcxproj">
       <Project>{E087650D-4C9C-8DBE-151E-311E81F189EF}</Project>
     </ProjectReference>
   </ItemGroup>

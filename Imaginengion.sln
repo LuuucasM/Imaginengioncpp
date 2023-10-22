@@ -9,7 +9,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Glad", "Imaginengion\Vendor
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Imaginengion", "Imaginengion\Imaginengion.vcxproj", "{5A49B46A-46AC-430F-EF31-7CC5DB730F92}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Imgui", "Imaginengion\Vendor\imgui\Imgui.vcxproj", "{E087650D-4C9C-8DBE-151E-311E81F189EF}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Imgui", "Imaginengion\Vendor\Imgui\Imgui.vcxproj", "{E087650D-4C9C-8DBE-151E-311E81F189EF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
