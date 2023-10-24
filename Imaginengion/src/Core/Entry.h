@@ -8,7 +8,6 @@
 extern IM::Application* IM::CreateApplication();
 
 int main(int argc, char** argv) {
-
 	IM::Log::Init();
 
 	auto app = IM::CreateApplication();

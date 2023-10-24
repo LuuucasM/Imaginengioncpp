@@ -39,7 +39,7 @@ namespace IM {
 		glfwMakeContextCurrent(_Window);
 
 		int success = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-		IMAGINE_ASSERT(success, "Failed to initialize Glad!");
+		IMAGINE_CORE_ASSERT(success, "Failed to initialize Glad!");
 
 		glfwSetWindowUserPointer(_Window, &Data);
 		SetVSync(true);

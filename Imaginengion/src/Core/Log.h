@@ -7,10 +7,16 @@ namespace IM {
 	class IMAGINE_API Log
 	{
 	public:
+		/*
+		* Initialize the logging system. Must be called at start of main function
+		*/
 		static void Init();
+
+		//retrieve the core and client loggers
 		inline static std::shared_ptr<spdlog::logger> GetCoreLogger() { return CoreLogger; }
 		inline static std::shared_ptr<spdlog::logger> GetClientLogger() { return ClientLogger; }
 	private:
+		//core and client logger instances for logging
 		static std::shared_ptr<spdlog::logger> CoreLogger;
 		static std::shared_ptr<spdlog::logger> ClientLogger;
 	};

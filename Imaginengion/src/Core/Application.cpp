@@ -5,6 +5,9 @@
 
 namespace IM {
 	Application::Application() {
+
+		IMAGINE_CORE_ASSERT(!_Instance, "Application already exists!")
+
 		_Window = std::unique_ptr<Window> (Window::Create());
 		_Window->WindowCloseEvent.AddListener<Application>(this, &Application::OnWindowCloseEvent);
 	}
@@ -29,9 +32,11 @@ namespace IM {
 
 	void Application::PushLayer(Layer *layer) {
 		_LayerManager.PushLayer(layer);
+		layer->OnAttach();
 	}
 
 	void Application::PushOverlay(Layer *overlay) {
 		_LayerManager.PushOverlay(overlay);
+		overlay->OnAttach();
 	}
 }

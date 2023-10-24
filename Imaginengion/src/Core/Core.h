@@ -11,6 +11,10 @@
 	#error Imaginengion Only supports Windows !
 #endif
 
+#ifdef IMAGINE_DEBUG
+	#define IMAGINE_ENABLE_ASSERTS
+#endif
+
 #ifdef IMAGINE_ENABLE_ASSERTS
 	#define IMAGINE_ASSERT(x, ...) { if(!(x)) {IMAGINE_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
 	#define IMAGINE_CORE_ASSERT(x, ...) { if(!(x)) {IMAGINE_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
