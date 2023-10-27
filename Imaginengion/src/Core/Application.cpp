@@ -4,10 +4,15 @@
 #include <glad/glad.h>
 
 namespace IM {
+
+	Application* Application::_Instance = nullptr;
+
 	Application::Application() {
+		//Application is singleton so check it does not already exist
+		IMAGINE_CORE_ASSERT(!_Instance, "Application already exists!");
+		_Instance = this;
 
-		IMAGINE_CORE_ASSERT(!_Instance, "Application already exists!")
-
+		//create window and bind windowcloseevent to application function
 		_Window = std::unique_ptr<Window> (Window::Create());
 		_Window->WindowCloseEvent.AddListener<Application>(this, &Application::OnWindowCloseEvent);
 	}

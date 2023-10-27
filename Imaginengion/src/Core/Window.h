@@ -20,16 +20,29 @@ namespace IM {
 		Window() {};
 		virtual ~Window() {};
 
+		/*
+		* Function to update the window. Called in application run loop
+		*/
 		virtual void OnUpdate() = 0;
 
+		//Helper functions to get width and height of window
 		virtual unsigned int GetWidth() const = 0;
 		virtual unsigned int GetHeight() const = 0;
 
+		//Helper functions to set and get Vsync option
 		virtual void SetVSync(bool enabled) = 0;
 		virtual bool IsVSync() const = 0;
 
+		virtual void* GetNativeWindow() const = 0;
+
+		/*
+		* Function to create the window
+		*/
 		static Window* Create(const WindowProps& props = WindowProps());
 
+		/*
+		* All of the events that can be made on the window
+		*/
 		Event<int, int> WindowResizeEvent{ EventType::WindowResize, EventCategory::EC_Application, "WindowResizeEvent"};
 		Event<> WindowCloseEvent{ EventType::WindowClose, EventCategory::EC_Application, "WindowCloseEvent"};
 		Event<int, int> KeyPressedEvent{ EventType::KeyPressed, EventCategory::EC_Keyboard, "KeyPressedEvent"};

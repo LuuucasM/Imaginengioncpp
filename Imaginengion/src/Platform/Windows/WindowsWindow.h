@@ -18,14 +18,18 @@ namespace IM {
 		WindowsWindow(const WindowProps& props);
 		virtual ~WindowsWindow();
 
+		//called in the main application run loop 
 		void OnUpdate() override;
 
+		//helpers to get height and width of window using our data struct
 		inline unsigned int GetWidth() const override { return Data.Width; }
 		inline unsigned int GetHeight() const override { return Data.Height; }
 
 		//Vsync functions
 		void SetVSync(bool enabled) override;
 		bool IsVSync() const override { return Data.VSync; };
+
+		inline void* GetNativeWindow() const override { return _Window; }
 	private:
 		virtual void Init(const WindowProps& props);
 		virtual void Shutdown();

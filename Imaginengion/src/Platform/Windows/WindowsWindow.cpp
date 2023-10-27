@@ -34,16 +34,21 @@ namespace IM {
 			bGLFWInitialized = true;
 		}
 
+		//create window with specificed properties
 		_Window = glfwCreateWindow((int)props.Width, (int)props.Height, Data.Title.c_str(), nullptr, nullptr);
 		IMAGINE_CORE_ASSERT(_Window, "Could not create GLFW window!");
 		glfwMakeContextCurrent(_Window);
 
+		//init glad
 		int success = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 		IMAGINE_CORE_ASSERT(success, "Failed to initialize Glad!");
 
+		//setting window user pointer allows us to pass our class data into glfw callback functions as seen below
+		//modify the data struct if more data is needed to properly use glfw callback stuff
 		glfwSetWindowUserPointer(_Window, &Data);
 		SetVSync(true);
 
+		//set all the glfw callback functions to invoke their associated events defined in the Window class
 		glfwSetWindowSizeCallback(_Window, [](GLFWwindow *window, int width, int height) {
 			WindowData* data = (WindowData*)glfwGetWindowUserPointer(window);
 			data->Width = width;

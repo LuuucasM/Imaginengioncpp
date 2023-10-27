@@ -44,6 +44,9 @@
       <Filter>Platform\Windows</Filter>
     </ClInclude>
     <ClInclude Include="src\impch.h" />
+    <ClInclude Include="src\Imgui\ImguiLayer.h" />
+    <ClInclude Include="src\Core\Input.h" />
+    <ClInclude Include="src\Platform\Windows\WindowsInput.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Application.cpp">
@@ -62,5 +65,7 @@
       <Filter>Platform\Windows</Filter>
     </ClCompile>
     <ClCompile Include="src\impch.cpp" />
+    <ClCompile Include="src\Imgui\ImguiLayer.cpp" />
+    <ClCompile Include="src\Platform\Windows\WindowsInput.cpp" />
   </ItemGroup>
 </Project>
