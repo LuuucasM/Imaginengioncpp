@@ -5,6 +5,8 @@ project "Imgui"
 	location "Imgui"
 	kind "StaticLib"
 	language "C++"
+	cppdialect "C++17"
+	staticruntime "on"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -25,14 +27,10 @@ project "Imgui"
 
 	filter "system:windows"
 		systemversion "latest"
-		cppdialect "C++17"
-		staticruntime "On"
-
+		
 	filter "system:linux"
-		pic "On"
+		pic "on"
 		systemversion "latest"
-		cppdialect "C++17"
-		staticruntime "On"
 
 	filter "configurations:Debug"
 		runtime "Debug"
@@ -42,7 +40,9 @@ project "Imgui"
 		runtime "Release"
 		optimize "on"
 
-
+	filter "configurations:Dist"
+        runtime "Release"
+		optimize "on"
 --[[=====================================
 ------------------GLFW-----------------
 =========================================]]--
@@ -50,6 +50,8 @@ project "GLFW"
     location "GLFW"
     kind "StaticLib"
     language "C"
+	staticruntime "on"
+
 
     targetdir("bin/" .. outputdir .. "/%{prj.name}")
     targetdir("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -73,7 +75,6 @@ project "GLFW"
     filter "system:linux"
         pic "On"
         systemversion "latest"
-        staticruntime "On"
 
         files
 		{
@@ -96,7 +97,6 @@ project "GLFW"
 
     filter "system:windows"
 		systemversion "latest"
-		staticruntime "On"
 
 		files
 		{
@@ -126,6 +126,9 @@ project "GLFW"
 		runtime "Release"
 		optimize "on"
 
+	filter "configurations:Dist"
+        runtime "Release"
+		optimize "on"
 --[[=====================================
 ------------------GLAD-----------------
 =========================================]]--
@@ -133,6 +136,7 @@ project "Glad"
     location "Glad"
     kind "StaticLib"
     language "C"
+	staticruntime "on"
 
     targetdir("bin/" .. outputdir .. "/%{prj.name}")
     targetdir("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -149,15 +153,19 @@ project "Glad"
     filter "system:linux"
         pic "On"
         systemversion "latest"
-        staticruntime "On"
+        
 
     filter "system:windows"
         systemversion "latest"
-        staticruntime "On"
 
-    filter "configurations:Debug"
-        runtime "Debug"
-    filter "configurations:Release"
-        runtime "Release"
+		filter "configurations:Debug"
+		runtime "Debug"
+		symbols "on"
+
+	filter "configurations:Release"
+		runtime "Release"
+		optimize "on"
+
     filter "configurations:Dist"
         runtime "Release"
+		optimize "on"

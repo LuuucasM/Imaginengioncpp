@@ -14,13 +14,16 @@ IncludeDir = {}
 IncludeDir["GLFW"] = "Imaginengion/Vendor/GLFW/include"
 IncludeDir["Glad"] = "Imaginengion/Vendor/Glad/include"
 IncludeDir["imgui"] = "Imaginengion/Vendor/imgui"
+IncludeDir["Glm"] = "Imaginengion/Vendor/GLM"
 
 include "Imaginengion/Vendor"
 
 project "Imaginengion"
     location "Imaginengion"
-    kind "SharedLib"
+    kind "StaticLib"
     language "C++"
+    cppdialect "C++20"
+    staticruntime "on"
 
     targetdir ("bin/" .. outputdir .. "/%{prj.name}")
     objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -38,7 +41,8 @@ project "Imaginengion"
         "%{prj.name}/Vendor/spdlog/include",
         "%{IncludeDir.GLFW}",
         "%{IncludeDir.Glad}",
-        "%{IncludeDir.imgui}"
+        "%{IncludeDir.imgui}",
+        "%{IncludeDir.GLM}"
     }
 
     links{
@@ -50,7 +54,7 @@ project "Imaginengion"
     }
 
     filter "system:windows"
-        cppdialect "C++20"
+
         staticruntime "On"
         systemversion "latest"
 
@@ -59,33 +63,28 @@ project "Imaginengion"
             "IMAGINE_BUILD_DLL",
             "GLFW_INCLUDE_NONE"
         }
-
-        postbuildcommands{
-            ("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/MyApp")
-        }
     
     filter "configurations:Debug"
         defines "IMAGINE_DEBUG"
-        symbols "On"
-        staticruntime "off"
+        symbols "on"
         runtime "Debug"
 
     filter "configurations:Release"
         defines "IMAGINE_RELEASE"
-        optimize "On"
-        staticruntime "off"
+        optimize "on"
         runtime "Release"
         
     filter "configurations:Dist"
         defines "IMAGINE_DIST"
-        optimize "On"
-        staticruntime "off"
+        optimize "on"
         runtime "Release"
 
 project "MyApp"
     location "MyApp"
     kind "ConsoleApp"
     language "C++"
+    cppdialect "C++20"
+    staticruntime "on"
 
     targetdir ("bin/" .. outputdir .. "/%{prj.name}")
     objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -97,12 +96,11 @@ project "MyApp"
 
     includedirs{
         "Imaginengion/Vendor/spdlog/include",
-        "Imaginengion/src"
+        "Imaginengion/src",
+        "%{IncludeDir.GLM}"
     }
 
     filter "system:windows"
-        cppdialect "C++20"
-        staticruntime "On"
         systemversion "latest"
 
         defines{

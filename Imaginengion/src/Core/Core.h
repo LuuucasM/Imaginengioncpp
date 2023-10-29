@@ -2,17 +2,17 @@
 
 
 #ifdef IMAGINE_PLATFORM_WINDOWS
+#if IMAGINE_DYNAMIC_LINK
 	#ifdef IMAGINE_BUILD_DLL
 		#define IMAGINE_API __declspec(dllexport)
 	#else
 		#define IMAGINE_API __declspec(dllimport)
 	#endif
 #else
-	#error Imaginengion Only supports Windows !
+	#define IMAGINE_API
 #endif
-
-#ifdef IMAGINE_DEBUG
-	#define IMAGINE_ENABLE_ASSERTS
+#else
+	#error Imaginengion Only supports Windows !
 #endif
 
 #ifdef IMAGINE_ENABLE_ASSERTS

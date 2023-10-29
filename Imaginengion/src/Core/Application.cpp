@@ -22,7 +22,7 @@ namespace IM {
 	}
 	void Application::Run() {
 		while (bRunning) {
-			glClearColor(0.4, 0.3, 0.3, 1.0);
+			glClearColor(0.4f, 0.3f, 0.3f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
 
 			_LayerManager.OnUpdate();

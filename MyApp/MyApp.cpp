@@ -8,7 +8,7 @@ public:
 	}
 
 	void OnUpdate() override {
-		IMAGINE_INFO("ExampleLayer::OnUpdate");
+
 	}
 
 };

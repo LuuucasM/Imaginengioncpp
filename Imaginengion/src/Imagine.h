@@ -6,6 +6,10 @@
 #include "Core/Layer.h"
 #include "Core/Log.h"
 
+#include "Core/Input.h"
+#include "Core/Keycodes.h"
+#include "Core/Mousecodes.h"
+
 #include "Events/Event.h"
 
 //-----------ENTRY POINT-----------

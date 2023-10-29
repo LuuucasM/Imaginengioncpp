@@ -13,3 +13,6 @@
 [submodule "Imaginengion/Vendor/imgui"]
 	path = Imaginengion/Vendor/imgui
 	url = https://github.com/ocornut/imgui
+[submodule "Imaginengion/Vendor/GLM"]
+	path = Imaginengion/Vendor/GLM
+	url = https://github.com/g-truc/glm
