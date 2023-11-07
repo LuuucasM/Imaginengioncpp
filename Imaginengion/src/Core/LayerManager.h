@@ -22,6 +22,10 @@ namespace IM {
 		void OnUpdate();
 
 		/*
+		*Tells each layer to update
+		*/
+		void OnImguiRender();
+		/*
 		*Pushes a new layer into the vector of layers
 		*/
 		void PushLayer(Layer* layer);

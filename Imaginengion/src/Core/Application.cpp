@@ -15,6 +15,9 @@ namespace IM {
 		//create window and bind windowcloseevent to application function
 		_Window = std::unique_ptr<Window> (Window::Create());
 		_Window->WindowCloseEvent.AddListener<Application>(this, &Application::OnWindowCloseEvent);
+
+		_ImguiLayer = new ImguiLayer();
+		PushOverlay(_ImguiLayer);
 	}
 
 	Application::~Application() {
@@ -26,6 +29,10 @@ namespace IM {
 			glClear(GL_COLOR_BUFFER_BIT);
 
 			_LayerManager.OnUpdate();
+
+			_ImguiLayer->Begin();
+			_LayerManager.OnImguiRender();
+			_ImguiLayer->End();
 
 			_Window->OnUpdate();
 		}

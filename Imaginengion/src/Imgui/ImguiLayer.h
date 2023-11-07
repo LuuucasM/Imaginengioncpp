@@ -17,10 +17,17 @@ namespace IM {
 		* Called when the layer is detached to the layer stack in the LayerManager
 		*/
 		virtual void OnDetach();
+
 		/*
-		* Called in main loop to update layer's state
+		* Called When a layer is 
 		*/
-		void OnUpdate() override;
+		void OnImguiRender() override;
+
+		/*
+		*
+		*/
+		void Begin();
+		void End();
 	private:
 
 	};

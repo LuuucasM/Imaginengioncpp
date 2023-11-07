@@ -76,6 +76,9 @@
     <ClCompile Include="src\Core\Log.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="src\Imgui\ImguiBuild.cpp">
+      <Filter>Imgui</Filter>
+    </ClCompile>
     <ClCompile Include="src\Imgui\ImguiLayer.cpp">
       <Filter>Imgui</Filter>
     </ClCompile>

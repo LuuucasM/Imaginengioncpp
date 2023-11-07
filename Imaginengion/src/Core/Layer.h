@@ -32,6 +32,9 @@ namespace IM {
 		* Get the name of the layer 
 		* @return std::string: The name of the layer 
 		*/
+
+		virtual void OnImguiRender() {}
+
 		inline const std::string& GetName() const { return layer_name; };
 	protected:
 		std::string layer_name;

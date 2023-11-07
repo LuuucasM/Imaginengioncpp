@@ -3,6 +3,7 @@
 #include "Core.h"
 #include "Window.h"
 #include "LayerManager.h"
+#include "Imgui/ImguiLayer.h"
 
 #include <memory>
 
@@ -60,6 +61,7 @@ namespace IM {
 		bool bRunning = true;
 
 		std::unique_ptr<Window> _Window;
+		ImguiLayer *_ImguiLayer;
 		LayerManager _LayerManager;
 		static Application* _Instance;
 	};

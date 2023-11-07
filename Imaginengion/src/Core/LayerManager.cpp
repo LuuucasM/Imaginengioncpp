@@ -15,6 +15,12 @@ namespace IM {
 			layer->OnUpdate();
 		}
 	}
+
+	void LayerManager::OnImguiRender() {
+		for (auto layer : Layers) {
+			layer->OnImguiRender();
+		}
+	}
 	void LayerManager::PushLayer(Layer* layer) {
 		Layers.emplace(Layers.begin() + LayerInsertIndex, layer);
 		++LayerInsertIndex;

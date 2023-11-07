@@ -13,7 +13,7 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 IncludeDir = {}
 IncludeDir["GLFW"] = "Imaginengion/Vendor/GLFW/include"
 IncludeDir["Glad"] = "Imaginengion/Vendor/Glad/include"
-IncludeDir["imgui"] = "Imaginengion/Vendor/imgui"
+IncludeDir["Imgui"] = "Imaginengion/Vendor/Imgui"
 IncludeDir["Glm"] = "Imaginengion/Vendor/GLM"
 
 include "Imaginengion/Vendor"
@@ -41,7 +41,7 @@ project "Imaginengion"
         "%{prj.name}/Vendor/spdlog/include",
         "%{IncludeDir.GLFW}",
         "%{IncludeDir.Glad}",
-        "%{IncludeDir.imgui}",
+        "%{IncludeDir.Imgui}",
         "%{IncludeDir.GLM}"
     }
 
@@ -97,19 +97,19 @@ project "MyApp"
     includedirs{
         "Imaginengion/Vendor/spdlog/include",
         "Imaginengion/src",
+        "Imaginengion/Vendor",
         "%{IncludeDir.GLM}"
+    }
+
+    links{
+        "Imaginengion"
     }
 
     filter "system:windows"
         systemversion "latest"
-
         defines{
             "IMAGINE_PLATFORM_WINDOWS"
         }
-    
-    links{
-        "Imaginengion"
-    }
     
     filter "configurations:Debug"
         defines {
@@ -117,12 +117,14 @@ project "MyApp"
             "IMAGINE_ENABLE_ASSERTS"
         }
         symbols "On"
+
     filter "configurations:Release"
         defines {
             "IMAGINE_RELEASE",
             "IMAGINE_ENABLE_ASSERTS"
         }
         optimize "On"
+
     filter "configurations:Dist"
         defines "IMAGINE_DIST"
         optimize "On"
