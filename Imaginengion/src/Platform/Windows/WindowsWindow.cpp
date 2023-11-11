@@ -1,8 +1,6 @@
 #include "impch.h"
 #include "WindowsWindow.h"
 
-#include <glad/glad.h>
-
 namespace IM {
 	static bool bGLFWInitialized = false;
 
@@ -37,11 +35,9 @@ namespace IM {
 		//create window with specificed properties
 		_Window = glfwCreateWindow((int)props.Width, (int)props.Height, Data.Title.c_str(), nullptr, nullptr);
 		IMAGINE_CORE_ASSERT(_Window, "Could not create GLFW window!");
-		glfwMakeContextCurrent(_Window);
 
-		//init glad
-		int success = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-		IMAGINE_CORE_ASSERT(success, "Failed to initialize Glad!");
+		_RenderContext = new OpenGLContext(_Window);
+		_RenderContext->Init();
 
 		//setting window user pointer allows us to pass our class data into glfw callback functions as seen below
 		//modify the data struct if more data is needed to properly use glfw callback stuff
@@ -120,7 +116,7 @@ namespace IM {
 
 	void WindowsWindow::OnUpdate() {
 		glfwPollEvents();
-		glfwSwapBuffers(_Window);
+		_RenderContext->SwapBuffers();
 	}
 
 	void WindowsWindow::SetVSync(bool enabled) {

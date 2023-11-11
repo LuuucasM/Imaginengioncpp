@@ -19,14 +19,18 @@ namespace IM {
 		virtual void OnDetach();
 
 		/*
-		* Called When a layer is 
+		* Called during main update loop to redner imgui
 		*/
 		void OnImguiRender() override;
 
 		/*
-		*
+		* Called before OnImguiRender
 		*/
+
 		void Begin();
+		/*
+		* Called after OnImguiRender
+		*/
 		void End();
 	private:
 

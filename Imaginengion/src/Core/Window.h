@@ -2,6 +2,7 @@
 
 #include "Core.h"
 #include "Events/Event.h"
+#include "Renderer/RenderContext.h"
 
 #include <string>
 
@@ -39,6 +40,8 @@ namespace IM {
 		* Function to create the window
 		*/
 		static Window* Create(const WindowProps& props = WindowProps());
+
+		RenderContext *_RenderContext;
 
 		/*
 		* All of the events that can be made on the window

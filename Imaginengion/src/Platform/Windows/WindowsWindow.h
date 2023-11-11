@@ -3,6 +3,8 @@
 #include "Core/Window.h"
 #include "Events/Event.h"
 
+#include "Platform/OpenGL/OpenGLContext.h"
+
 #include <GLFW/glfw3.h>
 #include <string>
 
