@@ -7,6 +7,9 @@
 
 #include <memory>
 
+//TEMPORARY------------------------
+#include "Renderer/Shader.h"
+
 namespace IM {
 
 	class IMAGINE_API Application
@@ -64,6 +67,12 @@ namespace IM {
 		ImguiLayer *_ImguiLayer;
 		LayerManager _LayerManager;
 		static Application* _Instance;
+
+		//FOR MAKING A TRIANGLE --------------
+		unsigned int _VertexArray, _VertexBuffer, _IndexBuffer;
+
+		//TEMPORARY-------------------
+		std::unique_ptr<Shader> _Shader;
 	};
 
 	//to be defined in client
