@@ -41,7 +41,7 @@ namespace IM {
 		*/
 		static Window* Create(const WindowProps& props = WindowProps());
 
-		RenderContext *_RenderContext;
+		RenderContext *_RenderContext = nullptr;
 
 		/*
 		* All of the events that can be made on the window

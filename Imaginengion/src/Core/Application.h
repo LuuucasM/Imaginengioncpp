@@ -5,6 +5,10 @@
 #include "LayerManager.h"
 #include "Imgui/ImguiLayer.h"
 
+#include "Renderer/VertexArray.h"
+#include "Renderer/VertexBuffer.h"
+#include "Renderer/IndexBuffer.h"
+
 #include <memory>
 
 //TEMPORARY------------------------
@@ -69,10 +73,13 @@ namespace IM {
 		static Application* _Instance;
 
 		//FOR MAKING A TRIANGLE --------------
-		unsigned int _VertexArray, _VertexBuffer, _IndexBuffer;
-
-		//TEMPORARY-------------------
-		std::unique_ptr<Shader> _Shader;
+		std::shared_ptr<VertexArray> _VertexArray;
+		//FOR MAKING A SQUARE
+		std::shared_ptr<VertexArray> _SquareVA;
+		//TEMPORARY---------------
+		std::shared_ptr<Shader> _Shader;
+		std::shared_ptr<Shader> _Shader2;
+		
 	};
 
 	//to be defined in client
