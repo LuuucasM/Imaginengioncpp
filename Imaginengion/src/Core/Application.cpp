@@ -1,15 +1,19 @@
 #include "impch.h"
 #include "Application.h"
 
+
 #include "Renderer/BufferLayout.h"
 
-#include <glad/glad.h>
+#include "Renderer/Renderer.h"
+
+#include "glm/glm.hpp"
 
 namespace IM {
 
 	Application* Application::_Instance = nullptr;
 
-	Application::Application() {
+	Application::Application() 
+		: _Camera(-1.6f, 1.6f, -0.9f, 0.9f){
 		//Application is singleton so check it does not already exist
 		IMAGINE_CORE_ASSERT(!_Instance, "Application already exists!");
 		_Instance = this;
@@ -72,13 +76,15 @@ namespace IM {
 			layout(location = 0) in vec3 a_Position;
 			layout(location = 1) in vec4 a_Color;
 
+			uniform mat4 u_ViewProjection;
+
 			out vec3 v_Position;
 			out vec4 v_Color;
 
 			void main() {
 				v_Position = a_Position;
 				v_Color = a_Color;
-				gl_Position = vec4(a_Position, 1.0);
+				gl_Position = u_ViewProjection * vec4(a_Position, 1.0);
 			}
 		)";
 		std::string fragmentSrc = R"(
@@ -99,12 +105,14 @@ namespace IM {
 			#version 330 core
 			
 			layout(location = 0) in vec3 a_Position;
+
+			uniform mat4 u_ViewProjection;
 			
 			out vec3 v_Position;			
 
 			void main() {
 				v_Position = a_Position;
-				gl_Position = vec4(a_Position, 1.0);
+				gl_Position = u_ViewProjection * vec4(a_Position, 1.0);
 			}
 		)";
 		std::string fragmentSrc2 = R"(
@@ -128,16 +136,20 @@ namespace IM {
 	}
 	void Application::Run() {
 		while (bRunning) {
-			glClearColor(0.4f, 0.3f, 0.3f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT);
 
-			_Shader2->Bind();
-			_SquareVA->Bind();
-			glDrawElements(GL_TRIANGLES, _SquareVA->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+			RenderCommand::SetClearColor({ 0.4f, 0.3f, 0.3f, 1.0f });
+			RenderCommand::Clear();
 
-			_Shader->Bind();
-			_VertexArray->Bind();
-			glDrawElements(GL_TRIANGLES, _VertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+			//Beginning of the scene where we tell renderer what to do for the scene
+			Renderer::BeginScene(_Camera);
+
+			Renderer::Submit(_Shader2, _SquareVA);
+			Renderer::Submit(_Shader, _VertexArray);
+
+			//EndScene tells the renderer we are done submitting and it can do its thing now
+			Renderer::EndScene();
+			//flush the render queue
+			//Renderer::Flush();
 
 			_LayerManager.OnUpdate();
 

@@ -1,8 +1,7 @@
 #include "impch.h"
-
 #include "Shader.h"
 
-#include "glad/glad.h"
+#include <glad/glad.h>
 
 namespace IM {
 	Shader::Shader(const std::string& vertexSrc, const std::string& fragmentSrc) {
@@ -75,29 +74,29 @@ namespace IM {
 		// Vertex and fragment shaders are successfully compiled.
 		// Now time to link them together into a program.
 		// Get a program object.
-		_RendererID = glCreateProgram();
+		_ProgramID = glCreateProgram();
 
 		// Attach our shaders to our program
-		glAttachShader(_RendererID, vertexShader);
-		glAttachShader(_RendererID, fragmentShader);
+		glAttachShader(_ProgramID, vertexShader);
+		glAttachShader(_ProgramID, fragmentShader);
 
 		// Link our program
-		glLinkProgram(_RendererID);
+		glLinkProgram(_ProgramID);
 
 		// Note the different functions here: glGetProgram* instead of glGetShader*.
 		GLint isLinked = 0;
-		glGetProgramiv(_RendererID, GL_LINK_STATUS, (int*)&isLinked);
+		glGetProgramiv(_ProgramID, GL_LINK_STATUS, (int*)&isLinked);
 		if (isLinked == GL_FALSE)
 		{
 			GLint maxLength = 0;
-			glGetProgramiv(_RendererID, GL_INFO_LOG_LENGTH, &maxLength);
+			glGetProgramiv(_ProgramID, GL_INFO_LOG_LENGTH, &maxLength);
 
 			// The maxLength includes the NULL character
 			std::vector<GLchar> infoLog(maxLength);
-			glGetProgramInfoLog(_RendererID, maxLength, &maxLength, &infoLog[0]);
+			glGetProgramInfoLog(_ProgramID, maxLength, &maxLength, &infoLog[0]);
 
 			// We don't need the program anymore.
-			glDeleteProgram(_RendererID);
+			glDeleteProgram(_ProgramID);
 			// Don't leak shaders either.
 			glDeleteShader(vertexShader);
 			glDeleteShader(fragmentShader);
@@ -109,17 +108,53 @@ namespace IM {
 		}
 
 		// Always detach shaders after a successful link.
-		glDetachShader(_RendererID, vertexShader);
-		glDetachShader(_RendererID, fragmentShader);
+		glDetachShader(_ProgramID, vertexShader);
+		glDetachShader(_ProgramID, fragmentShader);
 	}
 	Shader::~Shader() {
-		glDeleteProgram(_RendererID);
+		glDeleteProgram(_ProgramID);
 	}
 
 	void Shader::Bind() const {
-		glUseProgram(_RendererID);
+		glUseProgram(_ProgramID);
 	}
 	void Shader::Unbind() const {
 		glUseProgram(0);
+	}
+
+	void Shader::SetUniform(const std::string& name, bool value) {
+		GLint location = glGetUniformLocation(_ProgramID, name.c_str());
+		IMAGINE_CORE_ASSERT(location != -1, "Cannot find union with the given name");
+		glUniform1i(location, (int)value);
+	}
+	void Shader::SetUniform(const std::string& name, int value) {
+		GLint location = glGetUniformLocation(_ProgramID, name.c_str());
+		IMAGINE_CORE_ASSERT(location != -1, "Cannot find union with the given name");
+		glUniform1i(location, value);
+	}
+	void Shader::SetUniform(const std::string& name, float value) {
+		GLint location = glGetUniformLocation(_ProgramID, name.c_str());
+		IMAGINE_CORE_ASSERT(location != -1, "Cannot find union with the given name");
+		glUniform1f(location, value);
+	}
+	void Shader::SetUniform(const std::string& name, glm::vec2 value) {
+		GLint location = glGetUniformLocation(_ProgramID, name.c_str());
+		IMAGINE_CORE_ASSERT(location != -1, "Cannot find union with the given name");
+		glUniform2f(location, value.x, value.y);
+	}
+	void Shader::SetUniform(const std::string& name, glm::vec3 value) {
+		GLint location = glGetUniformLocation(_ProgramID, name.c_str());
+		IMAGINE_CORE_ASSERT(location != -1, "Cannot find union with the given name");
+		glUniform3f(location, value.x, value.y, value.z);
+	}
+	void Shader::SetUniform(const std::string& name, glm::vec4 value) {
+		GLint location = glGetUniformLocation(_ProgramID, name.c_str());
+		IMAGINE_CORE_ASSERT(location != -1, "Cannot find union with the given name");
+		glUniform4f(location, value.x, value.y, value.z, value.w);
+	}
+	void Shader::SetUniform(const std::string& name, glm::mat4 value) {
+		GLint location = glGetUniformLocation(_ProgramID, name.c_str());
+		IMAGINE_CORE_ASSERT(location != -1, "Cannot find union with the given name");
+		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
 	}
 }

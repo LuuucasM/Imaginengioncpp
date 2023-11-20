@@ -3,5 +3,5 @@
 #include "RendererAPI.h"
 
 namespace IM {
-	RendererAPI::API RendererAPI::_RendererAPI = RendererAPI::API::OpenGL;
+	RendererAPI::API RendererAPI::_API = RendererAPI::API::OpenGL;
 }

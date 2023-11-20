@@ -14,7 +14,7 @@ IncludeDir = {}
 IncludeDir["GLFW"] = "Imaginengion/Vendor/GLFW/include"
 IncludeDir["Glad"] = "Imaginengion/Vendor/Glad/include"
 IncludeDir["Imgui"] = "Imaginengion/Vendor/Imgui"
-IncludeDir["Glm"] = "Imaginengion/Vendor/GLM"
+IncludeDir["glm"] = "Imaginengion/Vendor/glm"
 
 include "Imaginengion/Vendor"
 
@@ -42,7 +42,7 @@ project "Imaginengion"
         "%{IncludeDir.GLFW}",
         "%{IncludeDir.Glad}",
         "%{IncludeDir.Imgui}",
-        "%{IncludeDir.GLM}"
+        "%{IncludeDir.glm}"
     }
 
     links{
@@ -52,7 +52,6 @@ project "Imaginengion"
         "opengl32.lib",
         "dwmapi.lib"
     }
-
     filter "system:windows"
 
         staticruntime "On"
@@ -98,7 +97,7 @@ project "MyApp"
         "Imaginengion/Vendor/spdlog/include",
         "Imaginengion/src",
         "Imaginengion/Vendor",
-        "%{IncludeDir.GLM}"
+        "%{IncludeDir.glm}"
     }
 
     links{

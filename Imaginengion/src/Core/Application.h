@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core.h"
+
 #include "Window.h"
 #include "LayerManager.h"
 #include "Imgui/ImguiLayer.h"
@@ -8,6 +9,8 @@
 #include "Renderer/VertexArray.h"
 #include "Renderer/VertexBuffer.h"
 #include "Renderer/IndexBuffer.h"
+
+#include "Renderer/OrthographicCamera.h"
 
 #include <memory>
 
@@ -80,6 +83,7 @@ namespace IM {
 		std::shared_ptr<Shader> _Shader;
 		std::shared_ptr<Shader> _Shader2;
 		
+		OrthographicCamera _Camera;
 	};
 
 	//to be defined in client

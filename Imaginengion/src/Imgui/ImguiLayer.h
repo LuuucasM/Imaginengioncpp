@@ -1,6 +1,8 @@
 #pragma once
 
+#define _CRT_SECURE_NO_WARNINGS
 #include "Core/Layer.h"
+
 namespace IM {
 	class IMAGINE_API ImguiLayer : public Layer
 	{
