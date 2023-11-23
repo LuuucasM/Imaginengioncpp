@@ -10,9 +10,9 @@ namespace IM {
  
 	}
 
-	void LayerManager::OnUpdate() {
+	void LayerManager::OnUpdate(float dt) {
 		for (auto layer : Layers) {
-			layer->OnUpdate();
+			layer->OnUpdate(dt);
 		}
 	}
 

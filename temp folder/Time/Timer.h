@@ -11,7 +11,7 @@
 //
 // Copyright (c) 2003 Song Ho Ahn
 //////////////////////////////////////////////////////////////////////////////
-
+#pragma once
 #ifndef TIMER_H_DEF
 #define TIMER_H_DEF
 
@@ -30,9 +30,9 @@ public:
 
     void   start();                             // start timer
     void   stop();                              // stop the timer
-    double getElapsedTime();                    // get elapsed time in second
-    double getElapsedTimeInSec();               // get elapsed time in second (same as getElapsedTime)
-    double getElapsedTimeInMilliSec();          // get elapsed time in milli-second
+    inline double getElapsedTime();             // get elapsed time in second
+    inline double getElapsedTimeInSec();        // get elapsed time in second (same as getElapsedTime)
+    inline double getElapsedTimeInMilliSec();   // get elapsed time in milli-second
     double getElapsedTimeInMicroSec();          // get elapsed time in micro-second
 
 

@@ -152,6 +152,8 @@
     <ClInclude Include="src\Core\LayerManager.h" />
     <ClInclude Include="src\Core\Log.h" />
     <ClInclude Include="src\Core\Mousecodes.h" />
+    <ClInclude Include="src\Core\Timer.h" />
+    <ClInclude Include="src\Core\Timestep.h" />
     <ClInclude Include="src\Core\Window.h" />
     <ClInclude Include="src\Events\Event.h" />
     <ClInclude Include="src\Imagine.h" />
@@ -180,6 +182,7 @@
     <ClCompile Include="src\Core\Layer.cpp" />
     <ClCompile Include="src\Core\LayerManager.cpp" />
     <ClCompile Include="src\Core\Log.cpp" />
+    <ClCompile Include="src\Core\Timer.cpp" />
     <ClCompile Include="src\Imgui\ImguiBuild.cpp" />
     <ClCompile Include="src\Imgui\ImguiLayer.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLContext.cpp" />

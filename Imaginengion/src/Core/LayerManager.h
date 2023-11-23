@@ -19,7 +19,7 @@ namespace IM {
 		/*
 		*Tells each layer to update
 		*/
-		void OnUpdate();
+		void OnUpdate(float dt);
 
 		/*
 		*Tells each layer to update

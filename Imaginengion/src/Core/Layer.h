@@ -26,7 +26,7 @@ namespace IM {
 		/*
 		* Called in main loop to update layer's state
 		*/
-		virtual void OnUpdate() {}
+		virtual void OnUpdate(float dt) {}
 
 		/*
 		* Get the name of the layer 

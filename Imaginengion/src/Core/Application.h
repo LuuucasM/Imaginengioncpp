@@ -5,14 +5,7 @@
 #include "Window.h"
 #include "LayerManager.h"
 #include "Imgui/ImguiLayer.h"
-
-#include "Renderer/VertexArray.h"
-#include "Renderer/VertexBuffer.h"
-#include "Renderer/IndexBuffer.h"
-
-#include "Renderer/OrthographicCamera.h"
-
-#include <memory>
+#include "Timestep.h"
 
 //TEMPORARY------------------------
 #include "Renderer/Shader.h"
@@ -75,15 +68,7 @@ namespace IM {
 		LayerManager _LayerManager;
 		static Application* _Instance;
 
-		//FOR MAKING A TRIANGLE --------------
-		std::shared_ptr<VertexArray> _VertexArray;
-		//FOR MAKING A SQUARE
-		std::shared_ptr<VertexArray> _SquareVA;
-		//TEMPORARY---------------
-		std::shared_ptr<Shader> _Shader;
-		std::shared_ptr<Shader> _Shader2;
-		
-		OrthographicCamera _Camera;
+		Timestep _Timestep;
 	};
 
 	//to be defined in client
