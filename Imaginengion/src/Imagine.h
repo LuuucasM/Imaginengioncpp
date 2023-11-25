@@ -34,3 +34,6 @@
 //-----------ENTRY POINT-----------
 #include "Core/Entry.h"
 //-----------END ENTRY POINT-----------
+
+//---------------ENTITY COMPONENT SYSTEM------------
+#include "ECS/Components.h"

@@ -13,9 +13,10 @@ namespace IM {
 
 	}
 
-	void Renderer::Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vertexArray) {
+	void Renderer::Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vertexArray, C_Transform transform) {
 		shader->Bind();
 		shader->SetUniform("u_ViewProjection", _SceneData->ViewProjectionMatrix);
+		shader->SetUniform("u_Transform", transform.Transform);
 
 		vertexArray->Bind();
 		RenderCommand::DrawIndexed(vertexArray);

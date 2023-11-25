@@ -4,7 +4,6 @@ class ExampleLayer : public IM::Layer {
 public:
 	ExampleLayer() 
 		: Layer("Example"), _Camera(-1.6f, 1.6f, -0.9f, 0.9f) {
-
 		_VertexArray.reset(IM::VertexArray::Create());
 
 
@@ -32,10 +31,10 @@ public:
 		_SquareVA.reset(IM::VertexArray::Create());
 
 		float vertices2[4 * 3] = {
-			-0.75f, -0.75f, 0.0f,
-			0.75f, -0.75f, 0.0f,
-			0.75f, 0.75f, 0.0f,
-			-0.75f, 0.75f, 0.0f,
+			-0.5f, -0.5f, 0.0f,
+			0.5f, -0.5f, 0.0f,
+			0.5f, 0.5f, 0.0f,
+			-0.5f, 0.5f, 0.0f,
 		};
 
 		std::shared_ptr<IM::VertexBuffer> squareVB;
@@ -57,6 +56,7 @@ public:
 			layout(location = 1) in vec4 a_Color;
 
 			uniform mat4 u_ViewProjection;
+			uniform mat4 u_Transform;
 
 			out vec3 v_Position;
 			out vec4 v_Color;
@@ -64,7 +64,7 @@ public:
 			void main() {
 				v_Position = a_Position;
 				v_Color = a_Color;
-				gl_Position = u_ViewProjection * vec4(a_Position, 1.0);
+				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
 			}
 		)";
 		std::string fragmentSrc = R"(
@@ -87,12 +87,14 @@ public:
 			layout(location = 0) in vec3 a_Position;
 
 			uniform mat4 u_ViewProjection;
+			uniform mat4 u_Transform;
+
 			
 			out vec3 v_Position;			
 
 			void main() {
 				v_Position = a_Position;
-				gl_Position = u_ViewProjection * vec4(a_Position, 1.0);
+				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
 			}
 		)";
 		std::string fragmentSrc2 = R"(
@@ -101,9 +103,11 @@ public:
 			layout(location = 0) out vec4 color;
 
 			in vec3 v_Position;
+
+			uniform vec4 u_Color;
 			
 			void main() {
-				color = vec4(v_Position * 0.5 + 0.5, 1.0);
+				color = u_Color;
 			}
 		)";
 		_Shader.reset(new IM::Shader(vertexSrc, fragmentSrc));
@@ -126,6 +130,15 @@ public:
 		if (IM::Input::IsKeyPressed(IMAGINE_KEY_D))
 			_CameraRot -= _CameraMoveSpeed * dt;
 
+		if (IM::Input::IsKeyPressed(IMAGINE_KEY_J))
+			_SquareTransform.Transform[3].x -= _CameraMoveSpeed * dt;
+		if (IM::Input::IsKeyPressed(IMAGINE_KEY_L))
+			_SquareTransform.Transform[3].x += _CameraMoveSpeed * dt;
+		if (IM::Input::IsKeyPressed(IMAGINE_KEY_I))
+			_SquareTransform.Transform[3].y += _CameraMoveSpeed * dt;
+		if (IM::Input::IsKeyPressed(IMAGINE_KEY_K))
+			_SquareTransform.Transform[3].y -= _CameraMoveSpeed * dt;
+
 		IM::RenderCommand::SetClearColor({ 0.4f, 0.3f, 0.3f, 1.0f });
 		IM::RenderCommand::Clear();
 
@@ -133,10 +146,30 @@ public:
 		_Camera.SetRotation(_CameraRot);
 
 		//Beginning of the scene where we tell renderer what to do for the scene
+
+		glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
+
 		IM::Renderer::BeginScene(_Camera);
 
-		IM::Renderer::Submit(_Shader2, _SquareVA);
-		IM::Renderer::Submit(_Shader, _VertexArray);
+
+		glm::vec4 redColor(0.8f, 0.2, 0.3f, 1.0f);
+		glm::vec4 blueColor(0.2f, 0.3, 0.8f, 1.0f);
+		for (int y = 0; y < 20; ++y) {
+			for (int x = 0; x < 20; ++x) {
+				glm::vec3 pos(x * 0.11f, y * 0.11f, 0.0f);
+				C_Transform trans;
+				trans.Transform = glm::translate(glm::mat4(1.0f), pos) * scale;
+				if (x % 2 == 0) {
+					_Shader2->SetUniform("u_Color", redColor);
+				}
+				else {
+					_Shader2->SetUniform("u_Color", blueColor);
+				}
+				IM::Renderer::Submit(_Shader2, _SquareVA, trans);
+			}
+		}
+
+		IM::Renderer::Submit(_Shader, _VertexArray, _SquareTransform2);
 
 		//EndScene tells the renderer we are done submitting and it can do its thing now
 		IM::Renderer::EndScene();
@@ -163,6 +196,9 @@ private:
 	float _CameraMoveSpeed = 5.0f;
 	float _CameraRot = 0.0f;
 	float _CameraRotSpeed = 30.0f;
+
+	C_Transform _SquareTransform;
+	C_Transform _SquareTransform2;
 
 };
 
