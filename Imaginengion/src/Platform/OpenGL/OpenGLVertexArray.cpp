@@ -36,8 +36,8 @@ namespace IM {
 	void OpenGLVertexArray::Unbind() const {
 		glBindVertexArray(0);
 	}
-	void OpenGLVertexArray::AddVertexBuffer(const std::shared_ptr<VertexBuffer> vertexBuffer) {
-		IMAGINE_CORE_ASSERT(vertexBuffer->GetLayout().GetElements.size(), "Vertex Buffer has no layout!");
+	void OpenGLVertexArray::AddVertexBuffer(const RefPtr<VertexBuffer> vertexBuffer) {
+		IMAGINE_CORE_ASSERT(vertexBuffer->GetLayout().GetElements().size(), "Vertex Buffer has no layout!");
 
 		glBindVertexArray(_ArrayID);
 		vertexBuffer->Bind();
@@ -56,7 +56,7 @@ namespace IM {
 
 		_VertexBuffers.push_back(vertexBuffer);
 	}
-	void OpenGLVertexArray::SetIndexBuffer(const std::shared_ptr<IndexBuffer> indexBuffer) {
+	void OpenGLVertexArray::SetIndexBuffer(const RefPtr<IndexBuffer> indexBuffer) {
 		glBindVertexArray(_ArrayID);
 		indexBuffer->Bind();
 

@@ -63,7 +63,7 @@ namespace IM {
 		//bool controlling the main run loop of the application.
 		bool bRunning = true;
 
-		std::unique_ptr<Window> _Window;
+		ScopePtr<Window> _Window;
 		ImguiLayer *_ImguiLayer;
 		LayerManager _LayerManager;
 		static Application* _Instance;

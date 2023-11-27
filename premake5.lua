@@ -106,22 +106,14 @@ project "MyApp"
 
     filter "system:windows"
         systemversion "latest"
-        defines{
-            "IMAGINE_PLATFORM_WINDOWS"
-        }
+        defines "IMAGINE_PLATFORM_WINDOWS"
     
     filter "configurations:Debug"
-        defines {
-            "IMAGINE_DEBUG",
-            "IMAGINE_ENABLE_ASSERTS"
-        }
+        defines "IMAGINE_DEBUG"
         symbols "On"
 
     filter "configurations:Release"
-        defines {
-            "IMAGINE_RELEASE",
-            "IMAGINE_ENABLE_ASSERTS"
-        }
+        defines "IMAGINE_RELEASE"
         optimize "On"
 
     filter "configurations:Dist"

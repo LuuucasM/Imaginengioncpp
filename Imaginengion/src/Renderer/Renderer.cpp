@@ -1,6 +1,7 @@
 #include "impch.h"
 #include "Renderer.h"
 
+#include "Platform/OpenGL/OpenGLShader.h"
 
 namespace IM {
 
@@ -13,10 +14,10 @@ namespace IM {
 
 	}
 
-	void Renderer::Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vertexArray, C_Transform transform) {
+	void Renderer::Submit(const RefPtr<Shader>& shader, const RefPtr<VertexArray>& vertexArray, C_Transform transform) {
 		shader->Bind();
-		shader->SetUniform("u_ViewProjection", _SceneData->ViewProjectionMatrix);
-		shader->SetUniform("u_Transform", transform.Transform);
+		std::dynamic_pointer_cast<OpenGLShader>(shader)->SetUniform("u_ViewProjection", _SceneData->ViewProjectionMatrix);
+		std::dynamic_pointer_cast<OpenGLShader>(shader)->SetUniform("u_Transform", transform.Transform);
 
 		vertexArray->Bind();
 		RenderCommand::DrawIndexed(vertexArray);

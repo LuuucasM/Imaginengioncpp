@@ -11,8 +11,9 @@ namespace IM {
 		_Instance = this;
 
 		//create window and bind windowcloseevent to application function
-		_Window = std::unique_ptr<Window>(Window::Create());
+		_Window = ScopePtr<Window>(Window::Create());
 		_Window->WindowCloseEvent.AddListener<Application>(this, &Application::OnWindowCloseEvent);
+		_Window->SetVSync(false);
 
 		_ImguiLayer = new ImguiLayer();
 		PushOverlay(_ImguiLayer);

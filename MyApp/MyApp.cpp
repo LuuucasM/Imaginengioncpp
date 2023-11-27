@@ -1,5 +1,9 @@
 #include "Imagine.h"
 
+#include "Platform/OpenGL/OpenGLShader.h"
+
+#include "Imgui/imgui.h"
+
 class ExampleLayer : public IM::Layer {
 public:
 	ExampleLayer() 
@@ -13,7 +17,7 @@ public:
 			0.0f, 0.5f, 0.0f, 0.1f, 0.3f, 0.8f, 1.0f
 		};
 
-		std::shared_ptr<IM::VertexBuffer> vertexBuffer;
+		IM::RefPtr<IM::VertexBuffer> vertexBuffer;
 		vertexBuffer.reset(IM::VertexBuffer::Create(vertices, sizeof(vertices)));
 		IM::BufferLayout layout = {
 			{IM::ShaderDataType::Float3, "a_Position"},
@@ -24,7 +28,7 @@ public:
 
 		//Index Buffer
 		uint32_t indices[3] = { 0, 1, 2 };
-		std::shared_ptr<IM::IndexBuffer> indexBuffer;
+		IM::RefPtr<IM::IndexBuffer> indexBuffer;
 		indexBuffer.reset(IM::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
 		_VertexArray->SetIndexBuffer(indexBuffer);
 
@@ -37,7 +41,7 @@ public:
 			-0.5f, 0.5f, 0.0f,
 		};
 
-		std::shared_ptr<IM::VertexBuffer> squareVB;
+		IM::RefPtr<IM::VertexBuffer> squareVB;
 		squareVB.reset(IM::VertexBuffer::Create(vertices2, sizeof(vertices2)));
 		squareVB->SetLayout({
 			{IM::ShaderDataType::Float3, "a_Position"},
@@ -45,7 +49,7 @@ public:
 		_SquareVA->AddVertexBuffer(squareVB);
 
 		uint32_t squareIndices[6] = { 0, 1, 2, 2, 3, 0 };
-		std::shared_ptr<IM::IndexBuffer> squareIB;
+		IM::RefPtr<IM::IndexBuffer> squareIB;
 		squareIB.reset(IM::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
 		_SquareVA->SetIndexBuffer(squareIB);
 		//TEMPORARY------------------
@@ -110,8 +114,8 @@ public:
 				color = u_Color;
 			}
 		)";
-		_Shader.reset(new IM::Shader(vertexSrc, fragmentSrc));
-		_Shader2.reset(new IM::Shader(vertexSrc2, fragmentSrc2));
+		_Shader.reset(IM::Shader::Create(vertexSrc, fragmentSrc));
+		_Shader2.reset(IM::Shader::Create(vertexSrc2, fragmentSrc2));
 	}
 
 	void OnUpdate(float dt) override {
@@ -151,24 +155,16 @@ public:
 
 		IM::Renderer::BeginScene(_Camera);
 
-
-		glm::vec4 redColor(0.8f, 0.2, 0.3f, 1.0f);
-		glm::vec4 blueColor(0.2f, 0.3, 0.8f, 1.0f);
+		std::dynamic_pointer_cast<IM::OpenGLShader>(_Shader2)->Bind();
+		std::dynamic_pointer_cast<IM::OpenGLShader>(_Shader2)->SetUniform("u_Color", _SquareColor);
 		for (int y = 0; y < 20; ++y) {
 			for (int x = 0; x < 20; ++x) {
 				glm::vec3 pos(x * 0.11f, y * 0.11f, 0.0f);
 				C_Transform trans;
 				trans.Transform = glm::translate(glm::mat4(1.0f), pos) * scale;
-				if (x % 2 == 0) {
-					_Shader2->SetUniform("u_Color", redColor);
-				}
-				else {
-					_Shader2->SetUniform("u_Color", blueColor);
-				}
 				IM::Renderer::Submit(_Shader2, _SquareVA, trans);
 			}
 		}
-
 		IM::Renderer::Submit(_Shader, _VertexArray, _SquareTransform2);
 
 		//EndScene tells the renderer we are done submitting and it can do its thing now
@@ -176,18 +172,23 @@ public:
 		//flush the render queue
 		//Renderer::Flush();
 	}
+	void OnImguiRender() override {
+		ImGui::Begin("Settings");
+		ImGui::ColorEdit3("Square Color", glm::value_ptr(_SquareColor));
+		ImGui::End();
+	}
 public:
 	void OnKeyPresedEvent() {
 
 	}
 private:
 	//FOR MAKING A TRIANGLE --------------
-	std::shared_ptr<IM::VertexArray> _VertexArray;
+	IM::RefPtr<IM::VertexArray> _VertexArray;
 	//FOR MAKING A SQUARE
-	std::shared_ptr<IM::VertexArray> _SquareVA;
+	IM::RefPtr<IM::VertexArray> _SquareVA;
 	//TEMPORARY---------------
-	std::shared_ptr<IM::Shader> _Shader;
-	std::shared_ptr<IM::Shader> _Shader2;
+	IM::RefPtr<IM::Shader> _Shader;
+	IM::RefPtr<IM::Shader> _Shader2;
 
 	IM::OrthographicCamera _Camera;
 
@@ -199,6 +200,8 @@ private:
 
 	C_Transform _SquareTransform;
 	C_Transform _SquareTransform2;
+
+	glm::vec4 _SquareColor = { 0.2f, 0.3f, 0.8f, 1.0f };
 
 };
 

@@ -13,7 +13,7 @@ namespace IM {
 		static void BeginScene(OrthographicCamera& camera);
 		static void EndScene();
 
-		static void Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vertexArray, C_Transform transform = C_Transform());
+		static void Submit(const RefPtr<Shader>& shader, const RefPtr<VertexArray>& vertexArray, C_Transform transform = C_Transform());
 
 		inline static RendererAPI::API GetAPI() { return RendererAPI::GetCurrentAPI(); }
 	private:
