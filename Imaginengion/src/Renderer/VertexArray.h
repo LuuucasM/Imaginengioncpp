@@ -17,7 +17,7 @@ namespace IM {
 		virtual void AddVertexBuffer(const RefPtr<VertexBuffer> vertexBuffer) = 0;
 		virtual void SetIndexBuffer(const RefPtr<IndexBuffer> indexBuffer) = 0;
 
-		static VertexArray* Create();
+		static RefPtr<VertexArray> Create();
 
 		inline const std::vector<RefPtr<VertexBuffer>>& GetVertexBuffers() const {
 			return _VertexBuffers;

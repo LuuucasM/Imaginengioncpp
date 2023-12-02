@@ -15,6 +15,7 @@ IncludeDir["GLFW"] = "Imaginengion/Vendor/GLFW/include"
 IncludeDir["Glad"] = "Imaginengion/Vendor/Glad/include"
 IncludeDir["Imgui"] = "Imaginengion/Vendor/Imgui"
 IncludeDir["glm"] = "Imaginengion/Vendor/glm"
+IncludeDir["stb"] = "Imaginengion/Vendor/stb"
 
 include "Imaginengion/Vendor"
 
@@ -33,7 +34,11 @@ project "Imaginengion"
     
     files{
         "%{prj.name}/src/**.h",
-        "%{prj.name}/src/**.cpp"
+        "%{prj.name}/src/**.cpp",
+        "%{prj.name}/Vendor/stb/**.h",
+        "%{prj.name}/Vendor/stb/**.cpp",
+        "%{prj.name}/Vendor/glm/glm/**.hpp",
+        "%{prj.name}/Vendor/glm/glm/**.ini"
     }
 
     includedirs{
@@ -42,7 +47,8 @@ project "Imaginengion"
         "%{IncludeDir.GLFW}",
         "%{IncludeDir.Glad}",
         "%{IncludeDir.Imgui}",
-        "%{IncludeDir.glm}"
+        "%{IncludeDir.glm}",
+        "%{IncludeDir.stb}"
     }
 
     links{

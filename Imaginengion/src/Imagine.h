@@ -26,6 +26,7 @@
 #include "Renderer/BufferLayout.h"
 #include "Renderer/VertexBuffer.h"
 #include "Renderer/Shader.h"
+#include "Renderer/Texture.h"
 #include "Renderer/VertexArray.h"
 
 #include "Renderer/OrthographicCamera.h"

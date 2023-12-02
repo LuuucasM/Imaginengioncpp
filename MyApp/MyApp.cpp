@@ -8,7 +8,7 @@ class ExampleLayer : public IM::Layer {
 public:
 	ExampleLayer() 
 		: Layer("Example"), _Camera(-1.6f, 1.6f, -0.9f, 0.9f) {
-		_VertexArray.reset(IM::VertexArray::Create());
+		_VertexArray = IM::VertexArray::Create();
 
 
 		float vertices[3 * 7] = {
@@ -29,28 +29,29 @@ public:
 		//Index Buffer
 		uint32_t indices[3] = { 0, 1, 2 };
 		IM::RefPtr<IM::IndexBuffer> indexBuffer;
-		indexBuffer.reset(IM::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
+		indexBuffer = IM::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
 		_VertexArray->SetIndexBuffer(indexBuffer);
 
-		_SquareVA.reset(IM::VertexArray::Create());
+		_SquareVA = IM::VertexArray::Create();
 
-		float vertices2[4 * 3] = {
-			-0.5f, -0.5f, 0.0f,
-			0.5f, -0.5f, 0.0f,
-			0.5f, 0.5f, 0.0f,
-			-0.5f, 0.5f, 0.0f,
+		float vertices2[4 * 5] = {
+			-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+			0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+			0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 
+			-0.5f, 0.5f, 0.0f, 0.0, 1.0f
 		};
 
 		IM::RefPtr<IM::VertexBuffer> squareVB;
 		squareVB.reset(IM::VertexBuffer::Create(vertices2, sizeof(vertices2)));
 		squareVB->SetLayout({
 			{IM::ShaderDataType::Float3, "a_Position"},
+			{IM::ShaderDataType::Float2, "a_TexCoord"}
 			});
 		_SquareVA->AddVertexBuffer(squareVB);
 
 		uint32_t squareIndices[6] = { 0, 1, 2, 2, 3, 0 };
 		IM::RefPtr<IM::IndexBuffer> squareIB;
-		squareIB.reset(IM::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
+		squareIB = IM::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
 		_SquareVA->SetIndexBuffer(squareIB);
 		//TEMPORARY------------------
 		std::string vertexSrc = R"(
@@ -114,8 +115,45 @@ public:
 				color = u_Color;
 			}
 		)";
-		_Shader.reset(IM::Shader::Create(vertexSrc, fragmentSrc));
-		_Shader2.reset(IM::Shader::Create(vertexSrc2, fragmentSrc2));
+		_Shader = IM::Shader::Create(vertexSrc, fragmentSrc);
+		_Shader2 = IM::Shader::Create(vertexSrc2, fragmentSrc2);
+
+		std::string textureShaderVertexSrc = R"(
+			#version 330 core
+			
+			layout(location = 0) in vec3 a_Position;
+			layout(location = 1) in vec2 a_TexCoord;
+
+			uniform mat4 u_ViewProjection;
+			uniform mat4 u_Transform;
+
+			out vec2 v_TexCoord;		
+
+			void main() {
+				v_TexCoord = a_TexCoord;
+				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
+			}
+		)";
+		std::string textureShaderFragSrc = R"(
+			#version 330 core
+			
+			layout(location = 0) out vec4 color;
+
+			in vec2 v_TexCoord;
+
+			uniform sampler2D u_Texture;
+			
+			void main() {
+				color = texture(u_Texture, v_TexCoord);
+			}
+		)";
+		_TextureShader = IM::Shader::Create(textureShaderVertexSrc, textureShaderFragSrc);
+
+		_Texture = IM::Texture2D::Create("assets/textures/Checkerboard.png");
+		_ZealotTexture = IM::Texture2D::Create("assets/textures/zealot.png");
+
+		std::dynamic_pointer_cast<IM::OpenGLShader>(_TextureShader)->Bind();
+		std::dynamic_pointer_cast<IM::OpenGLShader>(_TextureShader)->SetUniform("u_Texture", 0);
 	}
 
 	void OnUpdate(float dt) override {
@@ -157,6 +195,7 @@ public:
 
 		std::dynamic_pointer_cast<IM::OpenGLShader>(_Shader2)->Bind();
 		std::dynamic_pointer_cast<IM::OpenGLShader>(_Shader2)->SetUniform("u_Color", _SquareColor);
+
 		for (int y = 0; y < 20; ++y) {
 			for (int x = 0; x < 20; ++x) {
 				glm::vec3 pos(x * 0.11f, y * 0.11f, 0.0f);
@@ -165,7 +204,16 @@ public:
 				IM::Renderer::Submit(_Shader2, _SquareVA, trans);
 			}
 		}
-		IM::Renderer::Submit(_Shader, _VertexArray, _SquareTransform2);
+		_SquareTransform2.Transform = glm::scale(glm::mat4(1.0f), glm::vec3(1.5f));
+		_Texture->Bind();
+		IM::Renderer::Submit(_TextureShader, _SquareVA, _SquareTransform2);
+
+		_ZealotTransform.Transform = glm::translate(glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)), glm::vec3(0.25f, -0.25f, 0.25f));
+		_ZealotTexture->Bind();
+		IM::Renderer::Submit(_TextureShader, _SquareVA, _SquareTransform2);
+
+		//THIS IS THE TRIANGLE
+		//IM::Renderer::Submit(_Shader, _VertexArray, _SquareTransform2);
 
 		//EndScene tells the renderer we are done submitting and it can do its thing now
 		IM::Renderer::EndScene();
@@ -177,10 +225,6 @@ public:
 		ImGui::ColorEdit3("Square Color", glm::value_ptr(_SquareColor));
 		ImGui::End();
 	}
-public:
-	void OnKeyPresedEvent() {
-
-	}
 private:
 	//FOR MAKING A TRIANGLE --------------
 	IM::RefPtr<IM::VertexArray> _VertexArray;
@@ -189,6 +233,10 @@ private:
 	//TEMPORARY---------------
 	IM::RefPtr<IM::Shader> _Shader;
 	IM::RefPtr<IM::Shader> _Shader2;
+	IM::RefPtr<IM::Shader> _TextureShader;
+
+	IM::RefPtr<IM::Texture> _Texture;
+	IM::RefPtr<IM::Texture> _ZealotTexture;
 
 	IM::OrthographicCamera _Camera;
 
@@ -200,6 +248,7 @@ private:
 
 	C_Transform _SquareTransform;
 	C_Transform _SquareTransform2;
+	C_Transform _ZealotTransform;
 
 	glm::vec4 _SquareColor = { 0.2f, 0.3f, 0.8f, 1.0f };
 

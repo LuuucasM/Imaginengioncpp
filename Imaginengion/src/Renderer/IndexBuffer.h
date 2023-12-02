@@ -10,7 +10,7 @@ namespace IM {
 		virtual void Bind() const = 0;
 		virtual void Unbind() const = 0;
 
-		static IndexBuffer* Create(uint32_t* indices, uint32_t count);
+		static RefPtr<IndexBuffer> Create(uint32_t* indices, uint32_t count);
 
 		inline uint32_t GetCount() const { return _Count; }
 	protected:

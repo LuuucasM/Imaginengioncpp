@@ -1,6 +1,10 @@
 #include "impch.h"
 #include "Application.h"
 
+#include "Renderer/Renderer.h"
+
+#include "glad/glad.h"
+
 namespace IM {
 
 	Application* Application::_Instance = nullptr;
@@ -15,8 +19,11 @@ namespace IM {
 		_Window->WindowCloseEvent.AddListener<Application>(this, &Application::OnWindowCloseEvent);
 		_Window->SetVSync(false);
 
+		Renderer::Init();
+
 		_ImguiLayer = new ImguiLayer();
 		PushOverlay(_ImguiLayer);
+
 		_Timestep.Start();
 	}
 

@@ -5,6 +5,7 @@
 namespace IM {
 	class OpenGLRendererAPI : public RendererAPI
 	{
+		void Init() override;
 		void SetClearColor(const glm::vec4& color) override;
 		void Clear() override;
 
