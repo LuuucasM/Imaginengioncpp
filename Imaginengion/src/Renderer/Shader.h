@@ -15,6 +15,7 @@ namespace IM {
 		virtual void Unbind() const = 0;
 
 		static RefPtr<Shader> Create(const std::string& vertexSrc, const std::string& fragmentSrc);
+		static RefPtr<Shader> Create(const std::string& filepath);
 	private:
 		uint32_t _ProgramID = 0;
 	};

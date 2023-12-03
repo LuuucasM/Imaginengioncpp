@@ -6,6 +6,10 @@ namespace IM {
 	std::shared_ptr<spdlog::logger> Log::CoreLogger;
 	std::shared_ptr<spdlog::logger> Log::ClientLogger;
 
+	Log::~Log() {
+		spdlog::shutdown();
+	}
+
 	void Log::Init() {
 		//set the pattern for outputting logger messages
 		spdlog::set_pattern("%l [%D %T] %n: %v%$");
