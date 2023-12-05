@@ -9,10 +9,10 @@
 namespace IM {
 
 	static GLenum ShaderTypeFromStr(const std::string& type) {
-		if (type == "vertex") {
+		if (type.find("vertex") != std::string::npos) {
 			return GL_VERTEX_SHADER;
 		}
-		if (type == "fragment" || type == "pixel") {
+		if (type.find("fragment") != std::string::npos || type.find("pixel") != std::string::npos) {
 			return GL_FRAGMENT_SHADER;
 		}
 
@@ -20,17 +20,23 @@ namespace IM {
 		return 0;
 	}
 
-	OpenGLShader::OpenGLShader(const std::string& vertexSrc, const std::string& fragmentSrc) {
+	OpenGLShader::OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc) {
 		std::unordered_map<GLenum, std::string> shaderSources;
 		shaderSources[GL_VERTEX_SHADER] = vertexSrc;
 		shaderSources[GL_FRAGMENT_SHADER] = fragmentSrc;
 		Compile(shaderSources);
+
+		_Name = name;
 	}
 
 	OpenGLShader::OpenGLShader(const std::string& filepath) {
 		std::string source = ReadFile(filepath);
 		auto shaderSources = PreProcess(source);
 		Compile(shaderSources);
+
+		std::filesystem::path path = filepath;
+
+		_Name = path.stem().string();
 	}
 	OpenGLShader::~OpenGLShader() {
 		glDeleteProgram(_ProgramID);
@@ -45,7 +51,7 @@ namespace IM {
 
 	std::string OpenGLShader::ReadFile(const std::string& filepath) {
 		std::string result;
-		std::ifstream in(filepath, std::ios::in, std::ios::binary);
+		std::ifstream in(filepath, std::ios::in | std::ios::binary);
 		if (in) {
 			in.seekg(0, std::ios::end);
 			result.resize(in.tellg());
@@ -94,7 +100,9 @@ namespace IM {
 	void OpenGLShader::Compile(std::unordered_map<GLenum, std::string> shaderSources) {
 
 		GLuint program = glCreateProgram();
-		std::vector<GLenum> glShaderIDs(shaderSources.size());
+		IMAGINE_CORE_ASSERT(shaderSources.size() <= 4, "Only support up to 4 shaders in OpenGLShader Compile")
+		std::array<GLenum, 4> glShaderIDs;
+		int glShaderIndex = 0;
 
 		for (const auto& [type, source] : shaderSources) {
 			GLuint shader = glCreateShader(type);
@@ -127,7 +135,7 @@ namespace IM {
 				return;
 			}
 			glAttachShader(program, shader);
-			glShaderIDs.push_back(shader);
+			glShaderIDs[glShaderIndex++] = shader;
 		}
 
 		_ProgramID = program;
@@ -156,7 +164,7 @@ namespace IM {
 			}
 
 			// Use the infoLog as you see fit.
-			IMAGINE_CORE_ASSERT(false, "Shader Linking failure!\n {0}", infoLog.data());
+			IMAGINE_CORE_ASSERT(false, "Shader Program linking failure!\n {0}", infoLog.data());
 			// In this simple program, we'll just leave
 			return;
 		}

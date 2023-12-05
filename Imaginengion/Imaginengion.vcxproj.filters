@@ -999,6 +999,7 @@
     <ClInclude Include="src\impch.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="src\Renderer\ShaderLibrary.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Vendor\stb\stb_image.cpp">
@@ -1085,5 +1086,6 @@
     <ClCompile Include="src\impch.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\Renderer\ShaderLibrary.cpp" />
   </ItemGroup>
 </Project>

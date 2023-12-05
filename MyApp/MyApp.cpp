@@ -115,8 +115,8 @@ public:
 				color = u_Color;
 			}
 		)";
-		_Shader = IM::Shader::Create(vertexSrc, fragmentSrc);
-		_Shader2 = IM::Shader::Create(vertexSrc2, fragmentSrc2);
+		_Shader = IM::Shader::Create("TriangleShader", vertexSrc, fragmentSrc);
+		_Shader2 = IM::Shader::Create("SquareShader", vertexSrc2, fragmentSrc2);
 
 		//
 

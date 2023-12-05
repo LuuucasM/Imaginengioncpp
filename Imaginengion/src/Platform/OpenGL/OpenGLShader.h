@@ -9,7 +9,7 @@ typedef unsigned int GLenum;
 namespace IM {
 	class OpenGLShader : public Shader {
 	public:
-		OpenGLShader(const std::string& vertexSrc, const std::string &fragmentSrc);
+		OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string &fragmentSrc);
 		OpenGLShader(const std::string& filepath);
 		virtual ~OpenGLShader();
 
@@ -29,7 +29,5 @@ namespace IM {
 		std::string ReadFile(const std::string& filepath);
 		std::unordered_map<GLenum, std::string> PreProcess(std::string& source);
 		void Compile(std::unordered_map<GLenum, std::string> shaderSources);
-	private:
-		uint32_t _ProgramID;
 	};
 }
