@@ -11,6 +11,11 @@ namespace IM {
 		RenderCommand::Init();
 	}
 
+	void Renderer::OnWindowResize(int width, int height)
+	{
+		RenderCommand::SetViewport(0, 0, width, height);
+	}
+
 	void Renderer::BeginScene(OrthographicCamera& camera) {
 		_SceneData->ViewProjectionMatrix = camera.GetViewProjectionMatrix();
 	}

@@ -35,12 +35,6 @@ namespace IM {
 			return *_Window;
 		}
 		/*
-		*Function to close the window when a Close Window Event is triggered
-		*/
-		void OnWindowCloseEvent();
-
-
-		/*
 		* Function to push layer onto LayerManager vector
 		*@param layer: The layer to be pushed onto the vector
 		*/
@@ -60,9 +54,18 @@ namespace IM {
 			return *_Instance;
 		}
 	private:
+		/*
+		*Function to close the window when a Close Window Event is triggered
+		*/
+		void OnWindowCloseEvent();
+		/*
+		*Function to resize the viewport when window resize event is triggered
+		*/
+		void OnWindowResizeEvent(int width, int height);
+	private:
 		//bool controlling the main run loop of the application.
-		bool bRunning = true;
-
+		bool _bRunning = true;
+		bool _bMinimized = false;
 		ScopePtr<Window> _Window;
 		ImguiLayer *_ImguiLayer;
 		LayerManager _LayerManager;

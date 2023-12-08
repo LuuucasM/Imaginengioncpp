@@ -9,8 +9,8 @@ namespace IM {
 	{
 		_Count = count;
 		glCreateBuffers(1, &_BufferID);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _BufferID);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, _Count * sizeof(uint32_t), indices, GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, _BufferID);
+		glBufferData(GL_ARRAY_BUFFER, _Count * sizeof(uint32_t), indices, GL_STATIC_DRAW);
 	}
 	OpenGLIndexBuffer::~OpenGLIndexBuffer() {
 		glDeleteBuffers(1, &_BufferID);

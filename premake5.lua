@@ -6,6 +6,9 @@ workspace "Imaginengion"
         "Release",
         "Dist"
     }
+    flags{
+        "MultiProcessorCompile"
+    }
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
@@ -64,7 +67,6 @@ project "Imaginengion"
         systemversion "latest"
 
         defines{
-            "IMAGINE_PLATFORM_WINDOWS",
             "IMAGINE_BUILD_DLL",
             "GLFW_INCLUDE_NONE"
         }
@@ -112,7 +114,6 @@ project "MyApp"
 
     filter "system:windows"
         systemversion "latest"
-        defines "IMAGINE_PLATFORM_WINDOWS"
     
     filter "configurations:Debug"
         defines "IMAGINE_DEBUG"

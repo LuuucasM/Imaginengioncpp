@@ -972,6 +972,9 @@
     <ClInclude Include="src\Renderer\OrthographicCamera.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Renderer\OrthographicCameraController.h">
+      <Filter>src\Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\Renderer\RenderCommand.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
@@ -987,6 +990,9 @@
     <ClInclude Include="src\Renderer\Shader.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Renderer\ShaderLibrary.h">
+      <Filter>src\Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\Renderer\Texture.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
@@ -999,7 +1005,6 @@
     <ClInclude Include="src\impch.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\Renderer\ShaderLibrary.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Vendor\stb\stb_image.cpp">
@@ -1062,6 +1067,9 @@
     <ClCompile Include="src\Renderer\OrthographicCamera.cpp">
       <Filter>src\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\Renderer\OrthographicCameraController.cpp">
+      <Filter>src\Renderer</Filter>
+    </ClCompile>
     <ClCompile Include="src\Renderer\RenderCommand.cpp">
       <Filter>src\Renderer</Filter>
     </ClCompile>
@@ -1072,6 +1080,9 @@
       <Filter>src\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Renderer\Shader.cpp">
+      <Filter>src\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\ShaderLibrary.cpp">
       <Filter>src\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Renderer\Texture.cpp">
@@ -1086,6 +1097,5 @@
     <ClCompile Include="src\impch.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\Renderer\ShaderLibrary.cpp" />
   </ItemGroup>
 </Project>

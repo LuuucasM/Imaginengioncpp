@@ -16,7 +16,8 @@ namespace IM {
 
 		//create window and bind windowcloseevent to application function
 		_Window = ScopePtr<Window>(Window::Create());
-		_Window->WindowCloseEvent.AddListener<Application>(this, &Application::OnWindowCloseEvent);
+		_Window->WindowCloseEvent.AddListener(this, &Application::OnWindowCloseEvent);
+		_Window->WindowResizeEvent.AddListener(this, &Application::OnWindowResizeEvent);
 		_Window->SetVSync(false);
 
 		Renderer::Init();
@@ -31,12 +32,13 @@ namespace IM {
 
 	}
 	void Application::Run() {
-		while (bRunning) {
+		while (_bRunning) {
 
 			float delta_time = _Timestep.GetDeltaTimeInSec();
 
-			_LayerManager.OnUpdate(delta_time);
-
+			if (!_bMinimized) {
+				_LayerManager.OnUpdate(delta_time);
+			}
 			_ImguiLayer->Begin();
 			_LayerManager.OnImguiRender();
 			_ImguiLayer->End();
@@ -46,7 +48,17 @@ namespace IM {
 	}
 
 	void Application::OnWindowCloseEvent() {
-		bRunning = false;
+		_bRunning = false;
+	}
+
+	void Application::OnWindowResizeEvent(int width, int height)
+	{
+		if (width == 0 || height == 0) {
+			_bMinimized = true;
+			return;
+		}
+		_bMinimized = false;
+		Renderer::OnWindowResize(width, height);
 	}
 
 	void Application::PushLayer(Layer *layer) {

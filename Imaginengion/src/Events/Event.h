@@ -41,7 +41,7 @@ namespace IM {
 		* @param object: A reference to the object that contains the function this event calls when this event calls broadcast
 		* @param func: A pointer to the member function of the given object
 		*/
-		template<typename T>
+		template<class T>
 		void AddListener(T *object, void (T::*func)(Args...)) {
 			std::any listenerObj = object;
 			std::function<void(Args...)> listenerFunc = [object, func](Args... args) {

@@ -11,6 +11,9 @@ namespace IM {
 	{
 	public:
 		static void Init();
+
+		static void OnWindowResize(int width, int height);
+
 		static void BeginScene(OrthographicCamera& camera);
 		static void EndScene();
 

@@ -160,6 +160,7 @@ namespace IM {
 			// Don't leak shaders either.
 
 			for (auto id : glShaderIDs) {
+				glDetachShader(_ProgramID, id);
 				glDeleteShader(id);
 			}
 

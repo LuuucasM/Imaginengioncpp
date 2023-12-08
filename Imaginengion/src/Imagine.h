@@ -30,11 +30,9 @@
 #include "Renderer/VertexArray.h"
 
 #include "Renderer/OrthographicCamera.h"
+#include "Renderer/OrthographicCameraController.h"
 //---------------------------------------
 
-//-----------ENTRY POINT-----------
-#include "Core/Entry.h"
-//-----------END ENTRY POINT-----------
 
 //---------------ENTITY COMPONENT SYSTEM------------
 #include "ECS/Components.h"
