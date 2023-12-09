@@ -15,6 +15,7 @@
 #include <unordered_set>
 #include <any>
 
+#include "Core/Core.h"
 #include "Core/Log.h"
 
 

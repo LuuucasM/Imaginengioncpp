@@ -18,7 +18,7 @@
 
 
 
-//----------RENDERER-------------------
+//----------RENDERING-------------------
 #include "Renderer/Renderer.h"
 #include "Renderer/RenderCommand.h"
 

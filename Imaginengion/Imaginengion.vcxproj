@@ -147,6 +147,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Renderer\Renderer.h" />
     <ClInclude Include="Vendor\glm\glm\common.hpp" />
     <ClInclude Include="Vendor\glm\glm\detail\_features.hpp" />
     <ClInclude Include="Vendor\glm\glm\detail\_fixes.hpp" />
@@ -456,7 +457,6 @@
     <ClInclude Include="src\Renderer\OrthographicCameraController.h" />
     <ClInclude Include="src\Renderer\RenderCommand.h" />
     <ClInclude Include="src\Renderer\RenderContext.h" />
-    <ClInclude Include="src\Renderer\Renderer.h" />
     <ClInclude Include="src\Renderer\RendererAPI.h" />
     <ClInclude Include="src\Renderer\Shader.h" />
     <ClInclude Include="src\Renderer\ShaderLibrary.h" />
@@ -466,6 +466,7 @@
     <ClInclude Include="src\impch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Renderer\Renderer.cpp" />
     <ClCompile Include="Vendor\stb\stb_image.cpp" />
     <ClCompile Include="src\Core\Application.cpp" />
     <ClCompile Include="src\Core\Layer.cpp" />
@@ -488,7 +489,6 @@
     <ClCompile Include="src\Renderer\OrthographicCamera.cpp" />
     <ClCompile Include="src\Renderer\OrthographicCameraController.cpp" />
     <ClCompile Include="src\Renderer\RenderCommand.cpp" />
-    <ClCompile Include="src\Renderer\Renderer.cpp" />
     <ClCompile Include="src\Renderer\RendererAPI.cpp" />
     <ClCompile Include="src\Renderer\Shader.cpp" />
     <ClCompile Include="src\Renderer\ShaderLibrary.cpp" />

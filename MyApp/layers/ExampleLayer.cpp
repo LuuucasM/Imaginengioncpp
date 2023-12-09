@@ -151,7 +151,7 @@ void ExampleLayer::OnUpdate(float dt){
 
 	glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
 
-	IM::Renderer::BeginScene(_CameraController.GetCamera());
+	IM::Renderer::R3D::BeginScene(_CameraController.GetCamera());
 
 	std::dynamic_pointer_cast<IM::OpenGLShader>(_Shader2)->Bind();
 	std::dynamic_pointer_cast<IM::OpenGLShader>(_Shader2)->SetUniform("u_Color", _SquareColor);
@@ -161,22 +161,22 @@ void ExampleLayer::OnUpdate(float dt){
 			glm::vec3 pos(x * 0.11f, y * 0.11f, 0.0f);
 			C_Transform trans;
 			trans.Transform = glm::translate(glm::mat4(1.0f), pos) * scale;
-			IM::Renderer::Submit(_Shader2, _SquareVA, trans);
+			IM::Renderer::R3D::Submit(_Shader2, _SquareVA, trans);
 		}
 	}
 	_SquareTransform2.Transform = glm::scale(glm::mat4(1.0f), glm::vec3(1.5f));
 	_Texture->Bind();
-	IM::Renderer::Submit(_TextureShader, _SquareVA, _SquareTransform2);
+	IM::Renderer::R3D::Submit(_TextureShader, _SquareVA, _SquareTransform2);
 
 	_ZealotTransform.Transform = glm::translate(glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)), glm::vec3(0.25f, -0.25f, 0.25f));
 	_ZealotTexture->Bind();
-	IM::Renderer::Submit(_TextureShader, _SquareVA, _SquareTransform2);
+	IM::Renderer::R3D::Submit(_TextureShader, _SquareVA, _SquareTransform2);
 
 	//THIS IS THE TRIANGLE
 	//IM::Renderer::Submit(_Shader, _VertexArray, _SquareTransform2);
 
 	//EndScene tells the renderer we are done submitting and it can do its thing now
-	IM::Renderer::EndScene();
+	IM::Renderer::R3D::EndScene();
 	//flush the render queue
 	//Renderer::Flush();
 }

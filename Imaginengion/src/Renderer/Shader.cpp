@@ -1,7 +1,7 @@
 #include "impch.h"
 #include "Shader.h"
 
-#include "Renderer.h"
+#include "RendererAPI.h"
 #include "Platform/OpenGL/OpenGLShader.h"
 
 namespace IM {

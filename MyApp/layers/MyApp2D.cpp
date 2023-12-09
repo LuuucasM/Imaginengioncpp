@@ -10,32 +10,12 @@ MyApp2D::MyApp2D()
 
 void MyApp2D::OnAttach()
 {
-	_VertexArray = IM::VertexArray::Create();
 
-	float vertices2[4 * 3] = {
-		-0.5f, -0.5f, 0.0f,
-		0.5f, -0.5f, 0.0f,
-		0.5f, 0.5f, 0.0f, 
-		-0.5f, 0.5f, 0.0f
-	};
-
-	IM::RefPtr<IM::VertexBuffer> squareVB;
-	squareVB.reset(IM::VertexBuffer::Create(vertices2, sizeof(vertices2)));
-	squareVB->SetLayout({
-		{IM::ShaderDataType::Float3, "a_Position"}
-		});
-	_VertexArray->AddVertexBuffer(squareVB);
-
-	uint32_t squareIndices[6] = { 0, 1, 2, 2, 3, 0 };
-	IM::RefPtr<IM::IndexBuffer> squareIB;
-	squareIB = IM::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
-	_VertexArray->SetIndexBuffer(squareIB);
-
-	_Shader = IM::Shader::Create("assets/shaders/flatColor.glsl");
 }
 
 void MyApp2D::OnDetach()
 {
+
 }
 
 void MyApp2D::OnUpdate(float dt)
@@ -47,16 +27,15 @@ void MyApp2D::OnUpdate(float dt)
 
 	//Beginning of the scene where we tell renderer what to do for the scene
 
-	IM::Renderer::BeginScene(_CameraController.GetCamera());
+	IM::Renderer::R2D::BeginScene(_CameraController.GetCamera());
 
-	std::dynamic_pointer_cast<IM::OpenGLShader>(_Shader)->Bind();
-	std::dynamic_pointer_cast<IM::OpenGLShader>(_Shader)->SetUniform("u_Color", _SquareColor);
+	IM::Renderer::R2D::DrawRect({ 0.0f, 0.0f }, { 1.0f, 1.0f }, { 0.8f, 0.2f, 0.3f, 1.0f });
 
-	C_Transform _SquareTransform;
-	_SquareTransform.Transform = glm::scale(glm::mat4(1.0f), glm::vec3(1.5f));
-	IM::Renderer::Submit(_Shader, _VertexArray, _SquareTransform);
+	IM::Renderer::R2D::EndScene();
 
-	IM::Renderer::EndScene();
+	//TODO _shader->setInput
+	//std::dynamic_pointer_cast<IM::OpenGLShader>(_Shader)->Bind();
+	//std::dynamic_pointer_cast<IM::OpenGLShader>(_Shader)->SetUniform("u_Color", _SquareColor);
 }
 
 void MyApp2D::OnImguiRender()
