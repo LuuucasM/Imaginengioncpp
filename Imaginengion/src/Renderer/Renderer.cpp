@@ -1,7 +1,8 @@
 #include "impch.h"
+
 #include "Renderer.h"
 
-#include "Platform/OpenGL/OpenGLShader.h"
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace IM {
 	Renderer::R3D::SceneData* Renderer::R3D::_SceneData = new Renderer::R3D::SceneData();
@@ -36,8 +37,8 @@ namespace IM {
 
 	void Renderer::R3D::Submit(const RefPtr<Shader>& shader, const RefPtr<VertexArray>& vertexArray, C_Transform transform) {
 		shader->Bind();
-		std::dynamic_pointer_cast<OpenGLShader>(shader)->SetUniform("u_ViewProjection", _SceneData->ViewProjectionMatrix);
-		std::dynamic_pointer_cast<OpenGLShader>(shader)->SetUniform("u_Transform", transform.Transform);
+		shader->SetValue("u_ViewProjection", _SceneData->ViewProjectionMatrix);
+		shader->SetValue("u_Transform", transform.Transform);
 
 		vertexArray->Bind();
 		RenderCommand::DrawIndexed(vertexArray);
@@ -85,22 +86,25 @@ namespace IM {
 
 	void Renderer::R2D::BeginScene(const OrthographicCamera& camera)
 	{
-		std::dynamic_pointer_cast<OpenGLShader>(_Data->_Shader)->Bind();
-		std::dynamic_pointer_cast<OpenGLShader>(_Data->_Shader)->SetUniform("u_ViewProjection", camera.GetViewProjectionMatrix());
-		std::dynamic_pointer_cast<OpenGLShader>(_Data->_Shader)->SetUniform("u_Transform", glm::mat4(1.0f));
+		_Data->_Shader->Bind();
+		_Data->_Shader->SetValue("u_ViewProjection", camera.GetViewProjectionMatrix());
+
 	}
 	void Renderer::R2D::EndScene()
 	{
 		//nothing right now :)
 	}
-	void Renderer::R2D::DrawRect(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)
+	void Renderer::R2D::DrawRect(const glm::vec2& position, const glm::vec2& scale, const glm::vec4& color)
 	{
-		DrawRect({ position.x, position.y, 0.0f }, size, color);
+		DrawRect({ position.x, position.y, 0.0f }, scale, color);
 	}
-	void Renderer::R2D::DrawRect(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color)
+	void Renderer::R2D::DrawRect(const glm::vec3& position, const glm::vec2& scale, const glm::vec4& color)
 	{
-		std::dynamic_pointer_cast<OpenGLShader>(_Data->_Shader)->Bind();
-		std::dynamic_pointer_cast<OpenGLShader>(_Data->_Shader)->SetUniform("u_Color", color);
+		_Data->_Shader->Bind();
+		_Data->_Shader->SetValue("u_Color", color);
+
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), {scale.x, scale.y, 1.0f});
+		_Data->_Shader->SetValue("u_Transform", transform);
 
 		_Data->_VertexArray->Bind();
 		RenderCommand::DrawIndexed(_Data->_VertexArray);

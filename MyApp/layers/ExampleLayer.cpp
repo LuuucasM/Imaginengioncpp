@@ -1,7 +1,5 @@
 #include "ExampleLayer.h"
 
-#include "Platform/OpenGL/OpenGLShader.h"
-
 #include "Imgui/imgui.h"
 
 ExampleLayer::ExampleLayer()
@@ -125,8 +123,8 @@ ExampleLayer::ExampleLayer()
 	_Texture = IM::Texture2D::Create("assets/textures/Checkerboard.png");
 	_ZealotTexture = IM::Texture2D::Create("assets/textures/zealot.png");
 
-	std::dynamic_pointer_cast<IM::OpenGLShader>(_TextureShader)->Bind();
-	std::dynamic_pointer_cast<IM::OpenGLShader>(_TextureShader)->SetUniform("u_Texture", 0);
+	_TextureShader->Bind();
+	_TextureShader->SetValue("u_Texture", 0);
 }
 
 void ExampleLayer::OnUpdate(float dt){
@@ -144,8 +142,8 @@ void ExampleLayer::OnUpdate(float dt){
 	if (IM::Input::IsKeyPressed(IMAGINE_KEY_K))
 		_SquareTransform.Transform[3].y -= _CameraMoveSpeed * dt;
 
-	IM::RenderCommand::SetClearColor({ 0.4f, 0.3f, 0.3f, 1.0f });
-	IM::RenderCommand::Clear();
+	IM::Renderer::SetClearColor({ 0.4f, 0.3f, 0.3f, 1.0f });
+	IM::Renderer::Clear();
 
 	//Beginning of the scene where we tell renderer what to do for the scene
 
@@ -153,8 +151,8 @@ void ExampleLayer::OnUpdate(float dt){
 
 	IM::Renderer::R3D::BeginScene(_CameraController.GetCamera());
 
-	std::dynamic_pointer_cast<IM::OpenGLShader>(_Shader2)->Bind();
-	std::dynamic_pointer_cast<IM::OpenGLShader>(_Shader2)->SetUniform("u_Color", _SquareColor);
+	_Shader2->Bind();
+	_Shader2->SetValue("u_Color", _SquareColor);
 
 	for (int y = 0; y < 20; ++y) {
 		for (int x = 0; x < 20; ++x) {

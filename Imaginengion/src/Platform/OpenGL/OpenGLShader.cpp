@@ -176,42 +176,42 @@ namespace IM {
 		}
 	}
 
-	void OpenGLShader::SetUniform(const std::string& name, bool value) {
+	void OpenGLShader::SetValue(const std::string& name, bool value) {
 		GLint location = glGetUniformLocation(_ProgramID, name.c_str());
 		IMAGINE_CORE_ASSERT(location != -1, "Cannot find union with the given name");
 		glUniform1i(location, (int)value);
 	}
-	void OpenGLShader::SetUniform(const std::string& name, int value) {
+	void OpenGLShader::SetValue(const std::string& name, int value) {
 		GLint location = glGetUniformLocation(_ProgramID, name.c_str());
 		IMAGINE_CORE_ASSERT(location != -1, "Cannot find union with the given name");
 		glUniform1i(location, value);
 	}
-	void OpenGLShader::SetUniform(const std::string& name, float value) {
+	void OpenGLShader::SetValue(const std::string& name, float value) {
 		GLint location = glGetUniformLocation(_ProgramID, name.c_str());
 		IMAGINE_CORE_ASSERT(location != -1, "Cannot find union with the given name");
 		glUniform1f(location, value);
 	}
-	void OpenGLShader::SetUniform(const std::string& name, glm::vec2 value) {
+	void OpenGLShader::SetValue(const std::string& name, glm::vec2 value) {
 		GLint location = glGetUniformLocation(_ProgramID, name.c_str());
 		IMAGINE_CORE_ASSERT(location != -1, "Cannot find union with the given name");
 		glUniform2f(location, value.x, value.y);
 	}
-	void OpenGLShader::SetUniform(const std::string& name, glm::vec3 value) {
+	void OpenGLShader::SetValue(const std::string& name, glm::vec3 value) {
 		GLint location = glGetUniformLocation(_ProgramID, name.c_str());
 		IMAGINE_CORE_ASSERT(location != -1, "Cannot find union with the given name");
 		glUniform3f(location, value.x, value.y, value.z);
 	}
-	void OpenGLShader::SetUniform(const std::string& name, glm::vec4 value) {
+	void OpenGLShader::SetValue(const std::string& name, glm::vec4 value) {
 		GLint location = glGetUniformLocation(_ProgramID, name.c_str());
 		IMAGINE_CORE_ASSERT(location != -1, "Cannot find union with the given name");
 		glUniform4f(location, value.x, value.y, value.z, value.w);
 	}
-	void OpenGLShader::SetUniform(const std::string& name, glm::mat3 value) {
+	void OpenGLShader::SetValue(const std::string& name, glm::mat3 value) {
 		GLint location = glGetUniformLocation(_ProgramID, name.c_str());
 		IMAGINE_CORE_ASSERT(location != -1, "Cannot find union with the given name");
 		glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(value));
 	}
-	void OpenGLShader::SetUniform(const std::string& name, glm::mat4 value) {
+	void OpenGLShader::SetValue(const std::string& name, glm::mat4 value) {
 		GLint location = glGetUniformLocation(_ProgramID, name.c_str());
 		IMAGINE_CORE_ASSERT(location != -1, "Cannot find union with the given name");
 		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));

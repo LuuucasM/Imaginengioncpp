@@ -14,6 +14,15 @@ namespace IM {
 		virtual void Bind() const = 0;
 		virtual void Unbind() const = 0;
 
+		virtual void SetValue(const std::string& name, bool value) = 0;
+		virtual void SetValue(const std::string& name, int value) = 0;
+		virtual void SetValue(const std::string& name, float value) = 0;
+		virtual void SetValue(const std::string& name, glm::vec2 value) = 0;
+		virtual void SetValue(const std::string& name, glm::vec3 value) = 0;
+		virtual void SetValue(const std::string& name, glm::vec4 value) = 0;
+		virtual void SetValue(const std::string& name, glm::mat3 value) = 0;
+		virtual void SetValue(const std::string& name, glm::mat4 value) = 0;
+
 		virtual const std::string& GetName() const { return _Name; }
 
 		static RefPtr<Shader> Create(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc);

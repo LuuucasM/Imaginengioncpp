@@ -1,7 +1,7 @@
 #pragma once
 
+#include "RendererAPI.h"
 #include "RenderCommand.h"
-
 #include "OrthographicCamera.h"
 #include "Shader.h"
 #include "ECS/Components.h"
@@ -13,7 +13,8 @@ namespace IM {
 		static void Init();
 		static void Shutdown();
 		static void OnWindowResize(int width, int height);
-
+		inline static void SetClearColor(const glm::vec4& color) { RenderCommand::SetClearColor(color); }
+		inline static void Clear() { RenderCommand::Clear(); }
 		//==========3D==========3D==========3D==========3D==========3D==========3D==========3D==========3D==========3D==========3D
 		class R3D
 		{

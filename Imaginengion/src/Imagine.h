@@ -20,7 +20,6 @@
 
 //----------RENDERING-------------------
 #include "Renderer/Renderer.h"
-#include "Renderer/RenderCommand.h"
 
 #include "Renderer/IndexBuffer.h"
 #include "Renderer/BufferLayout.h"
