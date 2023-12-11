@@ -7,7 +7,7 @@ MyApp2D::MyApp2D()
 
 void MyApp2D::OnAttach()
 {
-
+	_Texture = IM::Texture2D::Create("assets/textures/Checkerboard.png");
 }
 
 void MyApp2D::OnDetach()
@@ -28,6 +28,8 @@ void MyApp2D::OnUpdate(float dt)
 
 	IM::Renderer::R2D::DrawRect({ -1.0f, 0.0f }, { 0.8f, 0.8f }, { 0.8f, 0.2f, 0.3f, 1.0f });
 	IM::Renderer::R2D::DrawRect({ 0.5f, -0.5f }, { 1.0f, 1.0f }, { 0.3f, 0.8f, 0.2f, 1.0f });
+
+	IM::Renderer::R2D::DrawRect({ 0.0f, 0.0f, -0.1f }, { 10.0f, 10.0f }, _Texture);
 
 	IM::Renderer::R2D::EndScene();
 }

@@ -13,7 +13,7 @@ namespace IM {
 		virtual bool IsMouseButtonPressedImpl(int button) = 0;
 		virtual std::pair<float, float> GetMousePosImpl() = 0;
 	private:
-		static Input* _Instance;
+		static ScopePtr<Input> _Instance;
 	};
 
 }

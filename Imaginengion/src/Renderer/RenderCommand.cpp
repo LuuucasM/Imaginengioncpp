@@ -4,5 +4,5 @@
 #include "Platform/OpenGL/OpenGLRendererAPI.h"
 
 namespace IM {
-	RendererAPI* RenderCommand::_RendererAPI = new OpenGLRendererAPI();
+	ScopePtr<RendererAPI> RenderCommand::_RendererAPI = CreateScopePtr<OpenGLRendererAPI>();
 }

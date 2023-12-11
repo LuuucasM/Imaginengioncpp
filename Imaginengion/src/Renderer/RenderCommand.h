@@ -21,6 +21,6 @@ namespace IM {
 			_RendererAPI->DrawIndexed(vertexArray);
 		}
 	private:
-		static RendererAPI* _RendererAPI;
+		static ScopePtr<RendererAPI> _RendererAPI;
 	};
 }

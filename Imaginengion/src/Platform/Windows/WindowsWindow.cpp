@@ -36,7 +36,7 @@ namespace IM {
 		_Window = glfwCreateWindow((int)props.Width, (int)props.Height, Data.Title.c_str(), nullptr, nullptr);
 		IMAGINE_CORE_ASSERT(_Window, "Could not create GLFW window!");
 
-		_RenderContext = new OpenGLContext(_Window);
+		_RenderContext = CreateScopePtr<OpenGLContext>(_Window);
 		_RenderContext->Init();
 
 		//setting window user pointer allows us to pass our class data into glfw callback functions as seen below

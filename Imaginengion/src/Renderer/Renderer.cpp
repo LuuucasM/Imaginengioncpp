@@ -5,7 +5,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace IM {
-	Renderer::R3D::SceneData* Renderer::R3D::_SceneData = new Renderer::R3D::SceneData();
+	ScopePtr<Renderer::R3D::SceneData> Renderer::R3D::_SceneData = CreateScopePtr<Renderer::R3D::SceneData>();
 
 	void Renderer::Init() {
 		RenderCommand::Init();
@@ -50,6 +50,7 @@ namespace IM {
 	struct Renderer2DData {
 		RefPtr<VertexArray> _VertexArray;
 		RefPtr<Shader> _Shader;
+		RefPtr<Shader> _TextureShader;
 	};
 
 	static Renderer2DData* _Data;
@@ -58,17 +59,18 @@ namespace IM {
 		_Data = new Renderer2DData();
 		_Data->_VertexArray = VertexArray::Create();
 
-		float vertices2[4 * 3] = {
-			-0.5f, -0.5f, 0.0f,
-			0.5f, -0.5f, 0.0f,
-			0.5f, 0.5f, 0.0f,
-			-0.5f, 0.5f, 0.0f
+		float vertices2[4 * 5] = {
+			-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+			0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+			0.5f, 0.5f, 0.0f, 1.0f, 1.0f,
+			-0.5f, 0.5f, 0.0f, 0.0f, 1.0f
 		};
 
 		RefPtr<VertexBuffer> squareVB;
 		squareVB.reset(VertexBuffer::Create(vertices2, sizeof(vertices2)));
 		squareVB->SetLayout({
-			{ShaderDataType::Float3, "a_Position"}
+			{ShaderDataType::Float3, "a_Position"},
+			{ShaderDataType::Float2, "a_TexCoord"}
 			});
 		_Data->_VertexArray->AddVertexBuffer(squareVB);
 
@@ -78,6 +80,9 @@ namespace IM {
 		_Data->_VertexArray->SetIndexBuffer(squareIB);
 
 		_Data->_Shader = Shader::Create("assets/shaders/flatColor.glsl");
+		_Data->_TextureShader = Shader::Create("assets/shaders/Texture.glsl");
+		_Data->_TextureShader->Bind();
+		_Data->_TextureShader->SetValue("u_Texture", 0); 
 	}
 
 	void Renderer::R2D::Shutdown() {
@@ -88,6 +93,9 @@ namespace IM {
 	{
 		_Data->_Shader->Bind();
 		_Data->_Shader->SetValue("u_ViewProjection", camera.GetViewProjectionMatrix());
+
+		_Data->_TextureShader->Bind();
+		_Data->_TextureShader->SetValue("u_ViewProjection", camera.GetViewProjectionMatrix());
 
 	}
 	void Renderer::R2D::EndScene()
@@ -105,6 +113,22 @@ namespace IM {
 
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), {scale.x, scale.y, 1.0f});
 		_Data->_Shader->SetValue("u_Transform", transform);
+
+		_Data->_VertexArray->Bind();
+		RenderCommand::DrawIndexed(_Data->_VertexArray);
+	}
+	void Renderer::R2D::DrawRect(const glm::vec2& position, const glm::vec2& scale, const RefPtr<Texture2D> texture)
+	{
+		DrawRect({ position.x, position.y, 0.0f }, scale, texture);
+	}
+	void Renderer::R2D::DrawRect(const glm::vec3& position, const glm::vec2& scale, const RefPtr<Texture2D> texture)
+	{
+		_Data->_TextureShader->Bind();
+
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), { scale.x, scale.y, 1.0f });
+		_Data->_TextureShader->SetValue("u_Transform", transform);
+
+		texture->Bind();
 
 		_Data->_VertexArray->Bind();
 		RenderCommand::DrawIndexed(_Data->_VertexArray);

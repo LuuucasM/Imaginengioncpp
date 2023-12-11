@@ -8,7 +8,7 @@
 
 namespace IM {
 
-	Input* Input::_Instance = new WindowsInput();
+	ScopePtr<Input> Input::_Instance = CreateScopePtr<WindowsInput>();
 
 	bool WindowsInput::IsKeyPressedImpl(int keycode) {
 		auto window = static_cast<GLFWwindow *>(Application::Get().GetWindow().GetNativeWindow());

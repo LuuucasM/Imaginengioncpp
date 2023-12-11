@@ -4,6 +4,7 @@
 #include "RenderCommand.h"
 #include "OrthographicCamera.h"
 #include "Shader.h"
+#include "Texture.h"
 #include "ECS/Components.h"
 
 namespace IM {
@@ -33,7 +34,7 @@ namespace IM {
 				glm::mat4 ViewProjectionMatrix;
 			};
 
-			static SceneData* _SceneData;
+			static ScopePtr<SceneData> _SceneData;
 			friend class Renderer;
 		};
 		//==========3D==========3D==========3D==========3D==========3D==========3D==========3D==========3D==========3D==========3D
@@ -46,8 +47,10 @@ namespace IM {
 			static void BeginScene(const OrthographicCamera& camera);
 			static void EndScene();
 
-			static void DrawRect(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color);
-			static void DrawRect(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color);
+			static void DrawRect(const glm::vec2& position, const glm::vec2& scale, const glm::vec4& color);
+			static void DrawRect(const glm::vec3& position, const glm::vec2& scale, const glm::vec4& color);
+			static void DrawRect(const glm::vec2& position, const glm::vec2& scale, const RefPtr<Texture2D> texture);
+			static void DrawRect(const glm::vec3& position, const glm::vec2& scale, const RefPtr<Texture2D> texutre);
 		private:
 			static void Init();
 			static void Shutdown();
