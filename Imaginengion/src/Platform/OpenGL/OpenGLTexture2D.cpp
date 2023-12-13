@@ -29,7 +29,8 @@ namespace IM {
 		IMAGINE_CORE_ASSERT(internalFormat, "Texture format not supported in OpenGLTexture2D: {}", path);
 		IMAGINE_CORE_ASSERT(dataFormat, "Texture format not supported in OpenGLTexture2D: {}", path);
 
-
+		_InternalFormat = internalFormat;
+		_DataFormat = dataFormat;
 
 		glCreateTextures(GL_TEXTURE_2D, 1, &_TextureID);
 		glTextureStorage2D(_TextureID, 1, internalFormat, _Width, _Height);
@@ -44,10 +45,33 @@ namespace IM {
 
 		stbi_image_free(data);
 	}
+	OpenGLTexture2D::OpenGLTexture2D(uint32_t width, uint32_t height)
+		: _Width(width), _Height(height){
+
+		_InternalFormat = GL_RGBA8;
+		_DataFormat = GL_RGBA;
+
+		glCreateTextures(GL_TEXTURE_2D, 1, &_TextureID);
+		glTextureStorage2D(_TextureID, 1, _InternalFormat, _Width, _Height);
+
+		glTextureParameteri(_TextureID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTextureParameteri(_TextureID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+		glTextureParameteri(_TextureID, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTextureParameteri(_TextureID, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	}
 	OpenGLTexture2D::~OpenGLTexture2D() {
 		glDeleteTextures(1, &_TextureID);
 	}
+	void OpenGLTexture2D::SetData(void* data, uint32_t size)
+	{
+		glTextureSubImage2D(_TextureID, 0, 0, 0, _Width, _Height, _DataFormat, GL_UNSIGNED_BYTE, data);
+	}
 	void OpenGLTexture2D::Bind(uint32_t slot) const {
 		glBindTexture(GL_TEXTURE_2D, _TextureID);
+	}
+	void OpenGLTexture2D::Unbind(uint32_t slot) const
+	{
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 }

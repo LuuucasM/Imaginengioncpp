@@ -49,8 +49,8 @@ namespace IM {
 	//==========2D==========2D==========2D==========2D==========2D==========2D==========2D==========2D==========2D==========2D
 	struct Renderer2DData {
 		RefPtr<VertexArray> _VertexArray;
-		RefPtr<Shader> _Shader;
 		RefPtr<Shader> _TextureShader;
+		RefPtr<Texture2D> _WhiteTexture;
 	};
 
 	static Renderer2DData* _Data;
@@ -79,7 +79,11 @@ namespace IM {
 		squareIB = IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
 		_Data->_VertexArray->SetIndexBuffer(squareIB);
 
-		_Data->_Shader = Shader::Create("assets/shaders/flatColor.glsl");
+		_Data->_WhiteTexture = Texture2D::Create(1, 1);
+		uint32_t whiteTextureData = 0;
+		whiteTextureData = ~whiteTextureData;
+		_Data->_WhiteTexture->SetData(&whiteTextureData, sizeof(whiteTextureData));
+
 		_Data->_TextureShader = Shader::Create("assets/shaders/Texture.glsl");
 		_Data->_TextureShader->Bind();
 		_Data->_TextureShader->SetValue("u_Texture", 0); 
@@ -91,9 +95,6 @@ namespace IM {
 
 	void Renderer::R2D::BeginScene(const OrthographicCamera& camera)
 	{
-		_Data->_Shader->Bind();
-		_Data->_Shader->SetValue("u_ViewProjection", camera.GetViewProjectionMatrix());
-
 		_Data->_TextureShader->Bind();
 		_Data->_TextureShader->SetValue("u_ViewProjection", camera.GetViewProjectionMatrix());
 
@@ -108,11 +109,14 @@ namespace IM {
 	}
 	void Renderer::R2D::DrawRect(const glm::vec3& position, const glm::vec2& scale, const glm::vec4& color)
 	{
-		_Data->_Shader->Bind();
-		_Data->_Shader->SetValue("u_Color", color);
+		
+		_Data->_TextureShader->SetValue("u_Color", color);
+
+		//bind white texture
+		_Data->_WhiteTexture->Bind();
 
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), {scale.x, scale.y, 1.0f});
-		_Data->_Shader->SetValue("u_Transform", transform);
+		_Data->_TextureShader->SetValue("u_Transform", transform);
 
 		_Data->_VertexArray->Bind();
 		RenderCommand::DrawIndexed(_Data->_VertexArray);
@@ -123,6 +127,7 @@ namespace IM {
 	}
 	void Renderer::R2D::DrawRect(const glm::vec3& position, const glm::vec2& scale, const RefPtr<Texture2D> texture)
 	{
+		_Data->_TextureShader->SetValue("u_Color", glm::vec4(1.0f));
 		_Data->_TextureShader->Bind();
 
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), { scale.x, scale.y, 1.0f });
@@ -132,6 +137,8 @@ namespace IM {
 
 		_Data->_VertexArray->Bind();
 		RenderCommand::DrawIndexed(_Data->_VertexArray);
+
+		texture->Unbind();
 	}
 	//==========2D==========2D==========2D==========2D==========2D==========2D==========2D==========2D==========2D==========2D
 }

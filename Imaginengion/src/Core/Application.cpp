@@ -29,7 +29,7 @@ namespace IM {
 	}
 
 	Application::~Application() {
-
+		Renderer::Shutdown();
 	}
 	void Application::Run() {
 		while (_bRunning) {
