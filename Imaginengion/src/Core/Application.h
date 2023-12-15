@@ -71,7 +71,7 @@ namespace IM {
 		LayerManager _LayerManager;
 		static Application* _Instance;
 
-		Timestep _Timestep;
+		TimeStep _Timestep;
 	};
 
 	//to be defined in client

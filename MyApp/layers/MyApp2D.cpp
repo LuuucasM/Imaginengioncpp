@@ -17,6 +17,8 @@ void MyApp2D::OnDetach()
 
 void MyApp2D::OnUpdate(float dt)
 {
+	IM::ProfileTimer timer("MyApp2D::OnUpdate", [&](IM::ProfileResult profileResult) {_ProfileResults.push_back(profileResult); });
+
 	_CameraController.OnUpdate(dt);
 
 	IM::Renderer::SetClearColor({ 0.4f, 0.3f, 0.3f, 1.0f });
@@ -38,5 +40,14 @@ void MyApp2D::OnImguiRender()
 {
 	ImGui::Begin("Settings");
 	ImGui::ColorEdit3("Square Color", glm::value_ptr(_SquareColor));
+
+	for (auto& result : _ProfileResults) {
+		char label[50];
+		strcpy(label, result.Name);
+		strcat(label, "  %.3fms");
+		ImGui::Text(label, result.Time);
+	}
+	_ProfileResults.clear();
+
 	ImGui::End();
 }

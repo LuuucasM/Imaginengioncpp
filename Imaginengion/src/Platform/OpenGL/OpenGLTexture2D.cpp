@@ -43,7 +43,7 @@ namespace IM {
 
 		glTextureSubImage2D(_TextureID, 0, 0, 0, _Width, _Height, dataFormat, GL_UNSIGNED_BYTE, data);
 
-		stbi_image_free(data);
+		stbi_image_free(data); 
 	}
 	OpenGLTexture2D::OpenGLTexture2D(uint32_t width, uint32_t height)
 		: _Width(width), _Height(height){

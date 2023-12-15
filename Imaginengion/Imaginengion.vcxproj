@@ -147,6 +147,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Core\ProfileTimer.h" />
     <ClInclude Include="src\Renderer\Renderer.h" />
     <ClInclude Include="Vendor\glm\glm\common.hpp" />
     <ClInclude Include="Vendor\glm\glm\detail\_features.hpp" />
@@ -436,7 +437,7 @@
     <ClInclude Include="src\Core\Log.h" />
     <ClInclude Include="src\Core\Mousecodes.h" />
     <ClInclude Include="src\Core\Timer.h" />
-    <ClInclude Include="src\Core\Timestep.h" />
+    <ClInclude Include="src\Core\TimeStep.h" />
     <ClInclude Include="src\Core\Window.h" />
     <ClInclude Include="src\ECS\Components.h" />
     <ClInclude Include="src\Events\Event.h" />

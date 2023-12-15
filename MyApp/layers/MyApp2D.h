@@ -20,5 +20,7 @@ private:
 	glm::vec4 _SquareColor = { 0.2f, 0.3f, 0.8f, 1.0f };
 
 	IM::RefPtr<IM::Texture2D> _Texture;
+
+	std::vector<IM::ProfileResult> _ProfileResults;
 };
 

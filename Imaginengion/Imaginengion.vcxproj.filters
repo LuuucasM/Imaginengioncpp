@@ -918,7 +918,7 @@
     <ClInclude Include="src\Core\Timer.h">
       <Filter>src\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Timestep.h">
+    <ClInclude Include="src\Core\TimeStep.h">
       <Filter>src\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\Window.h">
@@ -1005,6 +1005,7 @@
     <ClInclude Include="src\impch.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="src\Core\ProfileTimer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Vendor\stb\stb_image.cpp">

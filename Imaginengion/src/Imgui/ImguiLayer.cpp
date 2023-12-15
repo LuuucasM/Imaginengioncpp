@@ -54,11 +54,6 @@ namespace IM {
         ImGui::DestroyContext();
 	}
 
-    void ImguiLayer::OnImguiRender() {
-        static bool show = true;
-        ImGui::ShowDemoWindow(&show);
-    }
-
     void ImguiLayer::Begin() {
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();

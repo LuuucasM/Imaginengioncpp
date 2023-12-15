@@ -3,9 +3,9 @@
 #include "Timer.h"
 
 namespace IM {
-	class Timestep {
+	class TimeStep {
 	public:
-		Timestep() 
+		TimeStep() 
 			: _LastFrameTime(0.0){
 		}
 		inline void Start() { _Timer.start(); }

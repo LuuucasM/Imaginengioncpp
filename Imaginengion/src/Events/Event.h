@@ -72,7 +72,7 @@ namespace IM {
 			for (auto const listener : listeners) {
 				listener.func(args...);
 			}
-			IMAGINE_CORE_INFO("Event: {} Args: ", event_name);
+			//IMAGINE_CORE_INFO("Event: {} Args: ", event_name);
 		}
 
 		/*

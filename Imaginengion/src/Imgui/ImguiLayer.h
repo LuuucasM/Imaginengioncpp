@@ -21,11 +21,6 @@ namespace IM {
 		virtual void OnDetach();
 
 		/*
-		* Called during main update loop to redner imgui
-		*/
-		void OnImguiRender() override;
-
-		/*
 		* Called before OnImguiRender
 		*/
 
