@@ -31,6 +31,9 @@
     <Filter Include="src\Core">
       <UniqueIdentifier>{A5D31CCF-91A0-77DA-BAB9-6582A6E5AC68}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Debug">
+      <UniqueIdentifier>{63A3C3B2-CF0D-7829-184C-29CF84F5557E}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\ECS">
       <UniqueIdentifier>{F76D2FA9-634D-AE44-6C65-391BD8C314A6}</UniqueIdentifier>
     </Filter>
@@ -915,14 +918,17 @@
     <ClInclude Include="src\Core\Mousecodes.h">
       <Filter>src\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Timer.h">
+    <ClInclude Include="src\Core\TimeStep.h">
       <Filter>src\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\TimeStep.h">
+    <ClInclude Include="src\Core\Timer.h">
       <Filter>src\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\Window.h">
       <Filter>src\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Debug\PerfProfiler.h">
+      <Filter>src\Debug</Filter>
     </ClInclude>
     <ClInclude Include="src\ECS\Components.h">
       <Filter>src\ECS</Filter>
@@ -1005,7 +1011,6 @@
     <ClInclude Include="src\impch.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\Debug\PerfProfiler.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Vendor\stb\stb_image.cpp">
