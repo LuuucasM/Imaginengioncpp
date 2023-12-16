@@ -63,6 +63,9 @@ MyApp/*Runtime.json
 MyApp/*Shutdown.json
 MyApp/*Startup.json
 
+#place where i am keeping all temp documents
+TempFolder
+
 # MSTest test Results
 [Tt]est[Rr]esult*/
 [Bb]uild[Ll]og.*
