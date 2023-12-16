@@ -39,6 +39,7 @@ bld/
 
 # Binaries
 **/bin/
+**/bin-int/
 !vendor/bin/premake/
 
 # Visual Studio 2017 auto generated files
