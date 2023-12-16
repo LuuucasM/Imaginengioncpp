@@ -9,7 +9,7 @@
 #include "Core/Keycodes.h"
 #include "Core/Mousecodes.h"
 #include "Core/Keycodes.h"
-#include "Core/ProfileTimer.h"
+#include "Debug/PerfProfiler.h"
 //-----------------------------------
 
 //------------EVENTS-----------------

@@ -147,7 +147,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Core\ProfileTimer.h" />
+    <ClInclude Include="src\Debug\PerfProfiler.h" />
     <ClInclude Include="src\Renderer\Renderer.h" />
     <ClInclude Include="Vendor\glm\glm\common.hpp" />
     <ClInclude Include="Vendor\glm\glm\detail\_features.hpp" />

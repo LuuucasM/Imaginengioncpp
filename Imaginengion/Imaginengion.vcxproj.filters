@@ -1005,7 +1005,7 @@
     <ClInclude Include="src\impch.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\ProfileTimer.h" />
+    <ClInclude Include="src\Debug\PerfProfiler.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Vendor\stb\stb_image.cpp">

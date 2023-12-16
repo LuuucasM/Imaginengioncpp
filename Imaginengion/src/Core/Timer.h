@@ -45,6 +45,9 @@ namespace IM {
             return this->getElapsedTimeInMicroSec() * 0.001;
         }
 
+        inline double GetStartTimeInMicroSec() { return startTimeInMicroSec; }
+        inline double GetEndTimeInMicroSec() { return endTimeInMicroSec; }
+
     private:
         double startTimeInMicroSec;                 // starting time in micro-second
         double endTimeInMicroSec;                   // ending time in micro-second

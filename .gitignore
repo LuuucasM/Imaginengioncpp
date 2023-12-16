@@ -44,10 +44,23 @@ bld/
 # Visual Studio 2017 auto generated files
 Generated\ Files/
 .vs/
-**.sln
-**.vcxproj
-**.vcxproj.filters
-**.vcxproj.user
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+
+Imaginengion/*.vcxproj
+Imaginengion/*.vcxproj.filters
+Imaginengion/*.vcxproj.user
+
+MyApp/*.vcxproj
+MyApp/*.vcxproj.filters
+MyApp/*.vcxproj.user
+
+#Performance Profile files
+MyApp/*Runtime.json
+MyApp/*Shutdown.json
+MyApp/*Startup.json
 
 # MSTest test Results
 [Tt]est[Rr]esult*/
