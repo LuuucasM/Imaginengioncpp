@@ -2,6 +2,7 @@
 
 #include "Core/Core.h"
 #include "Core/Log.h"
+#include "Debug/PerfProfiler.h"
 
 #include <any>
 #include <functional>
@@ -43,6 +44,9 @@ namespace IM {
 		*/
 		template<class T>
 		void AddListener(T *object, void (T::*func)(Args...)) {
+
+			IMAGINE_PROFILE_FUNCTION();
+
 			std::any listenerObj = object;
 			std::function<void(Args...)> listenerFunc = [object, func](Args... args) {
 				(object->*func)(args...);
@@ -54,6 +58,9 @@ namespace IM {
 		* @param object: A reference to the object that we want to remove
 		*/
 		void RemoveListener(std::any object) {
+
+			IMAGINE_PROFILE_FUNCTION();
+
 			//remove specified object
 			listeners.erase(std::remove_if(listeners.begin(), listeners.end(),
 				[object](const Listener& listener) {return listener.object == object; }),
@@ -64,6 +71,9 @@ namespace IM {
 		* @param args: the arguments that we will call each listeners OnXEvent function with
 		*/
 		void Broadcast(Args... args) {
+
+			IMAGINE_PROFILE_FUNCTION();
+
 			//remove any invalid objects first before calling each listener
 			listeners.erase(std::remove_if(listeners.begin(), listeners.end(),
 				[](const Listener& listener) {return !listener.object.has_value(); }),

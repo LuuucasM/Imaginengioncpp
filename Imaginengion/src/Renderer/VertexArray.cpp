@@ -6,6 +6,7 @@
 
 namespace IM {
 	RefPtr<VertexArray> VertexArray::Create() {
+
 		switch (RendererAPI::GetCurrentAPI()) {
 		case RendererAPI::API::None:
 			IMAGINE_CORE_ASSERT(false, "RendererAPI::API::None is currently not supported !");

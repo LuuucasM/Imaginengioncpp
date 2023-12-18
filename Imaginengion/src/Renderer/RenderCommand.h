@@ -5,7 +5,9 @@
 namespace IM {
 	class RenderCommand {
 	public:
-		inline static void Init() { _RendererAPI->Init(); }
+		inline static void Init() { 
+			_RendererAPI->Init(); 
+		}
 
 		inline static void SetViewport(int x, int y, int width, int height) {
 			_RendererAPI->SetViewport(x, y, width, height);

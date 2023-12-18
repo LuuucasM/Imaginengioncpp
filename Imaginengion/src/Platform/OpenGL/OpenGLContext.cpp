@@ -13,6 +13,8 @@ namespace IM {
 	OpenGLContext::~OpenGLContext() {}
 	void OpenGLContext::Init() {
 
+		IMAGINE_PROFILE_FUNCTION();
+
 		glfwMakeContextCurrent(_Window);
 
 		//init glad
@@ -30,6 +32,7 @@ namespace IM {
 	}
 
 	void OpenGLContext::SwapBuffers() {
+		IMAGINE_PROFILE_FUNCTION();
 		glfwSwapBuffers(_Window);
 	}
 }

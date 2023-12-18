@@ -10,6 +10,8 @@ namespace IM {
 	Application* Application::_Instance = nullptr;
 
 	Application::Application() {
+		IMAGINE_PROFILE_FUNCTION();
+
 		//Application is singleton so check it does not already exist
 		IMAGINE_CORE_ASSERT(!_Instance, "Application already exists!");
 		_Instance = this;
@@ -29,19 +31,34 @@ namespace IM {
 	}
 
 	Application::~Application() {
+
+		IMAGINE_PROFILE_FUNCTION();
+
 		Renderer::Shutdown();
 	}
 	void Application::Run() {
+
+		IMAGINE_PROFILE_FUNCTION();
+
 		while (_bRunning) {
+
+			IMAGINE_PROFILE_SCOPE("Run Loop - Application::Run()");
 
 			float delta_time = _Timestep.GetDeltaTimeInSec();
 
 			if (!_bMinimized) {
-				_LayerManager.OnUpdate(delta_time);
+
+				{
+					IMAGINE_PROFILE_SCOPE("Layer Manager OnUpdate - Application::Run()");
+					_LayerManager.OnUpdate(delta_time);
+				}
+				_ImguiLayer->Begin();
+				{
+					IMAGINE_PROFILE_SCOPE("Layer Manager OnImGuiRender - Application::Run()");
+					_LayerManager.OnImguiRender();
+				}
+				_ImguiLayer->End();
 			}
-			_ImguiLayer->Begin();
-			_LayerManager.OnImguiRender();
-			_ImguiLayer->End();
 
 			_Window->OnUpdate();
 		}
@@ -53,6 +70,9 @@ namespace IM {
 
 	void Application::OnWindowResizeEvent(int width, int height)
 	{
+
+		IMAGINE_PROFILE_FUNCTION();
+
 		if (width == 0 || height == 0) {
 			_bMinimized = true;
 			return;
@@ -62,11 +82,17 @@ namespace IM {
 	}
 
 	void Application::PushLayer(Layer *layer) {
+
+		IMAGINE_PROFILE_FUNCTION();
+
 		_LayerManager.PushLayer(layer);
 		layer->OnAttach();
 	}
 
 	void Application::PushOverlay(Layer *overlay) {
+
+		IMAGINE_PROFILE_FUNCTION();
+
 		_LayerManager.PushOverlay(overlay);
 		overlay->OnAttach();
 	}

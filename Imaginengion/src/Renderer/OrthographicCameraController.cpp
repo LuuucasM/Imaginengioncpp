@@ -20,6 +20,9 @@ namespace IM {
 	}
 	void OrthographicCameraController::OnUpdate(float dt)
 	{
+
+		IMAGINE_PROFILE_FUNCTION();
+
 		if (Input::IsKeyPressed(IMAGINE_KEY_A))
 			_CameraPosition.x -= _CameraTranslationSpeed * dt;
 		if (Input::IsKeyPressed(IMAGINE_KEY_D))
@@ -34,7 +37,6 @@ namespace IM {
 				_CameraRotation += _CameraRotationSpeed * dt;
 			if (Input::IsKeyPressed(IMAGINE_KEY_E))
 				_CameraRotation -= _CameraRotationSpeed * dt;
-
 			_Camera.SetRotation(_CameraRotation);
 		}
 
@@ -42,11 +44,17 @@ namespace IM {
 	}
 	void OrthographicCameraController::OnMouseScrolled(float xOffset, float yOffset)
 	{
-		_ZoomLevel -= yOffset * 0.25;
+
+		IMAGINE_PROFILE_FUNCTION();
+
+		_ZoomLevel -= yOffset * 0.25f;
 		_Camera.SetProjection(-_AspectRatio * _ZoomLevel, _AspectRatio * _ZoomLevel, -_ZoomLevel, _ZoomLevel);
 	}
 	void OrthographicCameraController::OnWindowResized(int width, int height)
 	{
+
+		IMAGINE_PROFILE_FUNCTION();
+
 		_AspectRatio = (float)width / (float)height;
 		_Camera.SetProjection(-_AspectRatio * _ZoomLevel, _AspectRatio * _ZoomLevel, -_ZoomLevel, _ZoomLevel);
 	}

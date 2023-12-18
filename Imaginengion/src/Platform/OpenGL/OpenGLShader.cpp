@@ -21,6 +21,9 @@ namespace IM {
 	}
 
 	OpenGLShader::OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc) {
+
+		IMAGINE_PROFILE_FUNCTION();
+
 		std::unordered_map<GLenum, std::string> shaderSources;
 		shaderSources[GL_VERTEX_SHADER] = vertexSrc;
 		shaderSources[GL_FRAGMENT_SHADER] = fragmentSrc;
@@ -30,6 +33,9 @@ namespace IM {
 	}
 
 	OpenGLShader::OpenGLShader(const std::string& filepath) {
+
+		IMAGINE_PROFILE_FUNCTION();
+
 		std::string source = ReadFile(filepath);
 		auto shaderSources = PreProcess(source);
 		Compile(shaderSources);
@@ -39,10 +45,16 @@ namespace IM {
 		_Name = path.stem().string();
 	}
 	OpenGLShader::~OpenGLShader() {
+
+		IMAGINE_PROFILE_FUNCTION();
+
 		glDeleteProgram(_ProgramID);
 	}
 
 	void OpenGLShader::Bind() const {
+
+		IMAGINE_PROFILE_FUNCTION();
+
 		glUseProgram(_ProgramID);
 	}
 	void OpenGLShader::Unbind() const {
@@ -50,6 +62,9 @@ namespace IM {
 	}
 
 	std::string OpenGLShader::ReadFile(const std::string& filepath) {
+
+		IMAGINE_PROFILE_FUNCTION();
+
 		std::string result;
 		std::ifstream in(filepath, std::ios::in | std::ios::binary);
 		if (in) {
@@ -66,6 +81,9 @@ namespace IM {
 	}
 
 	std::unordered_map<GLenum, std::string> OpenGLShader::PreProcess(std::string& source) {
+
+		IMAGINE_PROFILE_FUNCTION();
+
 		std::unordered_map<GLenum, std::string> shaderSources;
 
 		std::istringstream stream(source);
@@ -98,6 +116,8 @@ namespace IM {
 	}
 
 	void OpenGLShader::Compile(std::unordered_map<GLenum, std::string> shaderSources) {
+
+		IMAGINE_PROFILE_FUNCTION();
 
 		GLuint program = glCreateProgram();
 		IMAGINE_CORE_ASSERT(shaderSources.size() <= 4, "Only support up to 4 shaders in OpenGLShader Compile")

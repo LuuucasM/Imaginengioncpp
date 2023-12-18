@@ -10,13 +10,17 @@ namespace IM {
 
 	Window* Window::Create(const WindowProps& props) { return new WindowsWindow(props); }
 
-	WindowsWindow::WindowsWindow(const WindowProps& props) { Init(props); }
+	WindowsWindow::WindowsWindow(const WindowProps& props) { 
+		IMAGINE_PROFILE_FUNCTION(); 
+		Init(props); 
+	}
 
 	WindowsWindow::~WindowsWindow() {
 		Shutdown();
 	}
 
 	void WindowsWindow::Init(const WindowProps& props) {
+		IMAGINE_PROFILE_FUNCTION();
 		Data.Title = props.Title;
 		Data.Width = props.Width;
 		Data.Height = props.Height;
@@ -109,17 +113,22 @@ namespace IM {
 	}
 
 	void WindowsWindow::Shutdown() {
+		IMAGINE_PROFILE_FUNCTION();
 		if (_Window) {
 			glfwDestroyWindow(_Window);
 		}
 	}
 
 	void WindowsWindow::OnUpdate() {
+		IMAGINE_PROFILE_FUNCTION();
 		glfwPollEvents();
 		_RenderContext->SwapBuffers();
 	}
 
 	void WindowsWindow::SetVSync(bool enabled) {
+
+		IMAGINE_PROFILE_FUNCTION();
+
 		if (enabled)
 			glfwSwapInterval(VSYNC_ENABLED);
 		else

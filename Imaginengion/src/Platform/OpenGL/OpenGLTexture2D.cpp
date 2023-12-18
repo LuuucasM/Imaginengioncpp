@@ -7,11 +7,18 @@
 
 namespace IM {
 	OpenGLTexture2D::OpenGLTexture2D(const std::string& path) {
+
+		IMAGINE_PROFILE_FUNCTION();
+
 		int width, height, channels;
 		stbi_set_flip_vertically_on_load(1);
-		stbi_uc* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
+		stbi_uc* data = nullptr;
+		{
+			IMAGINE_PROFILE_SCOPE("stbi_load - OpenGLTexture2D::OpenGLTexture2D(const std::string&)")
+			data = stbi_load(path.c_str(), &width, &height, &channels, 0);
+			
+		}
 		IMAGINE_CORE_ASSERT(data, "Failed to load image in OpenGLTexture2D constructor!");
-
 		_Width = width;
 		_Height = height;
 
@@ -48,6 +55,8 @@ namespace IM {
 	OpenGLTexture2D::OpenGLTexture2D(uint32_t width, uint32_t height)
 		: _Width(width), _Height(height){
 
+		IMAGINE_PROFILE_FUNCTION();
+
 		_InternalFormat = GL_RGBA8;
 		_DataFormat = GL_RGBA;
 
@@ -61,13 +70,21 @@ namespace IM {
 		glTextureParameteri(_TextureID, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	}
 	OpenGLTexture2D::~OpenGLTexture2D() {
+
+		IMAGINE_PROFILE_FUNCTION();
+
 		glDeleteTextures(1, &_TextureID);
 	}
 	void OpenGLTexture2D::SetData(void* data, uint32_t size)
 	{
+		IMAGINE_PROFILE_FUNCTION();
+
 		glTextureSubImage2D(_TextureID, 0, 0, 0, _Width, _Height, _DataFormat, GL_UNSIGNED_BYTE, data);
 	}
 	void OpenGLTexture2D::Bind(uint32_t slot) const {
+
+		IMAGINE_PROFILE_FUNCTION();
+
 		glBindTexture(GL_TEXTURE_2D, _TextureID);
 	}
 	void OpenGLTexture2D::Unbind(uint32_t slot) const

@@ -8,6 +8,7 @@ namespace IM {
 	ScopePtr<Renderer::R3D::SceneData> Renderer::R3D::_SceneData = CreateScopePtr<Renderer::R3D::SceneData>();
 
 	void Renderer::Init() {
+		IMAGINE_PROFILE_FUNCTION();
 		RenderCommand::Init();
 		Renderer::R3D::Init();
 		Renderer::R2D::Init();
@@ -56,6 +57,9 @@ namespace IM {
 	static Renderer2DData* _Data;
 
 	void Renderer::R2D::Init() {
+
+		IMAGINE_PROFILE_FUNCTION();
+
 		_Data = new Renderer2DData();
 		_Data->_VertexArray = VertexArray::Create();
 
@@ -90,11 +94,16 @@ namespace IM {
 	}
 
 	void Renderer::R2D::Shutdown() {
+
+		IMAGINE_PROFILE_FUNCTION();
+
 		delete _Data;
 	}
 
 	void Renderer::R2D::BeginScene(const OrthographicCamera& camera)
 	{
+		IMAGINE_PROFILE_FUNCTION();
+
 		_Data->_TextureShader->Bind();
 		_Data->_TextureShader->SetValue("u_ViewProjection", camera.GetViewProjectionMatrix());
 
@@ -109,6 +118,8 @@ namespace IM {
 	}
 	void Renderer::R2D::DrawRect(const glm::vec3& position, const glm::vec2& scale, const glm::vec4& color)
 	{
+
+		IMAGINE_PROFILE_FUNCTION();
 		
 		_Data->_TextureShader->SetValue("u_Color", color);
 
@@ -127,6 +138,9 @@ namespace IM {
 	}
 	void Renderer::R2D::DrawRect(const glm::vec3& position, const glm::vec2& scale, const RefPtr<Texture2D> texture)
 	{
+
+		IMAGINE_PROFILE_FUNCTION();
+
 		_Data->_TextureShader->SetValue("u_Color", glm::vec4(1.0f));
 		_Data->_TextureShader->Bind();
 
