@@ -45,12 +45,12 @@ namespace IM {
 		ShaderDataType Type;
 		uint32_t Offset;
 		uint32_t Size;
-		bool Normalized;
+		bool bNormalized;
 
 		BufferElement() = default;
 
 		BufferElement(ShaderDataType type, const std::string& name, bool normalized = false)
-			: Name(name), Type(type), Size(ShaderDataTypeSize(type)), Offset(0), Normalized(normalized) {
+			: Name(name), Type(type), Size(ShaderDataTypeSize(type)), Offset(0), bNormalized(normalized) {
 
 		}
 
@@ -85,13 +85,13 @@ namespace IM {
 			CalculateStride();
 		}
 
-		inline uint32_t GetStride() const { return _Stride; }
-		inline const std::vector<BufferElement>& GetElements() const { return _Elements; }
+		uint32_t GetStride() const { return _Stride; }
+		const std::vector<BufferElement>& GetElements() const { return _Elements; }
 
-		inline std::vector<BufferElement>::iterator begin() { return _Elements.begin(); }
-		inline std::vector<BufferElement>::iterator end() { return _Elements.end(); }
-		inline std::vector<BufferElement>::const_iterator begin() const { return _Elements.begin(); }
-		inline std::vector<BufferElement>::const_iterator end() const { return _Elements.end(); }
+		std::vector<BufferElement>::iterator begin() { return _Elements.begin(); }
+		std::vector<BufferElement>::iterator end() { return _Elements.end(); }
+		std::vector<BufferElement>::const_iterator begin() const { return _Elements.begin(); }
+		std::vector<BufferElement>::const_iterator end() const { return _Elements.end(); }
 	private:
 		void CalculateOffsets();
 		void CalculateStride();

@@ -19,10 +19,10 @@ namespace IM {
 
 		static RefPtr<VertexArray> Create();
 
-		inline const std::vector<RefPtr<VertexBuffer>>& GetVertexBuffers() const {
+		const std::vector<RefPtr<VertexBuffer>>& GetVertexBuffers() const {
 			return _VertexBuffers;
 		}
-		inline const RefPtr<IndexBuffer>& GetIndexBuffer() const {
+		const RefPtr<IndexBuffer>& GetIndexBuffer() const {
 			return _IndexBuffer;
 		}
 

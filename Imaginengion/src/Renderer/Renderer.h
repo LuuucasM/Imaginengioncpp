@@ -5,6 +5,7 @@
 #include "OrthographicCamera.h"
 #include "Shader.h"
 #include "Texture.h"
+#include "Subtexture2D.h"
 #include "ECS/Components.h"
 
 namespace IM {
@@ -13,9 +14,10 @@ namespace IM {
 	public:
 		static void Init();
 		static void Shutdown();
-		static void OnWindowResize(int width, int height);
-		inline static void SetClearColor(const glm::vec4& color) { RenderCommand::SetClearColor(color); }
-		inline static void Clear() { RenderCommand::Clear(); }
+		static void OnWindowResize(size_t width, size_t height);
+		static void SetClearColor(const glm::vec4& color) { RenderCommand::SetClearColor(color); }
+		static void Clear() { RenderCommand::Clear(); }
+
 		//==========3D==========3D==========3D==========3D==========3D==========3D==========3D==========3D==========3D==========3D
 		class R3D
 		{
@@ -46,12 +48,35 @@ namespace IM {
 		public:
 			static void BeginScene(const OrthographicCamera& camera);
 			static void EndScene();
+			static void FlushScene();
 
 			static void DrawRect(const glm::vec2& position, const glm::vec2& scale, const glm::vec4& color);
 			static void DrawRect(const glm::vec3& position, const glm::vec2& scale, const glm::vec4& color);
-			static void DrawRect(const glm::vec2& position, const glm::vec2& scale, const RefPtr<Texture2D> texture);
-			static void DrawRect(const glm::vec3& position, const glm::vec2& scale, const RefPtr<Texture2D> texutre);
+			static void DrawRect(const glm::vec2& position, const glm::vec2& scale, const RefPtr<Texture2D> texture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
+			static void DrawRect(const glm::vec3& position, const glm::vec2& scale, const RefPtr<Texture2D> texture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
+			static void DrawRect(const glm::vec2& position, const glm::vec2& scale, const RefPtr<SubTexture2D> subtexture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
+			static void DrawRect(const glm::vec3& position, const glm::vec2& scale, const RefPtr<SubTexture2D> subtexture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
+
+			static void DrawRotatedRect(const glm::vec2& position, const glm::vec2& scale, float rotation, const glm::vec4& color);
+			static void DrawRotatedRect(const glm::vec3& position, const glm::vec2& scale, float rotation, const glm::vec4& color);
+			static void DrawRotatedRect(const glm::vec2& position, const glm::vec2& scale, float rotation, const RefPtr<Texture2D> texture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
+			static void DrawRotatedRect(const glm::vec3& position, const glm::vec2& scale, float rotation, const RefPtr<Texture2D> texture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
+			static void DrawRotatedRect(const glm::vec2& position, const glm::vec2& scale, float rotation, const RefPtr<SubTexture2D> subtexture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
+			static void DrawRotatedRect(const glm::vec3& position, const glm::vec2& scale, float rotation, const RefPtr<SubTexture2D> subtexture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
+
+			struct Statistics {
+				uint32_t DrawCalls = 0;
+				uint32_t RectCount = 0;
+
+				uint32_t GetTotalVertexCount() { return RectCount * 4; }
+				uint32_t GetTotalIndexCount() { return RectCount * 6; }
+			};
+			static Statistics GetStats();
+			static void ResetStats();
+
 		private:
+			static void FlushAndReset();
+
 			static void Init();
 			static void Shutdown();
 			friend class Renderer;

@@ -12,7 +12,7 @@ namespace IM {
 
 		static RefPtr<IndexBuffer> Create(uint32_t* indices, uint32_t count);
 
-		inline uint32_t GetCount() const { return _Count; }
+		uint32_t GetCount() const { return _Count; }
 	protected:
 		uint32_t _Count;
 		uint32_t _BufferID;

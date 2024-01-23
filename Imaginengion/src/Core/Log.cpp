@@ -1,10 +1,11 @@
 #include "impch.h"
 #include "Log.h"
-#include "spdlog/sinks/stdout_color_sinks.h"
+
+#include <spdlog/sinks/stdout_color_sinks.h>
 
 namespace IM {
-	std::shared_ptr<spdlog::logger> Log::CoreLogger;
-	std::shared_ptr<spdlog::logger> Log::ClientLogger;
+	RefPtr<spdlog::logger> Log::CoreLogger;
+	RefPtr<spdlog::logger> Log::ClientLogger;
 
 	Log::~Log() {
 		spdlog::shutdown();

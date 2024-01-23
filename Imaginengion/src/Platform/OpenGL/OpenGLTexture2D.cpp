@@ -1,7 +1,7 @@
 #include "impch.h"
 #include "OpenGLTexture2D.h"
 
-#include "stb_image.h"
+#include <stb_image.h>
 
 #include <glad/glad.h>
 
@@ -85,7 +85,7 @@ namespace IM {
 
 		IMAGINE_PROFILE_FUNCTION();
 
-		glBindTexture(GL_TEXTURE_2D, _TextureID);
+		glBindTextureUnit(slot, _TextureID);
 	}
 	void OpenGLTexture2D::Unbind(uint32_t slot) const
 	{

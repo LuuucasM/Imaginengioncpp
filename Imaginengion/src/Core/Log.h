@@ -4,7 +4,7 @@
 #include "spdlog/spdlog.h"
 
 namespace IM {
-	class IMAGINE_API Log
+	class Log
 	{
 	public:
 		~Log();
@@ -14,13 +14,13 @@ namespace IM {
 		static void Init();
 
 		//retrieve the core and client loggers
-		inline static std::shared_ptr<spdlog::logger> GetCoreLogger() { return CoreLogger; }
-		inline static std::shared_ptr<spdlog::logger> GetClientLogger() { return ClientLogger; }
+		static RefPtr<spdlog::logger> GetCoreLogger() { return CoreLogger; }
+		static RefPtr<spdlog::logger> GetClientLogger() { return ClientLogger; }
 
 	private:
 		//core and client logger instances for logging
-		static std::shared_ptr<spdlog::logger> CoreLogger;
-		static std::shared_ptr<spdlog::logger> ClientLogger;
+		static RefPtr<spdlog::logger> CoreLogger;
+		static RefPtr<spdlog::logger> ClientLogger;
 	};
 }
 

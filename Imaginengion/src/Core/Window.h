@@ -5,21 +5,22 @@
 #include "Renderer/RenderContext.h"
 
 #include <string>
+#include <functional>
 
 namespace IM {
 	struct WindowProps {
 		std::string Title;
-		unsigned int Width;
-		unsigned int Height;
-		WindowProps(std::string title = "Imaginengion", unsigned int width = 1280, unsigned int height = 720)
+		uint32_t Width;
+		uint32_t Height;
+		WindowProps(std::string title = "Imaginengion", uint32_t width = 1280, uint32_t height = 720)
 			: Title(title), Width(width), Height(height){}
 
 	};
-	class IMAGINE_API Window
+	class Window
 	{
 	public:
-		Window() {};
-		virtual ~Window() {};
+		using EventCallbackFn = std::function<void(Event&)>;
+		virtual ~Window() = default;
 
 		/*
 		* Function to update the window. Called in application run loop
@@ -27,10 +28,11 @@ namespace IM {
 		virtual void OnUpdate() = 0;
 
 		//Helper functions to get width and height of window
-		virtual unsigned int GetWidth() const = 0;
-		virtual unsigned int GetHeight() const = 0;
+		virtual uint32_t GetWidth() const = 0;
+		virtual uint32_t GetHeight() const = 0;
 
 		//Helper functions to set and get Vsync option
+		virtual void SetEventCallback(const EventCallbackFn& callback) = 0;
 		virtual void SetVSync(bool enabled) = 0;
 		virtual bool IsVSync() const = 0;
 
@@ -39,21 +41,8 @@ namespace IM {
 		/*
 		* Function to create the window
 		*/
-		static Window* Create(const WindowProps& props = WindowProps());
+		static ScopePtr<Window> Create(const WindowProps& props = WindowProps());
 
 		ScopePtr<RenderContext> _RenderContext = nullptr;
-
-		/*
-		* All of the events that can be made on the window
-		*/
-		Event<int, int> WindowResizeEvent{ EventType::WindowResize, EventCategory::EC_Application, "WindowResizeEvent"};
-		Event<> WindowCloseEvent{ EventType::WindowClose, EventCategory::EC_Application, "WindowCloseEvent"};
-		Event<int, int> KeyPressedEvent{ EventType::KeyPressed, EventCategory::EC_Keyboard, "KeyPressedEvent"};
-		Event<int> KeyReleasedEvent{ EventType::KeyReleased, EventCategory::EC_Keyboard, "KeyReleasedEvent"};
-		Event<int, int> KeyRepeatEvent{ EventType::KeyPressed, EventCategory::EC_Keyboard, "KeyRepeatEvent"};
-		Event<int> MouseButtonPressedEvent{ EventType::MouseButtonPressed, EventCategory::EC_MouseButton, "MouseButtonPressedEvent"};
-		Event<int> MouseButtonReleasedEvent{ EventType::MouseButtonReleased, EventCategory::EC_MouseButton, "MouseButtonReleasedEvent"};
-		Event<float, float> MouseScrolledEvent{ EventType::MouseScrolled, EventCategory::EC_Mouse, "MouseScrolledEvent"};
-		Event<float, float> MouseMovedEvent{ EventType::MouseMoved, EventCategory::EC_Mouse, "MouseMovedEvent"};
 	};
 }

@@ -16,6 +16,7 @@ namespace IM {
 
 		virtual void SetValue(const std::string& name, bool value) = 0;
 		virtual void SetValue(const std::string& name, int value) = 0;
+		virtual void SetValue(const std::string& name, int* values, uint32_t count) = 0;
 		virtual void SetValue(const std::string& name, float value) = 0;
 		virtual void SetValue(const std::string& name, glm::vec2 value) = 0;
 		virtual void SetValue(const std::string& name, glm::vec3 value) = 0;

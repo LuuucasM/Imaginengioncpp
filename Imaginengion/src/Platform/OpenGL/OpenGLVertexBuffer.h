@@ -5,17 +5,20 @@
 namespace IM {
 	class OpenGLVertexBuffer : public VertexBuffer {
 	public:
-		OpenGLVertexBuffer(float* vertices, uint32_t size);
+		OpenGLVertexBuffer(size_t size);
+		OpenGLVertexBuffer(float* vertices, size_t size);
 		~OpenGLVertexBuffer();
 
 		void Bind() const override;
 		void Unbind() const override;
 
-		inline void SetLayout(const BufferLayout& layout) override {
+		void SetLayout(const BufferLayout& layout) override {
 			_Layout = layout;
 		}
-		inline const BufferLayout& GetLayout() const override {
+		const BufferLayout& GetLayout() const override {
 			return _Layout;
 		};
+
+		void SetData(const void* data, size_t size) override;
 	};
 }

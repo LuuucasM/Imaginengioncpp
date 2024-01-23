@@ -3,9 +3,6 @@
 
 
 namespace IM {
-	LayerManager::LayerManager() {
-
-	}
 	LayerManager::~LayerManager() {
 		for (Layer* layer : _Layers) {
 			layer->OnDetach();

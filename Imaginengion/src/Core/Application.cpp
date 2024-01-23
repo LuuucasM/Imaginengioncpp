@@ -9,7 +9,7 @@ namespace IM {
 
 	Application* Application::_Instance = nullptr;
 
-	Application::Application() {
+	Application::Application(const std::string& name) {
 		IMAGINE_PROFILE_FUNCTION();
 
 		//Application is singleton so check it does not already exist
@@ -17,9 +17,8 @@ namespace IM {
 		_Instance = this;
 
 		//create window and bind windowcloseevent to application function
-		_Window = ScopePtr<Window>(Window::Create());
-		_Window->WindowCloseEvent.AddListener(this, &Application::OnWindowCloseEvent);
-		_Window->WindowResizeEvent.AddListener(this, &Application::OnWindowResizeEvent);
+		_Window = Window::Create(WindowProps(name));
+		_Window->SetEventCallback(IMAGINE_BIND_EVENT(Application::OnEvent));
 		_Window->SetVSync(false);
 
 		Renderer::Init();
@@ -35,6 +34,19 @@ namespace IM {
 		IMAGINE_PROFILE_FUNCTION();
 
 		Renderer::Shutdown();
+	}
+	void Application::OnEvent(Event& e)
+	{
+		EventDispatcher dispatcher(e);
+		dispatcher.Dispatch<WindowCloseEvent>(IMAGINE_BIND_EVENT(OnWindowCloseEvent));
+		dispatcher.Dispatch<WindowResizeEvent>(IMAGINE_BIND_EVENT(OnWindowResizeEvent));
+
+		for (auto it = _LayerManager.rbegin(); it != _LayerManager.rend(); ++it) {
+			if (e._bHandled) {
+				break;
+			}
+			(*it)->OnEvent(e);
+		}
 	}
 	void Application::Run() {
 
@@ -64,21 +76,24 @@ namespace IM {
 		}
 	}
 
-	void Application::OnWindowCloseEvent() {
+	bool Application::OnWindowCloseEvent(WindowCloseEvent& e)
+	{
 		_bRunning = false;
+		return true;
 	}
 
-	void Application::OnWindowResizeEvent(int width, int height)
+	bool Application::OnWindowResizeEvent(WindowResizeEvent& e)
 	{
 
 		IMAGINE_PROFILE_FUNCTION();
 
-		if (width == 0 || height == 0) {
+		if (e.GetWidth() == 0 || e.GetHeight() == 0) {
 			_bMinimized = true;
-			return;
+			return false;
 		}
 		_bMinimized = false;
-		Renderer::OnWindowResize(width, height);
+		Renderer::OnWindowResize(e.GetWidth(), e.GetHeight());
+		return false;
 	}
 
 	void Application::PushLayer(Layer *layer) {

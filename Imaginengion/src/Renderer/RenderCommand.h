@@ -5,22 +5,22 @@
 namespace IM {
 	class RenderCommand {
 	public:
-		inline static void Init() { 
+		static void Init() { 
 			_RendererAPI->Init(); 
 		}
 
-		inline static void SetViewport(int x, int y, int width, int height) {
+		static void SetViewport(int x, int y, size_t width, size_t height) {
 			_RendererAPI->SetViewport(x, y, width, height);
 		}
 
-		inline static void SetClearColor(const glm::vec4& color) {
+		static void SetClearColor(const glm::vec4& color) {
 			_RendererAPI->SetClearColor(color);
 		}
-		inline static void Clear() {
+		static void Clear() {
 			_RendererAPI->Clear();
 		}
-		inline static void DrawIndexed(const RefPtr<VertexArray>& vertexArray) {
-			_RendererAPI->DrawIndexed(vertexArray);
+		static void DrawIndexed(const RefPtr<VertexArray>& vertexArray, uint32_t count = 0) {
+			_RendererAPI->DrawIndexed(vertexArray, count);
 		}
 	private:
 		static ScopePtr<RendererAPI> _RendererAPI;

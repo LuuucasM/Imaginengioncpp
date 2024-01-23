@@ -1,14 +1,21 @@
 #include "impch.h"
 #include "WindowsWindow.h"
 
+#include "Events/SystemEvents.h"
+
+#include "Renderer/RendererAPI.h"
+
 namespace IM {
-	static bool bGLFWInitialized = false;
+
+	static uint8_t _WindowCount = 0;
 
 	static void GLFWErrorCallback(int error, const char* description) {
 		IMAGINE_CORE_ERROR("GLFW Error ({0}): {1}", error, description);
 	}
 
-	Window* Window::Create(const WindowProps& props) { return new WindowsWindow(props); }
+	ScopePtr<Window> Window::Create(const WindowProps& props) { 
+		return CreateScopePtr<WindowsWindow>(props); 
+	}
 
 	WindowsWindow::WindowsWindow(const WindowProps& props) { 
 		IMAGINE_PROFILE_FUNCTION(); 
@@ -21,31 +28,34 @@ namespace IM {
 
 	void WindowsWindow::Init(const WindowProps& props) {
 		IMAGINE_PROFILE_FUNCTION();
-		Data.Title = props.Title;
-		Data.Width = props.Width;
-		Data.Height = props.Height;
-		Data._Window = this;
+		_Data.Title = props.Title;
+		_Data.Width = props.Width;
+		_Data.Height = props.Height;
 
 		IMAGINE_CORE_INFO("Creating Window {0} ({1} {2})", props.Title, props.Width, props.Height);
 
 		//checking if we initialized glfw yet
-		if (!bGLFWInitialized) {
+		if (_WindowCount == 0) {
 			int success = glfwInit();
 			IMAGINE_CORE_ASSERT(success, "Could not initialize GLFW!");
 			glfwSetErrorCallback(GLFWErrorCallback);
-			bGLFWInitialized = true;
 		}
-
+		#ifdef IMAGINE_DEBUG
+			if (RendererAPI::GetCurrentAPI() == RendererAPI::API::OpenGL) {
+				glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+			}
+		#endif
 		//create window with specificed properties
-		_Window = glfwCreateWindow((int)props.Width, (int)props.Height, Data.Title.c_str(), nullptr, nullptr);
+		_Window = glfwCreateWindow((int)props.Width, (int)props.Height, _Data.Title.c_str(), nullptr, nullptr);
 		IMAGINE_CORE_ASSERT(_Window, "Could not create GLFW window!");
+		++_WindowCount;
 
-		_RenderContext = CreateScopePtr<OpenGLContext>(_Window);
+		_RenderContext = RenderContext::Create(_Window);
 		_RenderContext->Init();
 
 		//setting window user pointer allows us to pass our class data into glfw callback functions as seen below
 		//modify the data struct if more data is needed to properly use glfw callback stuff
-		glfwSetWindowUserPointer(_Window, &Data);
+		glfwSetWindowUserPointer(_Window, &_Data);
 		SetVSync(true);
 
 		//set all the glfw callback functions to invoke their associated events defined in the Window class
@@ -53,12 +63,14 @@ namespace IM {
 			WindowData* data = (WindowData*)glfwGetWindowUserPointer(window);
 			data->Width = width;
 			data->Height = height;
-			data->_Window->WindowResizeEvent.Broadcast(width, height);
+			WindowResizeEvent event(width, height);
+			data->EventCallback(event);
 		});
 
 		glfwSetWindowCloseCallback(_Window, [](GLFWwindow* window) {
 			WindowData* data = (WindowData*)glfwGetWindowUserPointer(window);
-			data->_Window->WindowCloseEvent.Broadcast();
+			WindowCloseEvent event;
+			data->EventCallback(event);
 		});
 
 		glfwSetKeyCallback(_Window, [](GLFWwindow *window, int key, int scancode, int action, int mods) {
@@ -66,17 +78,20 @@ namespace IM {
 			switch (action) {
 				case GLFW_PRESS:
 				{
-					data->_Window->KeyPressedEvent.Broadcast(key, 0);
+					KeyPressedEvent event((KeyCode)key, 0);
+					data->EventCallback(event);
 					break;
 				}
 				case GLFW_RELEASE:
 				{
-					data->_Window->KeyReleasedEvent.Broadcast(key);
+					KeyReleasedEvent event((KeyCode)key);
+					data->EventCallback(event);
 					break;
 				}
 				case GLFW_REPEAT:
 				{
-					data->_Window->KeyRepeatEvent.Broadcast(key, 1);
+					KeyPressedEvent event((KeyCode)key, 1);
+					data->EventCallback(event);
 					break;
 				}
 			}
@@ -88,12 +103,14 @@ namespace IM {
 			switch (action) {
 				case GLFW_PRESS:
 				{
-					data->_Window->MouseButtonPressedEvent.Broadcast(button);
+					MouseButtonPressedEvent event(button);
+					data->EventCallback(event);
 					break;
 				}
 				case GLFW_RELEASE:
 				{
-					data->_Window->MouseButtonReleasedEvent.Broadcast(button);
+					MouseButtonReleasedEvent event(button);
+					data->EventCallback(event);
 					break;
 				}
 			}
@@ -102,25 +119,34 @@ namespace IM {
 		glfwSetScrollCallback(_Window, [](GLFWwindow *window, double xOffset, double yOffset) {
 			WindowData* data = (WindowData*)glfwGetWindowUserPointer(window);
 
-			data->_Window->MouseScrolledEvent.Broadcast((float)xOffset, (float)yOffset);
+			MouseScrolledEvent event((float)xOffset, (float)yOffset);
+			data->EventCallback(event);
 		});
 
 		glfwSetCursorPosCallback(_Window, [](GLFWwindow *window, double xPos, double yPos) {
 			WindowData* data = (WindowData*)glfwGetWindowUserPointer(window);
 
-			data->_Window->MouseMovedEvent.Broadcast((float)xPos, (float)yPos);
+			MouseMovedEvent event((float)xPos, (float)yPos);
+			data->EventCallback(event);
 		});
 	}
 
 	void WindowsWindow::Shutdown() {
+
 		IMAGINE_PROFILE_FUNCTION();
 		if (_Window) {
 			glfwDestroyWindow(_Window);
+			--_WindowCount;
+			if (_WindowCount == 0) {
+				glfwTerminate();
+			}
 		}
 	}
 
 	void WindowsWindow::OnUpdate() {
+
 		IMAGINE_PROFILE_FUNCTION();
+
 		glfwPollEvents();
 		_RenderContext->SwapBuffers();
 	}
@@ -134,6 +160,6 @@ namespace IM {
 		else
 			glfwSwapInterval(VSYNC_DISABLED);
 
-		Data.VSync = enabled;
+		_Data.VSync = enabled;
 	}
 }

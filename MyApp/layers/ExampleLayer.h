@@ -9,6 +9,8 @@ public:
 	void OnUpdate(float dt) override;
 	void OnImguiRender() override;
 private:
+
+	IM::OrthographicCameraController _CameraController;
 	//FOR MAKING A TRIANGLE --------------
 	IM::RefPtr<IM::VertexArray> _VertexArray;
 	//FOR MAKING A SQUARE
@@ -21,7 +23,7 @@ private:
 	IM::RefPtr<IM::Texture> _Texture;
 	IM::RefPtr<IM::Texture> _ZealotTexture;
 
-	IM::OrthographicCameraController _CameraController;
+	
 
 
 	glm::vec3 _CameraPos = glm::vec3(0.0f);
@@ -29,9 +31,11 @@ private:
 	float _CameraRot = 0.0f;
 	float _CameraRotSpeed = 30.0f;
 
-	C_Transform _SquareTransform;
-	C_Transform _SquareTransform2;
-	C_Transform _ZealotTransform;
+	IM::C_Transform _SquareTransform;
+	IM::C_Transform _SquareTransform2;
+	IM::C_Transform _ZealotTransform;
+
+	glm::vec2 _ViewportSize;
 
 	glm::vec4 _SquareColor = { 0.2f, 0.3f, 0.8f, 1.0f };
 };

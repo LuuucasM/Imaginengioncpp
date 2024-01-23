@@ -1,7 +1,6 @@
 #pragma once
 
-#include "../Imagine.h"
-#include <functional>
+#include "Application.h"
 
 #ifdef IMAGINE_PLATFORM_WINDOWS
 

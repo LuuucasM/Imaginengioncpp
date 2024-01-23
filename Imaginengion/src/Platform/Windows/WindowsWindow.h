@@ -1,12 +1,8 @@
 #pragma once
 
 #include "Core/Window.h"
-#include "Events/Event.h"
-
-#include "Platform/OpenGL/OpenGLContext.h"
 
 #include <GLFW/glfw3.h>
-#include <string>
 
 const int VSYNC_ENABLED = 1;
 const int VSYNC_DISABLED = 0;
@@ -24,14 +20,15 @@ namespace IM {
 		void OnUpdate() override;
 
 		//helpers to get height and width of window using our data struct
-		inline unsigned int GetWidth() const override { return Data.Width; }
-		inline unsigned int GetHeight() const override { return Data.Height; }
+		uint32_t GetWidth() const override { return _Data.Width; }
+		uint32_t GetHeight() const override { return _Data.Height; }
 
 		//Vsync functions
+		void SetEventCallback(const EventCallbackFn& callback) override { _Data.EventCallback = callback; }
 		void SetVSync(bool enabled) override;
-		bool IsVSync() const override { return Data.VSync; };
+		bool IsVSync() const override { return _Data.VSync; };
 
-		inline void* GetNativeWindow() const override { return _Window; }
+		void* GetNativeWindow() const override { return _Window; }
 	private:
 		virtual void Init(const WindowProps& props);
 		virtual void Shutdown();
@@ -40,10 +37,11 @@ namespace IM {
 		//WindowData will be used to pass into glfw Set User Pointer function
 		struct WindowData {
 			std::string Title;
-			unsigned int Width, Height;
+			uint32_t Width, Height;
 			bool VSync;
-			Window* _Window;
+			
+			EventCallbackFn EventCallback;
 		};
-		WindowData Data;
+		WindowData _Data;
 	};
 }

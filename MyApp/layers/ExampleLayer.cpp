@@ -14,7 +14,7 @@ ExampleLayer::ExampleLayer()
 	};
 
 	IM::RefPtr<IM::VertexBuffer> vertexBuffer;
-	vertexBuffer.reset(IM::VertexBuffer::Create(vertices, sizeof(vertices)));
+	vertexBuffer = IM::VertexBuffer::Create(vertices, sizeof(vertices));
 	IM::BufferLayout layout = {
 		{IM::ShaderDataType::Float3, "a_Position"},
 		{IM::ShaderDataType::Float4, "a_Color"}
@@ -38,7 +38,7 @@ ExampleLayer::ExampleLayer()
 	};
 
 	IM::RefPtr<IM::VertexBuffer> squareVB;
-	squareVB.reset(IM::VertexBuffer::Create(vertices2, sizeof(vertices2)));
+	squareVB = IM::VertexBuffer::Create(vertices2, sizeof(vertices2));
 	squareVB->SetLayout({
 		{IM::ShaderDataType::Float3, "a_Position"},
 		{IM::ShaderDataType::Float2, "a_TexCoord"}
@@ -133,14 +133,14 @@ void ExampleLayer::OnUpdate(float dt){
 	_CameraController.OnUpdate(dt);
 
 	//Render
-	if (IM::Input::IsKeyPressed(IMAGINE_KEY_J))
-		_SquareTransform.Transform[3].x -= _CameraMoveSpeed * dt;
-	if (IM::Input::IsKeyPressed(IMAGINE_KEY_L))
-		_SquareTransform.Transform[3].x += _CameraMoveSpeed * dt;
-	if (IM::Input::IsKeyPressed(IMAGINE_KEY_I))
-		_SquareTransform.Transform[3].y += _CameraMoveSpeed * dt;
-	if (IM::Input::IsKeyPressed(IMAGINE_KEY_K))
-		_SquareTransform.Transform[3].y -= _CameraMoveSpeed * dt;
+	if (IM::Input::IsKeyPressed(IM::Key::J))
+		_SquareTransform._Transform[3].x -= _CameraMoveSpeed * dt;
+	if (IM::Input::IsKeyPressed(IM::Key::L))
+		_SquareTransform._Transform[3].x += _CameraMoveSpeed * dt;
+	if (IM::Input::IsKeyPressed(IM::Key::I))
+		_SquareTransform._Transform[3].y += _CameraMoveSpeed * dt;
+	if (IM::Input::IsKeyPressed(IM::Key::K))
+		_SquareTransform._Transform[3].y -= _CameraMoveSpeed * dt;
 
 	IM::Renderer::SetClearColor({ 0.4f, 0.3f, 0.3f, 1.0f });
 	IM::Renderer::Clear();
@@ -157,16 +157,17 @@ void ExampleLayer::OnUpdate(float dt){
 	for (int y = 0; y < 20; ++y) {
 		for (int x = 0; x < 20; ++x) {
 			glm::vec3 pos(x * 0.11f, y * 0.11f, 0.0f);
-			C_Transform trans;
-			trans.Transform = glm::translate(glm::mat4(1.0f), pos) * scale;
+			IM::C_Transform trans;
+			trans._Transform = glm::translate(glm::mat4(1.0f), pos) * scale;
 			IM::Renderer::R3D::Submit(_Shader2, _SquareVA, trans);
 		}
 	}
-	_SquareTransform2.Transform = glm::scale(glm::mat4(1.0f), glm::vec3(1.5f));
+
+	_SquareTransform2._Transform = glm::scale(glm::mat4(1.0f), glm::vec3(1.5f));
 	_Texture->Bind();
 	IM::Renderer::R3D::Submit(_TextureShader, _SquareVA, _SquareTransform2);
 
-	_ZealotTransform.Transform = glm::translate(glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)), glm::vec3(0.25f, -0.25f, 0.25f));
+	_ZealotTransform._Transform = glm::translate(glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)), glm::vec3(0.25f, -0.25f, 0.25f));
 	_ZealotTexture->Bind();
 	IM::Renderer::R3D::Submit(_TextureShader, _SquareVA, _SquareTransform2);
 

@@ -1,5 +1,5 @@
 workspace "Imaginengion"
-    architecture "x64"
+    architecture "x86_64"
     startproject "MyApp"
     configurations{
         "Debug",
@@ -19,6 +19,7 @@ IncludeDir["Glad"] = "Imaginengion/Vendor/Glad/include"
 IncludeDir["Imgui"] = "Imaginengion/Vendor/Imgui"
 IncludeDir["glm"] = "Imaginengion/Vendor/glm"
 IncludeDir["stb"] = "Imaginengion/Vendor/stb"
+IncludeDir["ECS"] = "Imaginengion/ECS"
 
 include "Imaginengion/Vendor"
 
@@ -51,7 +52,8 @@ project "Imaginengion"
         "%{IncludeDir.Glad}",
         "%{IncludeDir.Imgui}",
         "%{IncludeDir.glm}",
-        "%{IncludeDir.stb}"
+        "%{IncludeDir.stb}",
+        "%{IncludeDir.ECS}"
     }
 
     links{
@@ -105,7 +107,8 @@ project "MyApp"
         "Imaginengion/Vendor/spdlog/include",
         "Imaginengion/src",
         "Imaginengion/Vendor",
-        "%{IncludeDir.glm}"
+        "%{IncludeDir.glm}",
+        "%{IncludeDir.ECS}"
     }
 
     links{
@@ -126,3 +129,83 @@ project "MyApp"
     filter "configurations:Dist"
         defines "IMAGINE_DIST"
         optimize "On"
+
+project "SangSang"
+    location "SangSang"
+    kind "ConsoleApp"
+    language "C++"
+    cppdialect "C++20"
+    staticruntime "on"
+
+    targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+    objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+    files{
+        "%{prj.name}/**.h",
+        "%{prj.name}/**.cpp"
+    }
+
+    includedirs{
+        "Imaginengion/Vendor/spdlog/include",
+        "Imaginengion/src",
+        "Imaginengion/Vendor",
+        "%{IncludeDir.glm}"
+    }
+
+    links{
+        "Imaginengion"
+    }
+
+    filter "system:windows"
+        systemversion "latest"
+    
+    filter "configurations:Debug"
+        defines "IMAGINE_DEBUG"
+        symbols "On"
+
+    filter "configurations:Release"
+        defines "IMAGINE_RELEASE"
+        optimize "On"
+
+    filter "configurations:Dist"
+        defines "IMAGINE_DIST"
+        optimize "On"project "MyApp"
+        location "MyApp"
+        kind "ConsoleApp"
+        language "C++"
+        cppdialect "C++20"
+        staticruntime "on"
+    
+        targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+        objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+    
+        files{
+            "%{prj.name}/**.h",
+            "%{prj.name}/**.cpp"
+        }
+    
+        includedirs{
+            "Imaginengion/Vendor/spdlog/include",
+            "Imaginengion/src",
+            "Imaginengion/Vendor",
+            "%{IncludeDir.glm}"
+        }
+    
+        links{
+            "Imaginengion"
+        }
+    
+        filter "system:windows"
+            systemversion "latest"
+        
+        filter "configurations:Debug"
+            defines "IMAGINE_DEBUG"
+            symbols "On"
+    
+        filter "configurations:Release"
+            defines "IMAGINE_RELEASE"
+            optimize "On"
+    
+        filter "configurations:Dist"
+            defines "IMAGINE_DIST"
+            optimize "On"

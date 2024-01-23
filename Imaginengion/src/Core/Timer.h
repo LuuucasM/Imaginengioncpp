@@ -35,18 +35,18 @@ namespace IM {
 
         // get elapsed time in second (same as getElapsedTime)
         // divide elapsedTimeInMicroSec by 1000000
-        inline double getElapsedTimeInSec() {
+        double getElapsedTimeInSec() {
             return this->getElapsedTimeInMicroSec() * 0.000001;
         }
 
         // get elapsed time in milli-second
         // divide elapsedTimeInMicroSec by 1000
-        inline double getElapsedTimeInMilliSec() {
+        double getElapsedTimeInMilliSec() {
             return this->getElapsedTimeInMicroSec() * 0.001;
         }
 
-        inline double GetStartTimeInMicroSec() { return startTimeInMicroSec; }
-        inline double GetEndTimeInMicroSec() { return endTimeInMicroSec; }
+        double GetStartTimeInMicroSec() { return startTimeInMicroSec; }
+        double GetEndTimeInMicroSec() { return endTimeInMicroSec; }
 
     private:
         double startTimeInMicroSec;                 // starting time in micro-second

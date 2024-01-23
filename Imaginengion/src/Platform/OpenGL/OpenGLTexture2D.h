@@ -12,13 +12,18 @@ namespace IM {
 		OpenGLTexture2D(uint32_t width, uint32_t height);
 		~OpenGLTexture2D();
 
-		inline uint32_t GetWdith() const override { return _Width; };
-		inline uint32_t GetHeight() const override { return _Height; };
+		uint32_t GetWidth() const override { return _Width; };
+		uint32_t GetHeight() const override { return _Height; };
+		uint32_t GetID() const override { return _TextureID; };
 
 		void SetData(void* data, uint32_t size) override;
 
 		void Bind(uint32_t slot = 0) const override;
 		void Unbind(uint32_t slot = 0) const override;
+
+		bool operator==(const Texture& other) const override { 
+			return _TextureID == ((OpenGLTexture2D&)other)._TextureID; 
+		};
 	private:
 		uint32_t _Width;
 		uint32_t _Height;

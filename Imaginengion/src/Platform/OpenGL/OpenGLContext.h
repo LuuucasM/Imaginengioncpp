@@ -9,7 +9,7 @@ namespace IM {
 	{	
 	public:
 		OpenGLContext(GLFWwindow *window);
-		~OpenGLContext();
+		~OpenGLContext() = default;
 
 		void Init() override;
 		void SwapBuffers() override;

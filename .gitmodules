@@ -1,18 +1,13 @@
-[submodule "spdlog"]
-	path = spdlog
-	url = https://github.com/gabime/spdlog
-[submodule "Imaginengion/Vendor/spdlog"]
-	path = Imaginengion/Vendor/spdlog
-	url = https://github.com/gabime/spdlog
-[submodule "glfw"]
-	path = glfw
-	url = https://github.com/glfw/glfw
-[submodule "Imaginengion/Vendor/GLFW"]
-	path = Imaginengion/Vendor/GLFW
-	url = https://github.com/glfw/glfw
+[submodule "Imaginengion/Vendor/glfw"]
+	path = Imaginengion/Vendor/glfw
+	url = https://github.com/glfw/glfw.git
+[submodule "Imaginengion/Vendor/glm"]
+	path = Imaginengion/Vendor/glm
+	url = https://github.com/g-truc/glm.git
 [submodule "Imaginengion/Vendor/imgui"]
 	path = Imaginengion/Vendor/imgui
-	url = https://github.com/ocornut/imgui
-[submodule "Imaginengion/Vendor/GLM"]
-	path = Imaginengion/Vendor/GLM
-	url = https://github.com/g-truc/glm
+	url = https://github.com/ocornut/imgui.git
+	branch = docking
+[submodule "Imaginengion/Vendor/spdlog"]
+	path = Imaginengion/Vendor/spdlog
+	url = https://github.com/gabime/spdlog.git

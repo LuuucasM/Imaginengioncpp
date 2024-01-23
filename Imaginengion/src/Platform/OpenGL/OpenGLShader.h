@@ -18,6 +18,7 @@ namespace IM {
 
 		void SetValue(const std::string& name, bool value) override;
 		void SetValue(const std::string& name, int value) override;
+		void SetValue(const std::string& name, int* values, uint32_t count) override;
 		void SetValue(const std::string& name, float value) override;
 		void SetValue(const std::string& name, glm::vec2 value) override;
 		void SetValue(const std::string& name, glm::vec3 value) override;

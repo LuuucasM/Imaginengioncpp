@@ -63,7 +63,7 @@ namespace IM {
 			glEnableVertexAttribArray(index);
 			glVertexAttribPointer(index, element.GetComponentCount(),
 				ShaderDataTypeToOpneGLBaseType(element.Type),
-				element.Normalized ? GL_TRUE : GL_FALSE,
+				element.bNormalized ? GL_TRUE : GL_FALSE,
 				layout.GetStride(),
 				(const void*)(intptr_t)element.Offset);
 			++index;

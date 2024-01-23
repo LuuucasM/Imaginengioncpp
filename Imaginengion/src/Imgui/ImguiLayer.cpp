@@ -1,22 +1,20 @@
 #include "impch.h"
 #include "ImguiLayer.h"
 
+
 //#include "imgui.h"
-#define _CRT_SECURE_NO_WARNINGS
-#include "backends/imgui_impl_opengl3.cpp"
-#include "backends/imgui_impl_glfw.cpp"
+#include "backends/imgui_impl_opengl3.h"
+#include "backends/imgui_impl_glfw.h"
 
 #include "Core/Application.h"
+
+#include <GLFW/glfw3.h>
 
 namespace IM {
 
 	ImguiLayer::ImguiLayer()
 		: Layer("ImguiLayer") {
 
-	}
-
-	ImguiLayer::~ImguiLayer() {
-        //ImGui::BeginTable()
 	}
 
 	void ImguiLayer::OnAttach() {
@@ -28,7 +26,7 @@ namespace IM {
         ImGui::CreateContext();
         ImGuiIO& io = ImGui::GetIO(); (void)io;
         io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-        io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+        //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
         io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
         io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // Enable Multi-Viewport / Platform Windows
         //io.ConfigViewportsNoAutoMerge = true;
@@ -47,7 +45,7 @@ namespace IM {
         }
 
         // Setup Platform/Renderer backends
-        ImGui_ImplGlfw_InitForOpenGL((GLFWwindow *)Application::Get().GetWindow().GetNativeWindow(), true);
+        ImGui_ImplGlfw_InitForOpenGL(static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow()), true);
         ImGui_ImplOpenGL3_Init("#version 460");
 	}
 
@@ -60,6 +58,15 @@ namespace IM {
         ImGui::DestroyContext();
 	}
 
+    void ImguiLayer::OnEvent(Event& e)
+    {
+        if (_bBlockEvents) {
+            ImGuiIO& io = ImGui::GetIO();
+            e._bHandled |= e.IsInCategory(EC_Mouse) & io.WantCaptureMouse;
+            e._bHandled |= e.IsInCategory(EC_Keyboard) & io.WantCaptureKeyboard;
+        }
+    }
+
     void ImguiLayer::Begin() {
 
         IMAGINE_PROFILE_FUNCTION();
@@ -67,6 +74,8 @@ namespace IM {
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
+
+
     }
     void ImguiLayer::End() {
 

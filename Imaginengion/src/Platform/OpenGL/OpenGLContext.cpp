@@ -10,7 +10,6 @@ namespace IM {
 		IMAGINE_CORE_ASSERT(window, "Window is null when initializing OpenGLContext!")
 	}
 
-	OpenGLContext::~OpenGLContext() {}
 	void OpenGLContext::Init() {
 
 		IMAGINE_PROFILE_FUNCTION();

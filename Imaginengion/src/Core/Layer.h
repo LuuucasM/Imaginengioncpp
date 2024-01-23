@@ -1,9 +1,11 @@
 #pragma once
 
+#include "Events/Event.h"
+
 #include <string>
 
 namespace IM {
-	class IMAGINE_API Layer
+	class Layer
 	{
 	public:
 		/*
@@ -35,7 +37,9 @@ namespace IM {
 
 		virtual void OnImguiRender() {}
 
-		inline const std::string& GetName() const { return layer_name; };
+		virtual void OnEvent(Event& event) {}
+
+		const std::string& GetName() const { return layer_name; };
 	protected:
 		std::string layer_name;
 	};

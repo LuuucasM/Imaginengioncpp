@@ -1,35 +1,38 @@
 #pragma once
 
-#define _CRT_SECURE_NO_WARNINGS
 #include "Core/Layer.h"
+#include "Events/SystemEvents.h"
 
 namespace IM {
-	class IMAGINE_API ImguiLayer : public Layer
+	class ImguiLayer : public Layer
 	{
 	public:
 		ImguiLayer();
-		~ImguiLayer();
+		~ImguiLayer() = default;
 
 		/*
 		* Called when the layer is attached to the layer stack in the LayerManager
 		*/
-		virtual void OnAttach();
+		void OnAttach() override;
 
 		/*
 		* Called when the layer is detached to the layer stack in the LayerManager
 		*/
-		virtual void OnDetach();
+		void OnDetach() override;
+
+		void OnEvent(Event& e) override;
 
 		/*
 		* Called before OnImguiRender
 		*/
-
 		void Begin();
 		/*
 		* Called after OnImguiRender
 		*/
 		void End();
-	private:
 
+		void SetBlockEvents(bool block) { _bBlockEvents = block; }
+	private:
+		bool _bBlockEvents = true;
 	};
 }

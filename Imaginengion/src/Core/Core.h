@@ -30,19 +30,6 @@
 #else
 	#error "Unknown platform!"
 #endif
-#ifdef IMAGINE_PLATFORM_WINDOWS
-#if IMAGINE_DYNAMIC_LINK
-	#ifdef IMAGINE_BUILD_DLL
-		#define IMAGINE_API __declspec(dllexport)
-	#else
-		#define IMAGINE_API __declspec(dllimport)
-	#endif
-#else
-	#define IMAGINE_API
-#endif
-#else
-	#error Imaginengion Only supports Windows !
-#endif
 
 #ifdef IMAGINE_DEBUG
 	#define IMAGINE_ENABLE_ASSERTS
@@ -58,21 +45,19 @@
 
 #define BIT(x) (1 << x)
 
-namespace IM {
+#define IMAGINE_BIND_EVENT(fn) [this](auto&&... args) -> decltype(auto) { return this->fn(std::forward<decltype(args)>(args)...); }
 
+namespace IM {
 	template<typename T>
 	using ScopePtr = std::unique_ptr<T>;
 	template<typename T, typename ... Args>
 	constexpr ScopePtr<T> CreateScopePtr(Args&& ... args) {
 		return std::make_unique<T>(std::forward<Args>(args)...);
 	}
-
 	template<typename T>
 	using RefPtr = std::shared_ptr<T>;
 	template<typename T, typename ... Args>
 	constexpr RefPtr<T> CreateRefPtr(Args&& ... args) {
 		return std::make_shared<T>(std::forward<Args>(args)...);
 	}
-
-
 }

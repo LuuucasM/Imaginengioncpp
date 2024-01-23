@@ -4,33 +4,34 @@
 
 #include "Window.h"
 #include "LayerManager.h"
+#include "Events/Event.h"
+#include "Events/SystemEvents.h"
+
 #include "Imgui/ImguiLayer.h"
+
 #include "Timestep.h"
 
-//TEMPORARY------------------------
-#include "Renderer/Shader.h"
+#include "Log.h"
+
+int main(int argc, char** argv);
 
 namespace IM {
 
-	class IMAGINE_API Application
+	class Application
 	{
 	public:
 		/*
 		*Constructor and deconstructor for Application object
 		*/
-		Application();
+		Application(const std::string& name = "Imaginengion");
 		virtual ~Application();
 
-		/*
-		*The function that drives the entire application. Where we call update to different components of the application
-		*/
-		void Run();
-
+		void OnEvent(Event& e);
 		/*
 		*Helper function to get the window object for the application
 		*@return Window: the main window of the application
 		*/
-		inline Window& GetWindow() { 
+		Window& GetWindow() { 
 			IMAGINE_CORE_ASSERT(_Window, "Window not created!")
 			return *_Window;
 		}
@@ -53,15 +54,23 @@ namespace IM {
 			IMAGINE_CORE_ASSERT(_Instance, "Application not created!")
 			return *_Instance;
 		}
+
+		void Close() { _bRunning = false; }
+
+		ImguiLayer* GetImGuiLayer() { return _ImguiLayer; };
 	private:
+		/*
+		*The function that drives the entire application. Where we call update to different components of the application
+		*/
+		void Run();
 		/*
 		*Function to close the window when a Close Window Event is triggered
 		*/
-		void OnWindowCloseEvent();
+		bool OnWindowCloseEvent(WindowCloseEvent& e);
 		/*
 		*Function to resize the viewport when window resize event is triggered
 		*/
-		void OnWindowResizeEvent(int width, int height);
+		bool OnWindowResizeEvent(WindowResizeEvent& e);
 	private:
 		//bool controlling the main run loop of the application.
 		bool _bRunning = true;
@@ -69,7 +78,10 @@ namespace IM {
 		ScopePtr<Window> _Window;
 		ImguiLayer *_ImguiLayer;
 		LayerManager _LayerManager;
+	
+	private:
 		static Application* _Instance;
+		friend int ::main(int argc, char** argv);
 
 		TimeStep _Timestep;
 	};
