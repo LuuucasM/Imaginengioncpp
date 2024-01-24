@@ -51,7 +51,7 @@ namespace IM {
 
 	void OpenGLRendererAPI::SetViewport(int x, int y, size_t width, size_t height)
 	{
-		glViewport(x, y, width, height);
+		glViewport(x, y, (GLsizei)width, (GLsizei)height);
 	}
 
 	void OpenGLRendererAPI::SetClearColor(const glm::vec4& color) {

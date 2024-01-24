@@ -38,7 +38,7 @@ namespace IM {
 
 		glCreateTextures(GL_TEXTURE_2D, 1, &_DepthAttachment);
 		glBindTexture(GL_TEXTURE_2D, _DepthAttachment);
-		glTexStorage2D(GL_TEXTURE_2D, 1, GL_DEPTH24_STENCIL8, _Specification.Width, _Specification.Height);
+		glTexStorage2D(GL_TEXTURE_2D, 1, GL_DEPTH24_STENCIL8, (GLsizei)_Specification.Width, (GLsizei)_Specification.Height);
 
 		//glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, _Specification.Width, _Specification.Height, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, NULL);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, _DepthAttachment, 0);
@@ -50,7 +50,7 @@ namespace IM {
 	void OpenGLFrameBuffer::Bind()
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, _BufferID);
-		glViewport(0, 0, _Specification.Width, _Specification.Height);
+		glViewport(0, 0, (GLsizei)_Specification.Width, (GLsizei)_Specification.Height);
 	}
 	void OpenGLFrameBuffer::Unbind()
 	{

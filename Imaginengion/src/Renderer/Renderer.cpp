@@ -39,7 +39,7 @@ namespace IM {
 	void Renderer::R3D::Submit(const RefPtr<Shader>& shader, const RefPtr<VertexArray>& vertexArray, C_Transform transform) {
 		shader->Bind();
 		shader->SetValue("u_ViewProjection", _SceneData->ViewProjectionMatrix);
-		shader->SetValue("u_Transform", transform._Transform);
+		shader->SetValue("u_Transform", transform.GetTransform());
 
 		vertexArray->Bind();
 		RenderCommand::DrawIndexed(vertexArray);

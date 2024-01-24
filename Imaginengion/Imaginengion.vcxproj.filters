@@ -930,16 +930,10 @@
     <ClInclude Include="src\Debug\PerfProfiler.h">
       <Filter>src\Debug</Filter>
     </ClInclude>
-    <ClInclude Include="src\ECS\CollisionSystem.h">
-      <Filter>src\ECS</Filter>
-    </ClInclude>
     <ClInclude Include="src\ECS\ComponentArray.h">
       <Filter>src\ECS</Filter>
     </ClInclude>
     <ClInclude Include="src\ECS\ComponentManager.h">
-      <Filter>src\ECS</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ECS\Components.h">
       <Filter>src\ECS</Filter>
     </ClInclude>
     <ClInclude Include="src\ECS\ECSConstants.h">
@@ -949,15 +943,6 @@
       <Filter>src\ECS</Filter>
     </ClInclude>
     <ClInclude Include="src\ECS\EntityManager.h">
-      <Filter>src\ECS</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ECS\MovementSystem.h">
-      <Filter>src\ECS</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ECS\ParticleSystem.h">
-      <Filter>src\ECS</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ECS\RenderSystem2D.h">
       <Filter>src\ECS</Filter>
     </ClInclude>
     <ClInclude Include="src\ECS\System.h">
@@ -1056,6 +1041,8 @@
     <ClInclude Include="src\impch.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="src\Scene\Scene.h" />
+    <ClInclude Include="src\ECS\Components.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Vendor\stb\stb_image.cpp">
@@ -1076,22 +1063,7 @@
     <ClCompile Include="src\Core\Timer.cpp">
       <Filter>src\Core</Filter>
     </ClCompile>
-    <ClCompile Include="src\ECS\CollisionSystem.cpp">
-      <Filter>src\ECS</Filter>
-    </ClCompile>
     <ClCompile Include="src\ECS\ComponentManager.cpp">
-      <Filter>src\ECS</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ECS\ECSCoordinator.cpp">
-      <Filter>src\ECS</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ECS\MovementSystem.cpp">
-      <Filter>src\ECS</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ECS\ParticleSystem.cpp">
-      <Filter>src\ECS</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ECS\RenderSystem2D.cpp">
       <Filter>src\ECS</Filter>
     </ClCompile>
     <ClCompile Include="src\ECS\SystemManager.cpp">
@@ -1181,5 +1153,6 @@
     <ClCompile Include="src\impch.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\Scene\Scene.cpp" />
   </ItemGroup>
 </Project>
