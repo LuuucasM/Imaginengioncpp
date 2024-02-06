@@ -11,3 +11,6 @@
 [submodule "Imaginengion/Vendor/spdlog"]
 	path = Imaginengion/Vendor/spdlog
 	url = https://github.com/gabime/spdlog.git
+[submodule "Imaginengion/Vendor/stduuid"]
+	path = Imaginengion/Vendor/stduuid
+	url = https://github.com/mariusbancila/stduuid.git

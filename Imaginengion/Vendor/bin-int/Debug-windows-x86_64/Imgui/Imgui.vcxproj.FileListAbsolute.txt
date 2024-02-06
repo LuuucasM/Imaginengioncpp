@@ -1,2 +1,0 @@
-C:\Dev\Imaginengion\Imaginengion\Vendor\bin\Debug-windows-x86_64\Imgui\Imgui.lib.lastcodeanalysissucceeded
-C:\Dev\Imaginengion\Imaginengion\Vendor\bin-int\Debug-windows-x86_64\Imgui\NativeCodeAnalysis.read.1.tlog

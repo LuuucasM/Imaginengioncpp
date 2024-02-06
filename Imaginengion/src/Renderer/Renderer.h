@@ -25,7 +25,7 @@ namespace IM {
 			static void BeginScene(OrthographicCamera& camera);
 			static void EndScene();
 
-			static void Submit(const RefPtr<Shader>& shader, const RefPtr<VertexArray>& vertexArray, C_Transform transform = C_Transform());
+			static void Submit(const RefPtr<Shader>& shader, const RefPtr<VertexArray>& vertexArray, C_Transform transform);
 
 			inline static RendererAPI::API GetAPI() { return RendererAPI::GetCurrentAPI(); }
 		private:
@@ -46,7 +46,8 @@ namespace IM {
 		class R2D
 		{
 		public:
-			static void BeginScene(const OrthographicCamera& camera);
+			static void BeginScene(const OrthographicCamera& camera); //TODO: Remove
+			static void BeginScene(const C_Camera camera, const C_Transform transform);
 			static void EndScene();
 			static void FlushScene();
 
@@ -57,12 +58,18 @@ namespace IM {
 			static void DrawRect(const glm::vec2& position, const glm::vec2& scale, const RefPtr<SubTexture2D> subtexture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
 			static void DrawRect(const glm::vec3& position, const glm::vec2& scale, const RefPtr<SubTexture2D> subtexture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
 
+			static void DrawRect(const glm::mat4& transform, const glm::vec4& color);
+			static void DrawRect(const glm::mat4& transform, const RefPtr<Texture2D> texture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
+
 			static void DrawRotatedRect(const glm::vec2& position, const glm::vec2& scale, float rotation, const glm::vec4& color);
 			static void DrawRotatedRect(const glm::vec3& position, const glm::vec2& scale, float rotation, const glm::vec4& color);
 			static void DrawRotatedRect(const glm::vec2& position, const glm::vec2& scale, float rotation, const RefPtr<Texture2D> texture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
 			static void DrawRotatedRect(const glm::vec3& position, const glm::vec2& scale, float rotation, const RefPtr<Texture2D> texture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
 			static void DrawRotatedRect(const glm::vec2& position, const glm::vec2& scale, float rotation, const RefPtr<SubTexture2D> subtexture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
 			static void DrawRotatedRect(const glm::vec3& position, const glm::vec2& scale, float rotation, const RefPtr<SubTexture2D> subtexture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
+
+			static void DrawRotatedRect(const glm::mat4& transform, const glm::vec4& color);
+			static void DrawRotatedRect(const glm::mat4& transform, const RefPtr<Texture2D> texture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
 
 			struct Statistics {
 				uint32_t DrawCalls = 0;

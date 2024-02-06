@@ -1,47 +1,41 @@
 #pragma once
 
-#include "ECSConstants.h"
+#include "ECSManager.h" 
 
-#include <queue>
-#include <array>
-#include <cassert>
+#include <unordered_set>
 
-class EntityManager {
+namespace IM {
 
-private:
-	std::queue<EntityID> AvailableEntities{};
-	std::array<ComponentMask, MAX_ENTITIES> ComponentMasks{};
-	uint64_t NumLivingEntities = 0;
-public:
-	EntityManager() {
-		for (EntityID i = 0; i < MAX_ENTITIES; i++) {
-			AvailableEntities.push(i);
+	class EntityManager {
+	friend class ECSManager;
+	public:
+		EntityManager(ECSManager* ecs) {
+			_ECSManager = ecs;
 		}
-	};
-	~EntityManager() {
 
-	};
-	EntityID CreateEntity() {
-		assert(NumLivingEntities < MAX_ENTITIES && "Hit entity limit");
-		EntityID id = AvailableEntities.front();
-		AvailableEntities.pop();
-		NumLivingEntities++;
+		~EntityManager() = default;
+	private:
+		uint32_t CreateEntity() {
+			return *IDsInUse.insert(_Gen.GetID()).first;
+		}
 
-		return id;
+		void DestroyEntity(uint32_t entity) {
+			IDsRemoved.insert(entity);
+			IDsInUse.erase(entity);
+		}
+		std::unordered_set<uint32_t>& GetAllEntityIDs() {
+			return IDsInUse;
+		}
+	private:
+		struct IDGen {
+			uint32_t next_id = 1;
+			uint32_t GetID() {
+				return next_id++;
+			}
+		};
+		IDGen _Gen;
+		std::unordered_set<uint32_t> IDsInUse;
+		std::unordered_set<uint32_t> IDsRemoved;
+		ECSManager*_ECSManager;
 	};
-	void DestroyEntity(EntityID entity) {
-		ComponentMasks[entity].reset();
-		AvailableEntities.push(entity);
-		--NumLivingEntities;
-	};
-	void AddComponent(EntityID entity, ComponentType component) {
-		ComponentMasks[entity].set(component);
-	};
-	void RemoveComponent(EntityID entity, ComponentType component) {
-		ComponentMasks[entity].reset(component);
-	};
-	ComponentMask GetComponentMask(EntityID entity) {
-		assert(entity < MAX_ENTITIES && "Entity out of range");
-		return ComponentMasks[entity];
-	};
-};
+}

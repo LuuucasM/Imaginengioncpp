@@ -162,6 +162,21 @@ namespace IM {
 		_Data.TextureSlotIndex = 1;
 
 	}
+	void Renderer::R2D::BeginScene(const C_Camera camera, const C_Transform transform)
+	{
+		IMAGINE_PROFILE_FUNCTION();
+
+		glm::mat4 viewProj = camera.Projection * glm::inverse(transform.GetTransform());
+
+		_Data._TextureShader->Bind();
+		_Data._TextureShader->SetValue("u_ViewProjection", viewProj);
+
+		_Data.RectIndexCount = 0;
+
+		_Data.RectVertexBufferPtr = _Data.RectVertexBufferBase;
+
+		_Data.TextureSlotIndex = 1;
+	}
 	void Renderer::R2D::EndScene()
 	{
 		//nothing right now :)
@@ -206,37 +221,7 @@ namespace IM {
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
 			* glm::scale(glm::mat4(1.0f), { scale.x, scale.y, 1.0f });
 
-		_Data.RectVertexBufferPtr->Position = transform * _Data.RectVertexPositions[0];
-		_Data.RectVertexBufferPtr->Color = color;
-		_Data.RectVertexBufferPtr->TexCoord = { 0.0f, 0.0f };
-		_Data.RectVertexBufferPtr->TexIndex = 0.0f;
-		_Data.RectVertexBufferPtr->TilingFactor = 1.0f;
-		_Data.RectVertexBufferPtr++;
-
-		_Data.RectVertexBufferPtr->Position = transform * _Data.RectVertexPositions[1];
-		_Data.RectVertexBufferPtr->Color = color;
-		_Data.RectVertexBufferPtr->TexCoord = { 1.0f, 0.0f };
-		_Data.RectVertexBufferPtr->TexIndex = 0.0f;
-		_Data.RectVertexBufferPtr->TilingFactor = 1.0f;
-		_Data.RectVertexBufferPtr++;
-
-		_Data.RectVertexBufferPtr->Position = transform * _Data.RectVertexPositions[2];
-		_Data.RectVertexBufferPtr->Color = color;
-		_Data.RectVertexBufferPtr->TexCoord = { 1.0f, 1.0f };
-		_Data.RectVertexBufferPtr->TexIndex = 0.0f;
-		_Data.RectVertexBufferPtr->TilingFactor = 1.0f;
-		_Data.RectVertexBufferPtr++;
-
-		_Data.RectVertexBufferPtr->Position = transform * _Data.RectVertexPositions[3];
-		_Data.RectVertexBufferPtr->Color = color;
-		_Data.RectVertexBufferPtr->TexCoord = { 0.0f, 1.0f };
-		_Data.RectVertexBufferPtr->TexIndex = 0.0f;
-		_Data.RectVertexBufferPtr->TilingFactor = 1.0f;
-		_Data.RectVertexBufferPtr++;
-
-		_Data.RectIndexCount += 6;
-
-		_Data.Stats.RectCount++;
+		DrawRect(transform, color);
 	}
 	void Renderer::R2D::DrawRect(const glm::vec2& position, const glm::vec2& scale, const RefPtr<Texture2D> texture, float tilingFactor, const glm::vec4& tintColor)
 	{
@@ -267,41 +252,10 @@ namespace IM {
 			_Data.TextureSlots[_Data.TextureSlotIndex] = texture;
 			_Data.TextureSlotIndex++;
 		}
-
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
 			* glm::scale(glm::mat4(1.0f), { scale.x, scale.y, 1.0f });
 
-		_Data.RectVertexBufferPtr->Position = transform * _Data.RectVertexPositions[0];
-		_Data.RectVertexBufferPtr->Color = color;
-		_Data.RectVertexBufferPtr->TexCoord = { 0.0f, 0.0f };
-		_Data.RectVertexBufferPtr->TexIndex = textureIndex;
-		_Data.RectVertexBufferPtr->TilingFactor = tilingFactor;
-		_Data.RectVertexBufferPtr++;
-
-		_Data.RectVertexBufferPtr->Position = transform * _Data.RectVertexPositions[1];
-		_Data.RectVertexBufferPtr->Color = color;
-		_Data.RectVertexBufferPtr->TexCoord = { 1.0f, 0.0f };
-		_Data.RectVertexBufferPtr->TexIndex = textureIndex;
-		_Data.RectVertexBufferPtr->TilingFactor = tilingFactor;
-		_Data.RectVertexBufferPtr++;
-
-		_Data.RectVertexBufferPtr->Position = transform * _Data.RectVertexPositions[2];
-		_Data.RectVertexBufferPtr->Color = color;
-		_Data.RectVertexBufferPtr->TexCoord = {1.0f, 1.0f};
-		_Data.RectVertexBufferPtr->TexIndex = textureIndex;
-		_Data.RectVertexBufferPtr->TilingFactor = tilingFactor;
-		_Data.RectVertexBufferPtr++;
-
-		_Data.RectVertexBufferPtr->Position = transform * _Data.RectVertexPositions[3];
-		_Data.RectVertexBufferPtr->Color = color;
-		_Data.RectVertexBufferPtr->TexCoord = {0.0f, 1.0f};
-		_Data.RectVertexBufferPtr->TexIndex = textureIndex;
-		_Data.RectVertexBufferPtr->TilingFactor = tilingFactor;
-		_Data.RectVertexBufferPtr++;
-
-		_Data.RectIndexCount += 6;
-
-		_Data.Stats.RectCount++;
+		DrawRect(transform, texture, tilingFactor, tintColor);
 	}
 
 	void Renderer::R2D::DrawRect(const glm::vec2& position, const glm::vec2& scale, const RefPtr<SubTexture2D> subtexture, float tilingFactor, const glm::vec4& tintColor)
@@ -373,6 +327,105 @@ namespace IM {
 		_Data.Stats.RectCount++;
 	}
 
+	void Renderer::R2D::DrawRect(const glm::mat4& transform, const glm::vec4& color)
+	{
+		IMAGINE_PROFILE_FUNCTION();
+
+		if (_Data.RectIndexCount + 6 > Renderer2DData::MaxIndices) {
+			FlushAndReset();
+		}
+
+		_Data.RectVertexBufferPtr->Position = transform * _Data.RectVertexPositions[0];
+		_Data.RectVertexBufferPtr->Color = color;
+		_Data.RectVertexBufferPtr->TexCoord = { 0.0f, 0.0f };
+		_Data.RectVertexBufferPtr->TexIndex = 0.0f;
+		_Data.RectVertexBufferPtr->TilingFactor = 1.0f;
+		_Data.RectVertexBufferPtr++;
+
+		_Data.RectVertexBufferPtr->Position = transform * _Data.RectVertexPositions[1];
+		_Data.RectVertexBufferPtr->Color = color;
+		_Data.RectVertexBufferPtr->TexCoord = { 1.0f, 0.0f };
+		_Data.RectVertexBufferPtr->TexIndex = 0.0f;
+		_Data.RectVertexBufferPtr->TilingFactor = 1.0f;
+		_Data.RectVertexBufferPtr++;
+
+		_Data.RectVertexBufferPtr->Position = transform * _Data.RectVertexPositions[2];
+		_Data.RectVertexBufferPtr->Color = color;
+		_Data.RectVertexBufferPtr->TexCoord = { 1.0f, 1.0f };
+		_Data.RectVertexBufferPtr->TexIndex = 0.0f;
+		_Data.RectVertexBufferPtr->TilingFactor = 1.0f;
+		_Data.RectVertexBufferPtr++;
+
+		_Data.RectVertexBufferPtr->Position = transform * _Data.RectVertexPositions[3];
+		_Data.RectVertexBufferPtr->Color = color;
+		_Data.RectVertexBufferPtr->TexCoord = { 0.0f, 1.0f };
+		_Data.RectVertexBufferPtr->TexIndex = 0.0f;
+		_Data.RectVertexBufferPtr->TilingFactor = 1.0f;
+		_Data.RectVertexBufferPtr++;
+
+		_Data.RectIndexCount += 6;
+
+		_Data.Stats.RectCount++;
+	}
+
+	void Renderer::R2D::DrawRect(const glm::mat4& transform, const RefPtr<Texture2D> texture, float tilingFactor, const glm::vec4& tintColor)
+	{
+		IMAGINE_PROFILE_FUNCTION();
+
+		constexpr size_t rectVertexCount = 4;
+		constexpr glm::vec4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+		if (_Data.RectIndexCount + 6 > Renderer2DData::MaxIndices) {
+			FlushAndReset();
+		}
+
+		float textureIndex = 0.0f;
+		for (uint32_t i = 1; i < _Data.TextureSlotIndex; i++) {
+			if (*_Data.TextureSlots[i].get() == *texture.get()) {
+				textureIndex = (float)i;
+				break;
+			}
+		}
+
+		if (textureIndex == 0.0f) {
+			textureIndex = (float)_Data.TextureSlotIndex;
+			_Data.TextureSlots[_Data.TextureSlotIndex] = texture;
+			_Data.TextureSlotIndex++;
+		}
+
+		_Data.RectVertexBufferPtr->Position = transform * _Data.RectVertexPositions[0];
+		_Data.RectVertexBufferPtr->Color = color;
+		_Data.RectVertexBufferPtr->TexCoord = { 0.0f, 0.0f };
+		_Data.RectVertexBufferPtr->TexIndex = textureIndex;
+		_Data.RectVertexBufferPtr->TilingFactor = tilingFactor;
+		_Data.RectVertexBufferPtr++;
+
+		_Data.RectVertexBufferPtr->Position = transform * _Data.RectVertexPositions[1];
+		_Data.RectVertexBufferPtr->Color = color;
+		_Data.RectVertexBufferPtr->TexCoord = { 1.0f, 0.0f };
+		_Data.RectVertexBufferPtr->TexIndex = textureIndex;
+		_Data.RectVertexBufferPtr->TilingFactor = tilingFactor;
+		_Data.RectVertexBufferPtr++;
+
+		_Data.RectVertexBufferPtr->Position = transform * _Data.RectVertexPositions[2];
+		_Data.RectVertexBufferPtr->Color = color;
+		_Data.RectVertexBufferPtr->TexCoord = { 1.0f, 1.0f };
+		_Data.RectVertexBufferPtr->TexIndex = textureIndex;
+		_Data.RectVertexBufferPtr->TilingFactor = tilingFactor;
+		_Data.RectVertexBufferPtr++;
+
+		_Data.RectVertexBufferPtr->Position = transform * _Data.RectVertexPositions[3];
+		_Data.RectVertexBufferPtr->Color = color;
+		_Data.RectVertexBufferPtr->TexCoord = { 0.0f, 1.0f };
+		_Data.RectVertexBufferPtr->TexIndex = textureIndex;
+		_Data.RectVertexBufferPtr->TilingFactor = tilingFactor;
+		_Data.RectVertexBufferPtr++;
+
+		_Data.RectIndexCount += 6;
+
+		_Data.Stats.RectCount++;
+	}
+
 	void Renderer::R2D::DrawRotatedRect(const glm::vec2& position, const glm::vec2& scale, float rotation, const glm::vec4& color)
 	{
 		DrawRotatedRect({position.x, position.y, 0.0f}, scale, rotation, color);
@@ -389,37 +442,7 @@ namespace IM {
 			* glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
 			* glm::scale(glm::mat4(1.0f), { scale.x, scale.y, 1.0f });
 
-		_Data.RectVertexBufferPtr->Position = transform * _Data.RectVertexPositions[0];
-		_Data.RectVertexBufferPtr->Color = color;
-		_Data.RectVertexBufferPtr->TexCoord = { 0.0f, 0.0f };
-		_Data.RectVertexBufferPtr->TexIndex = 0.0f;
-		_Data.RectVertexBufferPtr->TilingFactor = 1.0f;
-		_Data.RectVertexBufferPtr++;
-
-		_Data.RectVertexBufferPtr->Position = transform * _Data.RectVertexPositions[1];
-		_Data.RectVertexBufferPtr->Color = color;
-		_Data.RectVertexBufferPtr->TexCoord = { 1.0f, 0.0f };
-		_Data.RectVertexBufferPtr->TexIndex = 0.0f;
-		_Data.RectVertexBufferPtr->TilingFactor = 1.0f;
-		_Data.RectVertexBufferPtr++;
-
-		_Data.RectVertexBufferPtr->Position = transform * _Data.RectVertexPositions[2];
-		_Data.RectVertexBufferPtr->Color = color;
-		_Data.RectVertexBufferPtr->TexCoord = { 1.0f, 1.0f };
-		_Data.RectVertexBufferPtr->TexIndex = 0.0f;
-		_Data.RectVertexBufferPtr->TilingFactor = 1.0f;
-		_Data.RectVertexBufferPtr++;
-
-		_Data.RectVertexBufferPtr->Position = transform * _Data.RectVertexPositions[3];
-		_Data.RectVertexBufferPtr->Color = color;
-		_Data.RectVertexBufferPtr->TexCoord = { 0.0f, 1.0f };
-		_Data.RectVertexBufferPtr->TexIndex = 0.0f;
-		_Data.RectVertexBufferPtr->TilingFactor = 1.0f;
-		_Data.RectVertexBufferPtr++;
-
-		_Data.RectIndexCount += 6;
-
-		_Data.Stats.RectCount++;
+		DrawRotatedRect(transform, color);
 	}
 	void Renderer::R2D::DrawRotatedRect(const glm::vec2& position, const glm::vec2& scale, float rotation, const RefPtr<Texture2D> texture, float tilingFactor, const glm::vec4& tintColor)
 	{
@@ -434,58 +457,11 @@ namespace IM {
 			FlushAndReset();
 		}
 
-		constexpr glm::vec4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
-
-
-		float textureIndex = 0.0f;
-		for (uint32_t i = 1; i < _Data.TextureSlotIndex; i++) {
-			if (*_Data.TextureSlots[i].get() == *texture.get()) {
-				textureIndex = (float)i;
-				break;
-			}
-		}
-
-		if (textureIndex == 0.0f) {
-			textureIndex = (float)_Data.TextureSlotIndex;
-			_Data.TextureSlots[_Data.TextureSlotIndex] = texture;
-			_Data.TextureSlotIndex++;
-		}
-
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
 			* glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
 			* glm::scale(glm::mat4(1.0f), { scale.x, scale.y, 1.0f });
 
-		_Data.RectVertexBufferPtr->Position = transform * _Data.RectVertexPositions[0];
-		_Data.RectVertexBufferPtr->Color = color;
-		_Data.RectVertexBufferPtr->TexCoord = { 0.0f, 0.0f };
-		_Data.RectVertexBufferPtr->TexIndex = textureIndex;
-		_Data.RectVertexBufferPtr->TilingFactor = tilingFactor;
-		_Data.RectVertexBufferPtr++;
-
-		_Data.RectVertexBufferPtr->Position = transform * _Data.RectVertexPositions[1];
-		_Data.RectVertexBufferPtr->Color = color;
-		_Data.RectVertexBufferPtr->TexCoord = { 1.0f, 0.0f };
-		_Data.RectVertexBufferPtr->TexIndex = textureIndex;
-		_Data.RectVertexBufferPtr->TilingFactor = tilingFactor;
-		_Data.RectVertexBufferPtr++;
-
-		_Data.RectVertexBufferPtr->Position = transform * _Data.RectVertexPositions[2];
-		_Data.RectVertexBufferPtr->Color = color;
-		_Data.RectVertexBufferPtr->TexCoord = { 1.0f, 1.0f };
-		_Data.RectVertexBufferPtr->TexIndex = textureIndex;
-		_Data.RectVertexBufferPtr->TilingFactor = tilingFactor;
-		_Data.RectVertexBufferPtr++;
-
-		_Data.RectVertexBufferPtr->Position = transform * _Data.RectVertexPositions[3];
-		_Data.RectVertexBufferPtr->Color = color;
-		_Data.RectVertexBufferPtr->TexCoord = { 0.0f, 1.0f };
-		_Data.RectVertexBufferPtr->TexIndex = textureIndex;
-		_Data.RectVertexBufferPtr->TilingFactor = tilingFactor;
-		_Data.RectVertexBufferPtr++;
-
-		_Data.RectIndexCount += 6;
-
-		_Data.Stats.RectCount++;
+		DrawRotatedRect(transform, texture, tilingFactor, tintColor);
 	}
 
 	void Renderer::R2D::DrawRotatedRect(const glm::vec2& position, const glm::vec2& scale, float rotation, const RefPtr<SubTexture2D> subtexture, float tilingFactor, const glm::vec4& tintColor)
@@ -547,6 +523,92 @@ namespace IM {
 		_Data.RectVertexBufferPtr->Position = transform * _Data.RectVertexPositions[3];
 		_Data.RectVertexBufferPtr->Color = color;
 		_Data.RectVertexBufferPtr->TexCoord = textureCoords[3];
+		_Data.RectVertexBufferPtr->TexIndex = textureIndex;
+		_Data.RectVertexBufferPtr->TilingFactor = tilingFactor;
+		_Data.RectVertexBufferPtr++;
+
+		_Data.RectIndexCount += 6;
+
+		_Data.Stats.RectCount++;
+	}
+
+	void Renderer::R2D::DrawRotatedRect(const glm::mat4& transform, const glm::vec4& color)
+	{
+		_Data.RectVertexBufferPtr->Position = transform * _Data.RectVertexPositions[0];
+		_Data.RectVertexBufferPtr->Color = color;
+		_Data.RectVertexBufferPtr->TexCoord = { 0.0f, 0.0f };
+		_Data.RectVertexBufferPtr->TexIndex = 0.0f;
+		_Data.RectVertexBufferPtr->TilingFactor = 1.0f;
+		_Data.RectVertexBufferPtr++;
+
+		_Data.RectVertexBufferPtr->Position = transform * _Data.RectVertexPositions[1];
+		_Data.RectVertexBufferPtr->Color = color;
+		_Data.RectVertexBufferPtr->TexCoord = { 1.0f, 0.0f };
+		_Data.RectVertexBufferPtr->TexIndex = 0.0f;
+		_Data.RectVertexBufferPtr->TilingFactor = 1.0f;
+		_Data.RectVertexBufferPtr++;
+
+		_Data.RectVertexBufferPtr->Position = transform * _Data.RectVertexPositions[2];
+		_Data.RectVertexBufferPtr->Color = color;
+		_Data.RectVertexBufferPtr->TexCoord = { 1.0f, 1.0f };
+		_Data.RectVertexBufferPtr->TexIndex = 0.0f;
+		_Data.RectVertexBufferPtr->TilingFactor = 1.0f;
+		_Data.RectVertexBufferPtr++;
+
+		_Data.RectVertexBufferPtr->Position = transform * _Data.RectVertexPositions[3];
+		_Data.RectVertexBufferPtr->Color = color;
+		_Data.RectVertexBufferPtr->TexCoord = { 0.0f, 1.0f };
+		_Data.RectVertexBufferPtr->TexIndex = 0.0f;
+		_Data.RectVertexBufferPtr->TilingFactor = 1.0f;
+		_Data.RectVertexBufferPtr++;
+
+		_Data.RectIndexCount += 6;
+
+		_Data.Stats.RectCount++;
+	}
+
+	void Renderer::R2D::DrawRotatedRect(const glm::mat4& transform, const RefPtr<Texture2D> texture, float tilingFactor, const glm::vec4& tintColor)
+	{
+		constexpr glm::vec4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+		float textureIndex = 0.0f;
+		for (uint32_t i = 1; i < _Data.TextureSlotIndex; i++) {
+			if (*_Data.TextureSlots[i].get() == *texture.get()) {
+				textureIndex = (float)i;
+				break;
+			}
+		}
+
+		if (textureIndex == 0.0f) {
+			textureIndex = (float)_Data.TextureSlotIndex;
+			_Data.TextureSlots[_Data.TextureSlotIndex] = texture;
+			_Data.TextureSlotIndex++;
+		}
+
+		_Data.RectVertexBufferPtr->Position = transform * _Data.RectVertexPositions[0];
+		_Data.RectVertexBufferPtr->Color = color;
+		_Data.RectVertexBufferPtr->TexCoord = { 0.0f, 0.0f };
+		_Data.RectVertexBufferPtr->TexIndex = textureIndex;
+		_Data.RectVertexBufferPtr->TilingFactor = tilingFactor;
+		_Data.RectVertexBufferPtr++;
+
+		_Data.RectVertexBufferPtr->Position = transform * _Data.RectVertexPositions[1];
+		_Data.RectVertexBufferPtr->Color = color;
+		_Data.RectVertexBufferPtr->TexCoord = { 1.0f, 0.0f };
+		_Data.RectVertexBufferPtr->TexIndex = textureIndex;
+		_Data.RectVertexBufferPtr->TilingFactor = tilingFactor;
+		_Data.RectVertexBufferPtr++;
+
+		_Data.RectVertexBufferPtr->Position = transform * _Data.RectVertexPositions[2];
+		_Data.RectVertexBufferPtr->Color = color;
+		_Data.RectVertexBufferPtr->TexCoord = { 1.0f, 1.0f };
+		_Data.RectVertexBufferPtr->TexIndex = textureIndex;
+		_Data.RectVertexBufferPtr->TilingFactor = tilingFactor;
+		_Data.RectVertexBufferPtr++;
+
+		_Data.RectVertexBufferPtr->Position = transform * _Data.RectVertexPositions[3];
+		_Data.RectVertexBufferPtr->Color = color;
+		_Data.RectVertexBufferPtr->TexCoord = { 0.0f, 1.0f };
 		_Data.RectVertexBufferPtr->TexIndex = textureIndex;
 		_Data.RectVertexBufferPtr->TilingFactor = tilingFactor;
 		_Data.RectVertexBufferPtr++;

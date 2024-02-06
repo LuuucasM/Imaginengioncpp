@@ -19,7 +19,6 @@ IncludeDir["Glad"] = "Imaginengion/Vendor/Glad/include"
 IncludeDir["Imgui"] = "Imaginengion/Vendor/Imgui"
 IncludeDir["glm"] = "Imaginengion/Vendor/glm"
 IncludeDir["stb"] = "Imaginengion/Vendor/stb"
-IncludeDir["ECS"] = "Imaginengion/ECS"
 
 include "Imaginengion/Vendor"
 
@@ -53,7 +52,6 @@ project "Imaginengion"
         "%{IncludeDir.Imgui}",
         "%{IncludeDir.glm}",
         "%{IncludeDir.stb}",
-        "%{IncludeDir.ECS}"
     }
 
     links{
@@ -108,7 +106,6 @@ project "MyApp"
         "Imaginengion/src",
         "Imaginengion/Vendor",
         "%{IncludeDir.glm}",
-        "%{IncludeDir.ECS}"
     }
 
     links{

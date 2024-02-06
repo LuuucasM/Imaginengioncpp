@@ -19,9 +19,17 @@
 #include "Events/Delegate.h"
 //-----------------------------------
 
+//-------------ECS-------------------
+#include "ECS/Components.h"
+#include "ECS/Entity.h"
+//-----------------------------------
 
+//------------SCENE------------------
+#include "Scene/Scene.h"
+#include "Scene/ScriptClass.h"
+//-----------------------------------
 
-//----------RENDERING-------------------
+//------------RENDERING--------------
 #include "Renderer/Renderer.h"
 
 #include "Renderer/IndexBuffer.h"

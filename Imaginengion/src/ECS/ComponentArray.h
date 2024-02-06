@@ -1,61 +1,62 @@
 #pragma once
 
-#include "ECSConstants.h"
-
 #include <unordered_map>
-#include <array>
-#include <cassert>
-#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <initializer_list>
 
-class IComponentArray {
+namespace IM {
+	class IComponentArray {
+	public:
+		IComponentArray() = default;
+		~IComponentArray() = default;
+		IComponentArray(const IComponentArray& obj) = default;
 
-protected:
-	std::unordered_map<EntityID, size_t> EntityToIndexMap;
-	std::unordered_map<size_t, EntityID> IndexToEntityMap;
-	size_t array_size;
-public:
-	virtual void RemoveComponent(EntityID entity) = 0;
-	virtual void EntityDestroyed(EntityID entity) = 0;
-};
+		virtual void RemoveComponent(uint32_t entity) = 0;
+		virtual bool HasComponent(uint32_t entity) = 0;
 
-template<typename T>
-class ComponentArray : public IComponentArray{
-protected:
-	std::array<T, MAX_ENTITIES> ArrayOfComponents;
-public:
-	void RemoveComponent(EntityID entity) override{
-		assert(EntityToIndexMap.find(entity) != EntityToIndexMap.end() && "Removing non-existent component!");
-
-		//swap component in last index to the index we are removing from
-		size_t indexOfRemovedEntity = EntityToIndexMap[entity];
-		size_t indexOfLastElement = array_size - 1;
-		ArrayOfComponents[indexOfRemovedEntity] = ArrayOfComponents[indexOfLastElement];
-
-		//update references in the maps so the entity points to the right index and index to the right entity
-		EntityID entityOfLastElement = IndexToEntityMap[indexOfLastElement];
-		EntityToIndexMap[entityOfLastElement] = indexOfRemovedEntity;
-		IndexToEntityMap[indexOfRemovedEntity] = entityOfLastElement;
-
-		EntityToIndexMap.erase(entity);
-		IndexToEntityMap.erase(indexOfLastElement);
-
-		--array_size;
+		std::unordered_map<uint32_t, size_t> _EntityToIndexMap{};
 	};
-	void AddComponent(EntityID entity, T component) {
-		EntityToIndexMap[entity] = array_size;
-		IndexToEntityMap[array_size] = entity;
-		ArrayOfComponents[array_size] = component;
-		++array_size;
-		std::cout << "current array size: " << array_size << std::endl;
-	};
-	T *GetComponent(EntityID entity) {
-		assert(EntityToIndexMap.find(entity) != EntityToIndexMap.end() && "Accessing non-existent component!");
 
-		return &ArrayOfComponents[EntityToIndexMap[entity]];
-	};
-	void EntityDestroyed(EntityID entity) override {
-		if (EntityToIndexMap.find(entity) != EntityToIndexMap.end()) {
-			RemoveComponent(entity);
+	template<typename C_Type>
+	class ComponentArray : public IComponentArray {
+	public:
+		ComponentArray() = default;
+		~ComponentArray() = default;
+
+		template<typename... Args>
+		C_Type& AddComponent(uint32_t entity, Args &&...args) {
+			_EntityToIndexMap[entity] = _VectorOfComponents.size();
+			_VectorOfComponents.emplace_back(C_Type{args...});
+			return _VectorOfComponents.back();
 		}
-	}
-};
+
+		void RemoveComponent(uint32_t entity) override{
+			std::swap(_VectorOfComponents[_EntityToIndexMap[entity]], _VectorOfComponents[_VectorOfComponents.size()-1]);
+			std::swap(_EntityToIndexMap.at((uint32_t)_VectorOfComponents.size() - 1), _EntityToIndexMap.at(entity));
+
+			_VectorOfComponents.pop_back();
+			_EntityToIndexMap.erase(entity);
+		}
+
+		bool HasComponent(uint32_t entity) override {
+			return (_EntityToIndexMap.find(entity) != _EntityToIndexMap.end());
+		}
+
+		auto& GetComponent(uint32_t entity) {
+			return _VectorOfComponents[_EntityToIndexMap[entity]];
+		}
+
+		std::vector<C_Type>::iterator begin() { return _VectorOfComponents.begin(); }
+		std::vector<C_Type>::iterator end() { return _VectorOfComponents.end(); }
+		std::vector<C_Type>::iterator rbegin() { return _VectorOfComponents.rbegin(); }
+		std::vector<C_Type>::iterator rend() { return _VectorOfComponents.rend(); }
+
+		std::vector<C_Type>::iterator begin() const { return _VectorOfComponents.begin(); }
+		std::vector<C_Type>::iterator end() const { return _VectorOfComponents.end(); }
+		std::vector<C_Type>::iterator rbegin() const { return _VectorOfComponents.rbegin(); }
+		std::vector<C_Type>::iterator rend() const { return _VectorOfComponents.rend(); }
+	private:
+		std::vector<C_Type> _VectorOfComponents;
+	};
+}

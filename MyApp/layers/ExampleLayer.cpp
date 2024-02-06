@@ -134,13 +134,13 @@ void ExampleLayer::OnUpdate(float dt){
 
 	//Render
 	if (IM::Input::IsKeyPressed(IM::Key::J))
-		_SquareTransform._Transform[3].x -= _CameraMoveSpeed * dt;
+		_SquareTransform.Translation.x -= _CameraMoveSpeed * dt;
 	if (IM::Input::IsKeyPressed(IM::Key::L))
-		_SquareTransform._Transform[3].x += _CameraMoveSpeed * dt;
+		_SquareTransform.Translation.x += _CameraMoveSpeed * dt;
 	if (IM::Input::IsKeyPressed(IM::Key::I))
-		_SquareTransform._Transform[3].y += _CameraMoveSpeed * dt;
+		_SquareTransform.Translation.y -= _CameraMoveSpeed * dt;
 	if (IM::Input::IsKeyPressed(IM::Key::K))
-		_SquareTransform._Transform[3].y -= _CameraMoveSpeed * dt;
+		_SquareTransform.Translation.y -= _CameraMoveSpeed * dt;
 
 	IM::Renderer::SetClearColor({ 0.4f, 0.3f, 0.3f, 1.0f });
 	IM::Renderer::Clear();
@@ -158,16 +158,21 @@ void ExampleLayer::OnUpdate(float dt){
 		for (int x = 0; x < 20; ++x) {
 			glm::vec3 pos(x * 0.11f, y * 0.11f, 0.0f);
 			IM::C_Transform trans;
-			trans._Transform = glm::translate(glm::mat4(1.0f), pos) * scale;
+			trans.Translation = glm::vec3(x * 0.11f, y * 0.11f, 0.0f);
+			trans.Scale = glm::vec3(0.1f);
+			//trans._Transform = glm::translate(glm::mat4(1.0f), pos) * scale;
 			IM::Renderer::R3D::Submit(_Shader2, _SquareVA, trans);
 		}
 	}
 
-	_SquareTransform2._Transform = glm::scale(glm::mat4(1.0f), glm::vec3(1.5f));
+	_SquareTransform2.Scale = glm::vec3(1.5f);
+	//_SquareTransform2._Transform = glm::scale(glm::mat4(1.0f), glm::vec3(1.5f));
 	_Texture->Bind();
 	IM::Renderer::R3D::Submit(_TextureShader, _SquareVA, _SquareTransform2);
 
-	_ZealotTransform._Transform = glm::translate(glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)), glm::vec3(0.25f, -0.25f, 0.25f));
+	_ZealotTransform.Scale = glm::vec3(1.5f);
+	_ZealotTransform.Translation = glm::vec3(0.25f, -0.25f, 0.25f);
+	//_ZealotTransform._Transform = glm::translate(glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)), glm::vec3(0.25f, -0.25f, 0.25f));
 	_ZealotTexture->Bind();
 	IM::Renderer::R3D::Submit(_TextureShader, _SquareVA, _SquareTransform2);
 

@@ -1,5 +1,7 @@
 #include "EditorLayer.h"
 
+#include "ECS/Entity.h"
+
 #include <Imgui/imgui.h>
 
 namespace IM {
@@ -21,6 +23,42 @@ namespace IM {
         fbspec.Width = 1280;
         fbspec.Height = 720;
         _FrameBuffer = FrameBuffer::Create(fbspec);
+
+        _ActiveScene = CreateRefPtr<Scene>();
+
+        _SquareEntity = _ActiveScene->CreateEntity("Square");
+        _SquareEntity.AddComponent<C_SpriteRenderer>(glm::vec4(0.8f, 0.3f, 0.3f, 1.0f));
+
+        _CameraEntity = _ActiveScene->CreateEntity("Camera");
+        _CameraEntity.AddComponent<C_Camera>();
+
+        _CameraEntity2 = _ActiveScene->CreateEntity("Camera2");
+        _CameraEntity2.AddComponent<C_Camera>()._bPrimary = false;
+        class CameraController : public ScriptClass {
+        public:
+            void OnCreate() override {
+            }
+            void OnDestroy() override {
+
+            }
+            void OnUpdate(float dt) {
+                auto& transform = _Entity.GetComponent<C_Transform>();
+                float speed = 5.0f;
+
+                if (Input::IsKeyPressed(Key::A))
+                    transform.Translation.x -= speed * dt;
+                if (Input::IsKeyPressed(Key::D))
+                    transform.Translation.x += speed * dt;
+                if (Input::IsKeyPressed(Key::W))
+                    transform.Translation.y += speed * dt;
+                if (Input::IsKeyPressed(Key::S))
+                    transform.Translation.y -= speed * dt;
+            }
+        };
+        _CameraEntity.AddComponent<C_NativeScript>().Bind<CameraController>();
+        _CameraEntity2.AddComponent<C_NativeScript>().Bind<CameraController>();
+
+        _SceneHierarchyPanel.SetContext(_ActiveScene);
     }
 
     void EditorLayer::OnDetach()
@@ -35,44 +73,33 @@ namespace IM {
     {
         IMAGINE_PROFILE_FUNCTION();
 
+        //resize viewport if needed
+        if (IM::FrameBufferSpecification spec = _FrameBuffer->GetSpecification();
+            _ViewportSize.x > 0.0f && _ViewportSize.y > 0.0f &&
+            (spec.Width != _ViewportSize.x || spec.Height != _ViewportSize.y)) {
+            _FrameBuffer->Resize((size_t)_ViewportSize.x, (size_t)_ViewportSize.y);
+            _CameraController.OnResize((size_t)_ViewportSize.x, (size_t)_ViewportSize.y);
+
+            _ActiveScene->OnViewportResize((size_t)_ViewportSize.x, (size_t)_ViewportSize.y);
+        }
+
         if (_bViewportFocus) {
             _CameraController.OnUpdate(dt);
         }
+
         Renderer::R2D::ResetStats();
         _FrameBuffer->Bind();
         Renderer::SetClearColor({ 0.31f, 0.31f, 0.31f, 1.0f });
         Renderer::Clear();
 
+        _ActiveScene->OnUpdate(dt);
 
-        //Beginning of the scene where we tell renderer what to do for the scene
-        Renderer::R2D::BeginScene(_CameraController.GetCamera());
-
-        Renderer::R2D::DrawRect({ -1.0f, 0.0f }, { 0.8f, 0.8f }, { 0.8f, 0.2f, 0.3f, 1.0f });
-        Renderer::R2D::DrawRect({ 0.5f, -0.5f }, { 0.9f, 0.8f }, { 0.3f, 0.8f, 0.2f, 1.0f });
-        Renderer::R2D::DrawRect({ 0.0f, 0.0f, -0.1f }, { 10.0f, 10.0f }, _Texture, 10.0f);
-        Renderer::R2D::DrawRotatedRect({ 1.0f, -0.5f }, { 2.0f, 2.0f }, -45.0f, _TextureZealot, 1.0f);
-        Renderer::R2D::DrawRotatedRect({ 0.0f, -0.0f }, { 0.8f, 0.8f }, 45.0f, { 0.3f, 0.8f, 0.2f, 1.0f });
-
-        Renderer::R2D::EndScene();
-
-        Renderer::R2D::BeginScene(_CameraController.GetCamera());
-
-        for (float y = -5.0f; y < 5.0f; y += 0.5f) {
-            for (float x = -5.0f; x < 5.0f; x += 0.5f) {
-                glm::vec4 color = { (x + 5.0f) / 10, 0.3, (y + 5.0f) / 10.0f, 1.0f };
-                Renderer::R2D::DrawRect({ x, y }, { 0.45f, 0.45f }, color);
-            }
-        }
-
-        Renderer::R2D::EndScene();
         _FrameBuffer->Unbind();
     }
 
     void EditorLayer::OnImguiRender()
     {
         IMAGINE_PROFILE_FUNCTION();
-        static bool dockingEnabled = true;
-        if (dockingEnabled) {
             //ImGuiIO& testio = ImGui::GetIO();
             //IMAGINE_CORE_WARN("VIEWPORTS IS ENABLED: {}", testio.ConfigFlags & ImGuiConfigFlags_ViewportsEnable);
             static bool p_open = true;
@@ -134,6 +161,8 @@ namespace IM {
                 ImGui::EndMenuBar();
             }
 
+            _SceneHierarchyPanel.OnImGuiRender();
+
             ImGui::Begin("Settings");
 
             auto stats = Renderer::R2D::GetStats();
@@ -143,7 +172,22 @@ namespace IM {
             ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
             ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
 
-            ImGui::ColorEdit3("Square Color", glm::value_ptr(_SquareColor));
+            if (_SquareEntity) {
+                ImGui::Separator();
+
+                auto& name = _SquareEntity.GetComponent<C_Name>().Name;
+                ImGui::Text("%s", name.c_str());
+
+                auto& squareColor = _SquareEntity.GetComponent<C_SpriteRenderer>().Color;
+                ImGui::ColorEdit3("Square Color", glm::value_ptr(squareColor));
+
+                ImGui::Separator();
+            }
+
+            if (ImGui::Checkbox("Camera A", &_PrimaryCamera)) {
+                _CameraEntity.GetComponent<C_Camera>()._bPrimary = _PrimaryCamera;
+                _CameraEntity2.GetComponent<C_Camera>()._bPrimary = !_PrimaryCamera;
+            }
 
             ImGui::End();
 
@@ -155,12 +199,7 @@ namespace IM {
             Application::Get().GetImGuiLayer()->SetBlockEvents(!_bViewportFocus || !_bViewportHovered);
 
             ImVec2 viewportSize = ImGui::GetContentRegionAvail();
-            if (_ViewportSize != *((glm::vec2*)&viewportSize) && viewportSize.x > 0 && viewportSize.y > 0) {
-                _FrameBuffer->Resize((size_t)viewportSize.x, (size_t)viewportSize.y);
-                _ViewportSize = { viewportSize.x, viewportSize.y };
-
-                _CameraController.OnResize((size_t)viewportSize.x, (size_t)viewportSize.y);
-            }
+            _ViewportSize = { viewportSize.x, viewportSize.y };
 
             uint32_t textureID = _FrameBuffer->GetColorAttachmentID();
             ImGui::Image((void *)textureID, ImVec2{ _ViewportSize.x, _ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
@@ -169,24 +208,6 @@ namespace IM {
             ImGui::PopStyleVar();
 
             ImGui::End();
-        }
-        else {
-            ImGui::Begin("Settings");
-
-            auto stats = Renderer::R2D::GetStats();
-            ImGui::Text("Renderer2D Stats: ");
-            ImGui::Text("DrawCalls: %d", stats.DrawCalls);
-            ImGui::Text("Rect Count: %d", stats.RectCount);
-            ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
-            ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
-
-            ImGui::ColorEdit3("Square Color", glm::value_ptr(_SquareColor));
-
-            uint32_t textureID = _FrameBuffer->GetColorAttachmentID();
-            ImGui::Image((void *)textureID, ImVec2{ 720, 480 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
-
-            ImGui::End();
-        }
     }
 
     void EditorLayer::OnEvent(Event& e)

@@ -34,8 +34,8 @@
     <Filter Include="src\Debug">
       <UniqueIdentifier>{63A3C3B2-CF0D-7829-184C-29CF84F5557E}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\ECS">
-      <UniqueIdentifier>{F76D2FA9-634D-AE44-6C65-391BD8C314A6}</UniqueIdentifier>
+    <Filter Include="src\ECS_New">
+      <UniqueIdentifier>{C002C96E-2CB8-4164-B5AC-3B3B21613868}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Events">
       <UniqueIdentifier>{7162C20E-5D1A-045C-C621-DDB7B2F89E4C}</UniqueIdentifier>
@@ -54,6 +54,9 @@
     </Filter>
     <Filter Include="src\Renderer">
       <UniqueIdentifier>{73D1DFBF-5F34-6F64-08BA-A71AF4FB3AE7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Scene">
+      <UniqueIdentifier>{0A06D2B3-7670-862A-BFAE-37D02B58647F}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -930,26 +933,20 @@
     <ClInclude Include="src\Debug\PerfProfiler.h">
       <Filter>src\Debug</Filter>
     </ClInclude>
-    <ClInclude Include="src\ECS\ComponentArray.h">
-      <Filter>src\ECS</Filter>
+    <ClInclude Include="src\ECS_New\ComponentArray.h">
+      <Filter>src\ECS_New</Filter>
     </ClInclude>
-    <ClInclude Include="src\ECS\ComponentManager.h">
-      <Filter>src\ECS</Filter>
+    <ClInclude Include="src\ECS_New\ComponentManager.h">
+      <Filter>src\ECS_New</Filter>
     </ClInclude>
-    <ClInclude Include="src\ECS\ECSConstants.h">
-      <Filter>src\ECS</Filter>
+    <ClInclude Include="src\ECS_New\ECSCoordinator.h">
+      <Filter>src\ECS_New</Filter>
     </ClInclude>
-    <ClInclude Include="src\ECS\ECSCoordinator.h">
-      <Filter>src\ECS</Filter>
+    <ClInclude Include="src\ECS_New\EntityManager.h">
+      <Filter>src\ECS_New</Filter>
     </ClInclude>
-    <ClInclude Include="src\ECS\EntityManager.h">
-      <Filter>src\ECS</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ECS\System.h">
-      <Filter>src\ECS</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ECS\SystemManager.h">
-      <Filter>src\ECS</Filter>
+    <ClInclude Include="src\ECS_New\SystemManager.h">
+      <Filter>src\ECS_New</Filter>
     </ClInclude>
     <ClInclude Include="src\Events\Delegate.h">
       <Filter>src\Events</Filter>
@@ -1038,11 +1035,12 @@
     <ClInclude Include="src\Renderer\VertexBuffer.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Scene\Scene.h">
+      <Filter>src\Scene</Filter>
+    </ClInclude>
     <ClInclude Include="src\impch.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\Scene\Scene.h" />
-    <ClInclude Include="src\ECS\Components.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Vendor\stb\stb_image.cpp">
@@ -1062,12 +1060,6 @@
     </ClCompile>
     <ClCompile Include="src\Core\Timer.cpp">
       <Filter>src\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ECS\ComponentManager.cpp">
-      <Filter>src\ECS</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ECS\SystemManager.cpp">
-      <Filter>src\ECS</Filter>
     </ClCompile>
     <ClCompile Include="src\Imgui\ImguiBuild.cpp">
       <Filter>src\Imgui</Filter>
@@ -1150,9 +1142,11 @@
     <ClCompile Include="src\Renderer\VertexBuffer.cpp">
       <Filter>src\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\Scene\Scene.cpp">
+      <Filter>src\Scene</Filter>
+    </ClCompile>
     <ClCompile Include="src\impch.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\Scene\Scene.cpp" />
   </ItemGroup>
 </Project>
