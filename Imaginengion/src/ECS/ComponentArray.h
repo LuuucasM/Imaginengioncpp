@@ -13,9 +13,8 @@ namespace IM {
 		IComponentArray(const IComponentArray& obj) = default;
 
 		virtual void RemoveComponent(uint32_t entity) = 0;
-		virtual bool HasComponent(uint32_t entity) = 0;
-
 		std::unordered_map<uint32_t, size_t> _EntityToIndexMap{};
+		std::vector<uint32_t> _EntityList;
 	};
 
 	template<typename C_Type>
@@ -26,37 +25,41 @@ namespace IM {
 
 		template<typename... Args>
 		C_Type& AddComponent(uint32_t entity, Args &&...args) {
-			_EntityToIndexMap[entity] = _VectorOfComponents.size();
-			_VectorOfComponents.emplace_back(C_Type{args...});
-			return _VectorOfComponents.back();
+			size_t loc = _ComponentList.size();
+			_EntityToIndexMap[entity] = loc;
+			_ComponentList.emplace_back(C_Type{args...});
+			_EntityList.emplace_back(entity);
+			
+			return _ComponentList.back();
 		}
 
 		void RemoveComponent(uint32_t entity) override{
-			std::swap(_VectorOfComponents[_EntityToIndexMap[entity]], _VectorOfComponents[_VectorOfComponents.size()-1]);
-			std::swap(_EntityToIndexMap.at((uint32_t)_VectorOfComponents.size() - 1), _EntityToIndexMap.at(entity));
+			//swap component and entityID in repsective lists
+			std::swap(_ComponentList[_EntityToIndexMap[entity]], _ComponentList[_ComponentList.size() - 1]);
+			std::swap(_EntityList[_EntityToIndexMap[entity]], _EntityList[_EntityList.size() - 1]);
 
-			_VectorOfComponents.pop_back();
+			//swap the value for entity to index
+			std::swap(_EntityToIndexMap.at(entity), _EntityToIndexMap.at((uint32_t)_ComponentList.size() - 1));
+
+			_ComponentList.pop_back();
+			_EntityList.pop_back();
 			_EntityToIndexMap.erase(entity);
 		}
 
-		bool HasComponent(uint32_t entity) override {
-			return (_EntityToIndexMap.find(entity) != _EntityToIndexMap.end());
-		}
-
 		auto& GetComponent(uint32_t entity) {
-			return _VectorOfComponents[_EntityToIndexMap[entity]];
+			return _ComponentList[_EntityToIndexMap[entity]];
 		}
 
-		std::vector<C_Type>::iterator begin() { return _VectorOfComponents.begin(); }
-		std::vector<C_Type>::iterator end() { return _VectorOfComponents.end(); }
-		std::vector<C_Type>::iterator rbegin() { return _VectorOfComponents.rbegin(); }
-		std::vector<C_Type>::iterator rend() { return _VectorOfComponents.rend(); }
+		std::vector<C_Type>::iterator begin() { return _ComponentList.begin(); }
+		std::vector<C_Type>::iterator end() { return _ComponentList.end(); }
+		std::vector<C_Type>::iterator rbegin() { return _ComponentList.rbegin(); }
+		std::vector<C_Type>::iterator rend() { return _ComponentList.rend(); }
 
-		std::vector<C_Type>::iterator begin() const { return _VectorOfComponents.begin(); }
-		std::vector<C_Type>::iterator end() const { return _VectorOfComponents.end(); }
-		std::vector<C_Type>::iterator rbegin() const { return _VectorOfComponents.rbegin(); }
-		std::vector<C_Type>::iterator rend() const { return _VectorOfComponents.rend(); }
+		std::vector<C_Type>::iterator begin() const { return _ComponentList.begin(); }
+		std::vector<C_Type>::iterator end() const { return _ComponentList.end(); }
+		std::vector<C_Type>::iterator rbegin() const { return _ComponentList.rbegin(); }
+		std::vector<C_Type>::iterator rend() const { return _ComponentList.rend(); }
 	private:
-		std::vector<C_Type> _VectorOfComponents;
+		std::vector<C_Type> _ComponentList;
 	};
 }

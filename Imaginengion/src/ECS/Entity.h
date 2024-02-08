@@ -10,9 +10,7 @@ namespace IM {
 	public:
 		Entity() = default;
 		Entity(uint32_t entityID, Scene *scene)
-			: _EntityID(entityID), _Scene(scene){
-			std::cout << "my entity ID is: " << entityID << std::endl;
-		}
+			: _EntityID(entityID), _Scene(scene){}
 
 		Entity(const Entity& other) = default;
 
@@ -42,6 +40,11 @@ namespace IM {
 		}
 
 		operator bool() const { return _EntityID != 0; }
+		operator uint32_t()const { return _EntityID; }
+		operator uint64_t()const { return (uint64_t)_EntityID; }
+
+		bool operator==(const Entity& other) const { return _EntityID == other._EntityID && _Scene == other._Scene; }
+		bool operator!=(const Entity& other) const { return !(*this == other); }
 	private:
 		uint32_t _EntityID{ 0 };
 		Scene* _Scene = nullptr;

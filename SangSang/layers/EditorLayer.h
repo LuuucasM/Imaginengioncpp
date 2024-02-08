@@ -2,6 +2,7 @@
 
 #include "Imagine.h"
 #include "../Panels/SceneHierarchyPanel.h"
+#include "../Panels//PropertiesPanel.h"
 
 namespace IM {
 	class EditorLayer : public Layer
@@ -17,7 +18,6 @@ namespace IM {
 	private:
 		OrthographicCameraController _CameraController;
 
-		//TEMP
 		RefPtr<Shader> _Shader;
 		RefPtr<VertexArray> _VertexArray;
 		glm::vec4 _SquareColor = { 0.2f, 0.3f, 0.8f, 1.0f };
@@ -36,6 +36,9 @@ namespace IM {
 		bool _bViewportFocus = false, _bViewportHovered = false;
 		glm::vec2 _ViewportSize = glm::vec2(0.0f);
 
-		SceneHierarchyPanel _SceneHierarchyPanel;
+		RefPtr<SceneHierarchyPanel> _SceneHierarchyPanel;
+		RefPtr<PropertiesPanel> _PropertiesPanel;
+
+		float _FPS = 0.0f;
 	};
 }

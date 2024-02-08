@@ -16,7 +16,7 @@ namespace IM {
 		~EntityManager() = default;
 	private:
 		uint32_t CreateEntity() {
-			return *IDsInUse.insert(_Gen.GetID()).first;
+			return *IDsInUse.insert(_Generator.GetID()).first;
 		}
 
 		void DestroyEntity(uint32_t entity) {
@@ -27,13 +27,13 @@ namespace IM {
 			return IDsInUse;
 		}
 	private:
-		struct IDGen {
+		struct IDGenerator {
 			uint32_t next_id = 1;
 			uint32_t GetID() {
 				return next_id++;
 			}
 		};
-		IDGen _Gen;
+		IDGenerator _Generator;
 		std::unordered_set<uint32_t> IDsInUse;
 		std::unordered_set<uint32_t> IDsRemoved;
 		ECSManager*_ECSManager;

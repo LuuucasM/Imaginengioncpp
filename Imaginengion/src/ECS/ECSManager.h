@@ -41,7 +41,7 @@ namespace IM {
 
 		template <typename C_Type>
 		bool HasComponent(uint32_t entity) {
-			_ComponentManager->HasComponent<C_Type>(entity);
+			return _ComponentManager->HasComponent<C_Type>(entity);
 		}
 
 		template<typename C_Type>

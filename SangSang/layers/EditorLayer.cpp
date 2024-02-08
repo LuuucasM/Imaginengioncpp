@@ -28,6 +28,8 @@ namespace IM {
 
         _SquareEntity = _ActiveScene->CreateEntity("Square");
         _SquareEntity.AddComponent<C_SpriteRenderer>(glm::vec4(0.8f, 0.3f, 0.3f, 1.0f));
+        _SquareEntity = _ActiveScene->CreateEntity("BlueSquare");
+        _SquareEntity.AddComponent<C_SpriteRenderer>(glm::vec4(0.3f, 0.3f, 0.8f, 1.0f));
 
         _CameraEntity = _ActiveScene->CreateEntity("Camera");
         _CameraEntity.AddComponent<C_Camera>();
@@ -58,7 +60,8 @@ namespace IM {
         _CameraEntity.AddComponent<C_NativeScript>().Bind<CameraController>();
         _CameraEntity2.AddComponent<C_NativeScript>().Bind<CameraController>();
 
-        _SceneHierarchyPanel.SetContext(_ActiveScene);
+        _SceneHierarchyPanel = CreateRefPtr<SceneHierarchyPanel>(_ActiveScene);
+        _PropertiesPanel = CreateRefPtr<PropertiesPanel>(_SceneHierarchyPanel);
     }
 
     void EditorLayer::OnDetach()
@@ -72,7 +75,7 @@ namespace IM {
     void EditorLayer::OnUpdate(float dt)
     {
         IMAGINE_PROFILE_FUNCTION();
-
+        _FPS = 1.0f / dt;
         //resize viewport if needed
         if (IM::FrameBufferSpecification spec = _FrameBuffer->GetSpecification();
             _ViewportSize.x > 0.0f && _ViewportSize.y > 0.0f &&
@@ -161,7 +164,8 @@ namespace IM {
                 ImGui::EndMenuBar();
             }
 
-            _SceneHierarchyPanel.OnImGuiRender();
+            _SceneHierarchyPanel->OnImGuiRender();
+            _PropertiesPanel->OnImGuiRender();
 
             ImGui::Begin("Settings");
 
@@ -171,6 +175,7 @@ namespace IM {
             ImGui::Text("Rect Count: %d", stats.RectCount);
             ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
             ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
+            ImGui::Text("FPS: %f", _FPS);
 
             if (_SquareEntity) {
                 ImGui::Separator();

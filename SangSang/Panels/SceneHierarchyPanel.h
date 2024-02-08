@@ -1,20 +1,23 @@
 #pragma once
 
 #include "Scene/Scene.h"
-#include "Core/Core.h"
-#include "imgui/imgui.h"
+#include "ECS/Entity.h"
+#include "Imgui/imgui.h"
 
 namespace IM {
-	class SceneHierarchyPanel
-	{
+	class SceneHierarchyPanel{
+	friend class PropertiesPanel;
 	public:
 		SceneHierarchyPanel() = default;
-		SceneHierarchyPanel(const RefPtr<Scene>& scene);
+		SceneHierarchyPanel(const WeakPtr<Scene>& scene);
 
-		void SetContext(const RefPtr<Scene>& scene);
+		void SetContext(const WeakPtr<Scene>& scene);
 
 		void OnImGuiRender();
 	private:
-		RefPtr<Scene> _Context;
+		void DrawEntityNode(Entity entity);
+	private:
+		WeakPtr<Scene> _Context;
+		Entity _SelectionContext{0, nullptr};
 	};
 }
