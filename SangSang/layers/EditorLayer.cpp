@@ -167,7 +167,7 @@ namespace IM {
             _SceneHierarchyPanel->OnImGuiRender();
             _PropertiesPanel->OnImGuiRender();
 
-            ImGui::Begin("Settings");
+            ImGui::Begin("Renderer2D Stats");
 
             auto stats = Renderer::R2D::GetStats();
             ImGui::Text("Renderer2D Stats: ");
@@ -176,24 +176,6 @@ namespace IM {
             ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
             ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
             ImGui::Text("FPS: %f", _FPS);
-
-            if (_SquareEntity) {
-                ImGui::Separator();
-
-                auto& name = _SquareEntity.GetComponent<C_Name>().Name;
-                ImGui::Text("%s", name.c_str());
-
-                auto& squareColor = _SquareEntity.GetComponent<C_SpriteRenderer>().Color;
-                ImGui::ColorEdit3("Square Color", glm::value_ptr(squareColor));
-
-                ImGui::Separator();
-            }
-
-            if (ImGui::Checkbox("Camera A", &_PrimaryCamera)) {
-                _CameraEntity.GetComponent<C_Camera>()._bPrimary = _PrimaryCamera;
-                _CameraEntity2.GetComponent<C_Camera>()._bPrimary = !_PrimaryCamera;
-            }
-
             ImGui::End();
 
             ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });

@@ -34,8 +34,7 @@ namespace IM {
 
 		template<typename C_Type>
 		void RemoveComponent(uint32_t entity) {
-			auto type_hash = typeid(C_Type).hash_code();
-			_ComponentArrayList[type_hash]->RemoveComponent(entity);
+			_ComponentArrayList[typeid(C_Type).hash_code()]->RemoveComponent(entity);
 		}
 
 		template<typename C_Type>
@@ -72,7 +71,7 @@ namespace IM {
 			std::vector<uint32_t> result;
 			for (uint32_t i = 1; i < componentArrays.size(); ++i) {
 				for (auto entity : componentArrays[i]->_EntityList) {
-					if (keys.count(entity)) {
+					if (keys.contains(entity)) {
 						result.push_back(entity);
 						keys.erase(entity);
 					}
