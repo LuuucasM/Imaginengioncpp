@@ -14,11 +14,14 @@ namespace IM {
 		~Scene();
 
 		Entity CreateEntity(const std::string& name = "Entity");
+		void DestroyEntity(Entity entity);
 
 		void OnUpdate(float dt);
 
 		void OnViewportResize(size_t viewportWidth, size_t viewportHeight);
-
+	private:
+		template<typename T>
+		void OnComponentAdded(Entity entity, T& component);
 	private:
 		size_t _ViewportWidth = 0, _ViewportHeight = 0;
 		ECSManager _ECSManager;

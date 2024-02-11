@@ -25,8 +25,8 @@ namespace IM {
 			_ComponentManager->DestroyEntity(entity);
 		}
 
-		std::unordered_set<uint32_t>& GetAllEntityIDs() {
-			return _EntityManager->GetAllEntityIDs();
+		std::unordered_set<uint32_t>& GetAllEntityID() {
+			return _EntityManager->GetAllEntityID();
 		}
 
 		//-------------Components--------------

@@ -83,7 +83,12 @@ namespace IM {
 		}
 
 		void SetViewportSize(size_t width, size_t height) {
-			_AspectRatio = (float)width / (float)height;
+			if (height) {
+				_AspectRatio = (float)width / (float)height;
+			}
+			else {
+				_AspectRatio = 0.0f;
+			}
 			RecalculateProjection();
 		}
 

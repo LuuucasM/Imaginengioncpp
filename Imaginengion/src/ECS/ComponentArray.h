@@ -38,8 +38,7 @@ namespace IM {
 			std::swap(_ComponentList[_EntityToIndexMap[entity]], _ComponentList[_ComponentList.size() - 1]);
 			std::swap(_EntityList[_EntityToIndexMap[entity]], _EntityList[_EntityList.size() - 1]);
 
-			//swap the value for entity to index
-			std::swap(_EntityToIndexMap.at(entity), _EntityToIndexMap.at((uint32_t)_ComponentList.size() - 1));
+			_EntityToIndexMap[_EntityList[_EntityToIndexMap[entity]]] = _EntityToIndexMap[entity];
 
 			_ComponentList.pop_back();
 			_EntityList.pop_back();

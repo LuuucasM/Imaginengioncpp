@@ -16,7 +16,9 @@ namespace IM {
 
 		template<typename C_Type, typename... Args>
 		C_Type& AddComponent(Args&&... args) { 
-			return _Scene->_ECSManager.AddComponent<C_Type>(_EntityID, std::forward<Args>(args)...); 
+			C_Type& component = _Scene->_ECSManager.AddComponent<C_Type>(_EntityID, std::forward<Args>(args)...);
+			_Scene->OnComponentAdded<C_Type>(*this, component);
+			return component;
 		}
 
 		template<typename C_Type>

@@ -25,6 +25,10 @@ namespace IM {
 		e.AddComponent<C_Name>(name);
 		return e;
 	}
+	void Scene::DestroyEntity(Entity entity)
+	{
+		_ECSManager.DestroyEntity(entity);
+	}
 	void Scene::OnUpdate(float dt)
 	{
 
@@ -83,5 +87,31 @@ namespace IM {
 				cam.SetViewportSize(viewportWidth, viewportHeight);
 			}
 		}
+	}
+
+	template<typename T>
+	void Scene::OnComponentAdded(Entity entity, T& component) {
+		IMAGINE_CORE_ASSERT(0, "this should never happen! in OnComponentAdded")
+	}
+
+	template<>
+	void Scene::OnComponentAdded<C_Transform>(Entity entity, C_Transform& component) {
+		
+	}
+	template<>
+	void Scene::OnComponentAdded<C_SpriteRenderer>(Entity entity, C_SpriteRenderer& component) {
+
+	}
+	template<>
+	void Scene::OnComponentAdded<C_Name>(Entity entity, C_Name& component) {
+
+	}
+	template<>
+	void Scene::OnComponentAdded<C_Camera>(Entity entity, C_Camera& component) {
+		component.SetViewportSize(_ViewportWidth, _ViewportHeight);
+	}
+	template<>
+	void Scene::OnComponentAdded<C_NativeScript>(Entity entity, C_NativeScript& component) {
+
 	}
 }

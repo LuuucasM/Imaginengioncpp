@@ -15,8 +15,9 @@ namespace IM{
 		ImGui::Begin("Scene");
 		if (!_Context.expired()){
 			//iterate through all the entities in the ECS
-			for (auto entityID : _Context.lock()->_ECSManager.GetAllEntityIDs()) {
-				Entity entity{ entityID, _Context.lock().get()};
+			auto& entityList = _Context.lock()->_ECSManager.GetAllEntityID();
+			for (auto ent : entityList) {
+				Entity entity{ ent, _Context.lock().get()};
 				DrawEntityNode(entity);
 			}
 
@@ -24,8 +25,21 @@ namespace IM{
 				_SelectionContext = { 0, nullptr };
 			}
 		}
+
+		for (auto ent : entityToDestroy) {
+			_Context.lock()->_ECSManager.DestroyEntity(ent);
+		}
+		entityToDestroy.clear();
+
+		if (ImGui::BeginPopupContextWindow(0, 1 | ImGuiPopupFlags_NoOpenOverItems)) {
+			if (ImGui::MenuItem("Create Empty Entity")) {
+				_Context.lock()->CreateEntity("Empty Entity");
+			}
+			ImGui::EndPopup();
+		}
 		ImGui::End();
 	}
+
 	void SceneHierarchyPanel::DrawEntityNode(Entity entity)
 	{
 		auto& nameComponent = entity.GetComponent<C_Name>();;
@@ -35,8 +49,20 @@ namespace IM{
 		if (ImGui::IsItemClicked()) {
 			_SelectionContext = entity;
 		}
+
+		bool entityDeleted = false;
+		if (ImGui::BeginPopupContextItem()) {
+			if (ImGui::MenuItem("Delete Entity")) {
+				entityDeleted = true;
+			}
+			ImGui::EndPopup();
+		}
+
 		if (opened) {
 			ImGui::TreePop();
 		}
+
+		if (entityDeleted)
+			entityToDestroy.insert(entity);
 	}
 }

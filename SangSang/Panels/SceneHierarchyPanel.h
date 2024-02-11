@@ -17,6 +17,7 @@ namespace IM {
 	private:
 		void DrawEntityNode(Entity entity);
 	private:
+		std::unordered_set<uint32_t> entityToDestroy;
 		WeakPtr<Scene> _Context;
 		Entity _SelectionContext{0, nullptr};
 	};

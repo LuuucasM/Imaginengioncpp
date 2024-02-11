@@ -35,6 +35,7 @@ namespace IM {
 		template<typename C_Type>
 		void RemoveComponent(uint32_t entity) {
 			_ComponentArrayList[typeid(C_Type).hash_code()]->RemoveComponent(entity);
+			_EntityToComponentCodes[entity].erase(typeid(C_Type).hash_code());
 		}
 
 		template<typename C_Type>
