@@ -12,13 +12,6 @@ namespace IM {
 		void Bind() const override;
 		void Unbind() const override;
 
-		void SetLayout(const BufferLayout& layout) override {
-			_Layout = layout;
-		}
-		const BufferLayout& GetLayout() const override {
-			return _Layout;
-		};
-
 		void SetData(const void* data, size_t size) override;
 	};
 }

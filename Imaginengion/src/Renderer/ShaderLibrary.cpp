@@ -14,9 +14,4 @@ namespace IM {
 		Add(shader);
 		return shader;
 	}
-	RefPtr<Shader> ShaderLibrary::Load(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc) {
-		auto shader = Shader::Create(name, vertexSrc, fragmentSrc);
-		Add(shader);
-		return shader;
-	}
 }

@@ -5,18 +5,6 @@
 #include "Platform/OpenGL/OpenGLShader.h"
 
 namespace IM {
-	RefPtr<Shader> Shader::Create(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc) {
-		switch (RendererAPI::GetCurrentAPI()) {
-		case RendererAPI::API::None:
-			IMAGINE_CORE_ASSERT(false, "RendererAPI::API::None is currently not supported !");
-			return nullptr;
-		case RendererAPI::API::OpenGL:
-			return  CreateRefPtr<OpenGLShader>(name, vertexSrc, fragmentSrc);
-		}
-		IMAGINE_CORE_ASSERT(false, "Unknown RendererAPI!");
-		return nullptr;
-	}
-
 	RefPtr<Shader> Shader::Create(const std::string& filepath) {
 		switch (RendererAPI::GetCurrentAPI()) {
 		case RendererAPI::API::None:

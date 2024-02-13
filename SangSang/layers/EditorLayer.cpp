@@ -32,7 +32,7 @@ namespace IM {
         _SquareEntity.AddComponent<C_SpriteRenderer>(glm::vec4(0.3f, 0.3f, 0.8f, 1.0f));
 
         _CameraEntity = _ActiveScene->CreateEntity("Camera");
-        _CameraEntity.AddComponent<C_Camera>();
+        _CameraEntity.AddComponent<C_Camera>()._ProjectionType = C_Camera::ProjectionType::Orthographic;
 
         _CameraEntity2 = _ActiveScene->CreateEntity("Camera2");
         _CameraEntity2.AddComponent<C_Camera>()._bPrimary = false;

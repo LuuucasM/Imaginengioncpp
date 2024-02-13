@@ -3,6 +3,8 @@
 
 #include "Imgui/imgui_internal.h"
 
+#include <glm/gtc/type_ptr.hpp>
+
 namespace IM {
 	PropertiesPanel::PropertiesPanel(const WeakPtr<SceneHierarchyPanel> panel)
 	{

@@ -52,7 +52,7 @@ namespace IM {
 
 		IMAGINE_PROFILE_FUNCTION();
 
-		IMAGINE_CORE_ASSERT(vertexBuffer->GetLayout().GetElements().size(), "Vertex Buffer has no layout!");
+		IMAGINE_CORE_ASSERT(vertexBuffer->GetLayout().size(), "Vertex Buffer has no layout!");
 
 		glBindVertexArray(_ArrayID);
 		vertexBuffer->Bind();
@@ -64,7 +64,7 @@ namespace IM {
 			glVertexAttribPointer(index, element.GetComponentCount(),
 				ShaderDataTypeToOpneGLBaseType(element.Type),
 				element.bNormalized ? GL_TRUE : GL_FALSE,
-				layout.GetStride(),
+				vertexBuffer->GetStride(),
 				(const void*)(intptr_t)element.Offset);
 			++index;
 		}

@@ -12,4 +12,3 @@ namespace IM {
 		static ScopePtr<RenderContext> Create(void* window);
 	};
 }
-

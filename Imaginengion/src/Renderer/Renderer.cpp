@@ -63,7 +63,7 @@ namespace IM {
 		static const uint32_t MaxRect = 10000;
 		static const uint32_t MaxVerticies = MaxRect * 4;
 		static const uint32_t MaxIndices = MaxRect * 6;
-		static const uint32_t MaxTextureSlots = 32; //TODO: RENDER CAPS
+		static const uint32_t MaxTextureSlots = 32; //TODO: MAKE CLASS RENDERER CAPABILITIES
 
 		RefPtr<VertexArray> _VertexArray;
 		RefPtr<VertexBuffer> _VertexBuffer;
@@ -90,14 +90,23 @@ namespace IM {
 
 		_Data._VertexArray = VertexArray::Create();
 
+		//_Data._Texture Shader = Shader::Create(filepath)
+		//_Data.VertexBuffer->VertexBuffer::Create(blah)
+		//_Data._VertexBuffer->SetLayout(Shader.GetLayout);
+
+		int samplers[_Data.MaxTextureSlots];
+		for (uint32_t i = 0; i < _Data.MaxTextureSlots; i++) {
+			samplers[i] = i;
+		}
+
+		_Data._TextureShader = Shader::Create("assets/shaders/Texture.glsl");
+		_Data._TextureShader->Bind();
+		_Data._TextureShader->SetValue("u_Textures", samplers, _Data.MaxTextureSlots);
+
 		_Data._VertexBuffer = VertexBuffer::Create(_Data.MaxVerticies * sizeof(RectVertex));
-		_Data._VertexBuffer->SetLayout({
-			{ShaderDataType::Float3, "a_Position"},
-			{ShaderDataType::Float4, "a_Color"},
-			{ShaderDataType::Float2, "a_TexCoord"},
-			{ShaderDataType::Float, "a_TexIndex"},
-			{ShaderDataType::Float, "a_TilingFactor"}
-			});
+		_Data._VertexBuffer->SetLayout(_Data._TextureShader->GetLayout());
+		_Data._VertexBuffer->SetStride(_Data._TextureShader->GetStride());
+
 		_Data._VertexArray->AddVertexBuffer(_Data._VertexBuffer);
 
 		_Data.RectVertexBufferBase = new RectVertex[_Data.MaxVerticies];
@@ -126,15 +135,6 @@ namespace IM {
 		uint32_t whiteTextureData = 0;
 		whiteTextureData = ~whiteTextureData;
 		_Data._WhiteTexture->SetData(&whiteTextureData, sizeof(whiteTextureData));
-
-		int samplers[_Data.MaxTextureSlots];
-		for (uint32_t i = 0; i < _Data.MaxTextureSlots; i++) {
-			samplers[i] = i;
-		}
-
-		_Data._TextureShader = Shader::Create("assets/shaders/Texture.glsl");
-		_Data._TextureShader->Bind();
-		_Data._TextureShader->SetValue("u_Textures", samplers, _Data.MaxTextureSlots); 
 
 		_Data.TextureSlots[0] = _Data._WhiteTexture;
 
