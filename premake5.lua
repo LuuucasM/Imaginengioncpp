@@ -19,6 +19,7 @@ IncludeDir["Glad"] = "Imaginengion/Vendor/Glad/include"
 IncludeDir["Imgui"] = "Imaginengion/Vendor/Imgui"
 IncludeDir["glm"] = "Imaginengion/Vendor/glm"
 IncludeDir["stb"] = "Imaginengion/Vendor/stb"
+IncludeDir["yaml_cpp"] = "Imaginengion/Vendor/yaml-cpp/include"
 
 include "Imaginengion/Vendor"
 
@@ -52,6 +53,7 @@ project "Imaginengion"
         "%{IncludeDir.Imgui}",
         "%{IncludeDir.glm}",
         "%{IncludeDir.stb}",
+        "%{IncludeDir.yaml_cpp}"
     }
 
     links{
@@ -59,7 +61,8 @@ project "Imaginengion"
         "Glad",
         "Imgui",
         "opengl32.lib",
-        "dwmapi.lib"
+        "dwmapi.lib",
+        "yaml-cpp"
     }
     filter "system:windows"
 
@@ -68,7 +71,8 @@ project "Imaginengion"
 
         defines{
             "IMAGINE_BUILD_DLL",
-            "GLFW_INCLUDE_NONE"
+            "GLFW_INCLUDE_NONE",
+            "YAML_CPP_STATIC_DEFINE"
         }
     
     filter "configurations:Debug"

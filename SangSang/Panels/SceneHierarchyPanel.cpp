@@ -15,7 +15,7 @@ namespace IM{
 		ImGui::Begin("Scene");
 		if (!_Context.expired()){
 			//iterate through all the entities in the ECS
-			auto& entityList = _Context.lock()->_ECSManager.GetAllEntityID();
+			std::unordered_set<uint32_t>& entityList = _Context.lock()->_ECSManager.GetAllEntityID();
 			for (auto ent : entityList) {
 				Entity entity{ ent, _Context.lock().get()};
 				DrawEntityNode(entity);
@@ -44,7 +44,7 @@ namespace IM{
 	{
 		auto& nameComponent = entity.GetComponent<C_Name>();;
 		ImGuiTreeNodeFlags flags = ((_SelectionContext == entity) ? ImGuiTreeNodeFlags_Selected : 0)
-			| ImGuiTreeNodeFlags_OpenOnArrow;
+			| ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
 		bool opened = ImGui::TreeNodeEx((void*)(uint64_t)entity, flags, nameComponent.Name.c_str());
 		if (ImGui::IsItemClicked()) {
 			_SelectionContext = entity;

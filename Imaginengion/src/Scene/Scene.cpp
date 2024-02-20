@@ -2,6 +2,7 @@
 #include "Scene.h"
 
 #include "ECS/Components.h"
+#include "ECS/Systems.h"
 #include "Renderer/Renderer.h"
 
 #include <glm/glm.hpp>
@@ -11,9 +12,7 @@
 namespace IM {
 	Scene::Scene()
 	{
-		//uint32_t entity = _ECSManager.CreateEntity();
-		//C_Transform& transformComponent = _ECSManager.AddComponent<C_Transform>(entity);
-		//C_SpriteRenderer& spriteRendererComponent = _ECSManager.AddComponent<C_SpriteRenderer>(entity);
+		_ECSManager.RegisterSystem<RenderSystem, C_Transform, C_SpriteRenderer>();
 	}
 	Scene::~Scene()
 	{
@@ -33,7 +32,7 @@ namespace IM {
 	{
 
 		//update scripts on update function
-		auto group = _ECSManager.GetGroup<C_NativeScript>();
+		auto& group = _ECSManager.GetGroup<C_NativeScript>();
 		for (auto entity : group) {
 			auto& script = _ECSManager.GetComponent<C_NativeScript>(entity);
 			if (!script.Instance) {
@@ -49,7 +48,7 @@ namespace IM {
 		//need to change this so that scene just directly holds a pointer to the primary camera instead of looping through cameras every time
 		C_Camera *mainCamera = nullptr;
 		C_Transform* cameraTransform = nullptr;
-		auto entities = _ECSManager.GetGroup<C_Transform, C_Camera>();
+		auto& entities = _ECSManager.GetGroup<C_Transform, C_Camera>();
 		for (auto ent : entities) {
 			auto ent_cam = _ECSManager.GetComponent<C_Camera>(ent);
 			if (ent_cam._bPrimary) {
@@ -63,12 +62,13 @@ namespace IM {
 
 			//this is the main render system for rendering in 2d
 			Renderer::R2D::BeginScene(*mainCamera, *cameraTransform);//---------------------------------
-
-			auto group = _ECSManager.GetGroup<C_Transform, C_SpriteRenderer>();
+			/*
+			auto& group = _ECSManager.GetGroup<C_Transform, C_SpriteRenderer>();
 			for (auto entity : group) {
 				auto [transform, sprite] = _ECSManager.GetComponents<C_Transform, C_SpriteRenderer>(entity);
 				Renderer::R2D::DrawRect(transform.GetTransform(), sprite.Color);
-			}
+			}*/
+			_ECSManager.SystemOnUpdate<RenderSystem>(dt);
 
 			Renderer::R2D::EndScene();//------------------------
 		}
@@ -79,7 +79,7 @@ namespace IM {
 		_ViewportHeight = viewportHeight;
 
 		//this is a changing aspect ratio on cameras depending on viewport resizeing
-		auto entities = _ECSManager.GetGroup<C_Camera>();
+		auto& entities = _ECSManager.GetGroup<C_Camera>();
 		for (auto ent : entities) {
 			//auto& cam = _ECSManager.GetComponent<C_Camera>(ent);
 			auto [transform, cam] = _ECSManager.GetComponents<C_Transform, C_Camera>(ent);

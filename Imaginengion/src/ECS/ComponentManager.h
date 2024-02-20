@@ -1,21 +1,21 @@
 #pragma once
-
-#include "ECSManager.h"
 #include "ComponentArray.h"
 
 #include <unordered_map>
 #include <unordered_set>
+#include <set>
 #include <algorithm>
+#include <numeric>
 #include <memory>
 #include <iostream>
+#include <typeindex>
 
 namespace IM {
 	class ComponentManager {
 		friend class ECSManager;
+		friend class System;
 	public:
-		ComponentManager(ECSManager* ecs) {
-			_ECSManager = ecs;
-		}
+		ComponentManager() = default;
 		~ComponentManager() = default;
 	private:
 
@@ -25,10 +25,10 @@ namespace IM {
 
 			if (!_ComponentArrayList.contains(type_hash)) {
 				_ComponentArrayList[type_hash] = CreateRefPtr<ComponentArray<C_Type>>();
+				_ComponentArrayVersion[type_hash] = 0;
 			}
 
 			_EntityToComponentCodes[entity].insert(type_hash);
-
 			return std::static_pointer_cast<ComponentArray<C_Type>>(_ComponentArrayList[type_hash])->AddComponent(entity, std::forward<Args>(args)...);
 		}
 
@@ -56,30 +56,22 @@ namespace IM {
 		}
 
 		template<typename ...Args>
-		std::vector<uint32_t> GetGroup() {
-			auto argSize = sizeof...(Args);
-			if (argSize == 1) {
-				return (_ComponentArrayList[typeid(Args).hash_code()]->_EntityList, ...);
-			}
+		const std::vector<uint32_t>& GetGroup() {
+			//get a list of ids for this group
+			const std::vector<uint32_t>& ids = GetGroupIDs<Args...>();
+			//sort components of the IDs so that they are contiguous in memory
+			GetGroupSort(ids);
 
-			std::vector<RefPtr<IComponentArray>> componentArrays;
-			(componentArrays.emplace_back(_ComponentArrayList[typeid(Args).hash_code()]), ...);
+			return ids;
+		}
+		template<typename ...Args>
+		const std::vector<uint32_t>& GetGroup(std::set<size_t>& typeHashes, size_t num) {
+			//get a list of ids for this group
+			const std::vector<uint32_t>& ids = GetGroupIDs<Args...>(typeHashes, num);
+			//sort components of the IDs so that they are contiguous in memory
+			GetGroupSort(ids);
 
-			std::sort(componentArrays.begin(), componentArrays.end(), [](const RefPtr<IComponentArray>& a, const RefPtr<IComponentArray>& b) { return a->_EntityList.size() < b->_EntityList.size(); });
-
-			std::unordered_set<uint32_t> keys(componentArrays[0]->_EntityList.begin(), componentArrays[0]->_EntityList.end());
-
-			std::vector<uint32_t> result;
-			for (uint32_t i = 1; i < componentArrays.size(); ++i) {
-				for (auto entity : componentArrays[i]->_EntityList) {
-					if (keys.contains(entity)) {
-						result.push_back(entity);
-						keys.erase(entity);
-					}
-				}
-			}
-
-			return result;
+			return ids;
 		}
 
 		void DestroyEntity(uint32_t entity) {
@@ -89,8 +81,96 @@ namespace IM {
 			_EntityToComponentCodes.erase(entity);
 		}
 	private:
+		void ComputeGroupIDs(const std::set<size_t>& typeHashes, size_t num) {
+			std::vector<RefPtr<IComponentArray>> componentArrays;
+			for (auto ele : typeHashes) {
+				componentArrays.emplace_back(_ComponentArrayList[ele]);
+			}
+
+			std::sort(componentArrays.begin(), componentArrays.end(), [](const RefPtr<IComponentArray>& a, const RefPtr<IComponentArray>& b) { return a->_EntityList.size() < b->_EntityList.size(); });
+
+			std::unordered_set<uint32_t> keys(componentArrays[0]->_EntityList.begin(), componentArrays[0]->_EntityList.end());
+
+			std::vector<uint32_t> result;
+			for (uint32_t i = 1; i < componentArrays.size(); ++i) {
+				for (auto entity : componentArrays[i]->_EntityList) {
+					if (size_t n = keys.erase(entity); n) {
+						result.push_back(entity);
+					}
+				}
+			}
+			_EntityCache[num] = result;
+		}
+		template<typename... Args>
+		const std::vector<uint32_t>& GetGroupIDs() {
+			std::set<size_t> typeHashes = { typeid(Args).hash_code()... };
+
+			//if we only are getting 1 component type then we can just return that component type containers entity list
+			if (typeHashes.size() == 1) {
+				return _ComponentArrayList[*typeHashes.begin()]->_EntityList;
+			}
+			
+			//check if this combination of component types is already cached
+			auto Pairing = [](size_t a, size_t b) {
+				return (int)(a >= b ? a * a + a + b : a + b * b);
+			};
+			size_t num = std::accumulate(typeHashes.begin(), typeHashes.end(), 0, Pairing);
+
+			//check to see if we need to re-compute the cached IDs by checking the version numbers
+			bool need_new = false;
+			for (auto ele : typeHashes) {
+				if (_ComponentArrayVersion[ele] != _ComponentArrayList[ele]->_VersionNumber) {
+					_ComponentArrayVersion[ele] = _ComponentArrayList[ele]->_VersionNumber;
+					need_new = true;
+				}
+			}
+			if (need_new) {
+				ComputeGroupIDs(typeHashes, num);
+				return _EntityCache[num];
+			}
+
+			if (!_EntityCache.contains(num)) {
+				ComputeGroupIDs(typeHashes, num);
+			}
+
+			return _EntityCache[num];
+
+		}
+		template<typename... Args>
+		const std::vector<uint32_t>& GetGroupIDs(std::set<size_t>& typeHashes, size_t num) {
+
+			//if we only are getting 1 component type then we can just return that component type containers entity list
+			if (typeHashes.size() == 1) {
+				return _ComponentArrayList[*typeHashes.begin()]->_EntityList;
+			}
+
+			//check to see if we need to re-compute the cached IDs by checking the version numbers
+			bool need_new = false;
+			for (auto ele : typeHashes) {
+				if (_ComponentArrayVersion[ele] != _ComponentArrayList[ele]->_VersionNumber) {
+					_ComponentArrayVersion[ele] = _ComponentArrayList[ele]->_VersionNumber;
+					need_new = true;
+				}
+			}
+			if (need_new) {
+				ComputeGroupIDs(typeHashes, num);
+				return _EntityCache[num];
+			}
+
+			if (!_EntityCache.contains(num)) {
+				ComputeGroupIDs(typeHashes, num);
+			}
+
+			return _EntityCache[num];
+
+		}
+		void GetGroupSort(const std::vector<uint32_t>& idList) {
+
+		}
+	private:
 		std::unordered_map<size_t, RefPtr<IComponentArray>> _ComponentArrayList{};
 		std::unordered_map<uint32_t, std::unordered_set<size_t>> _EntityToComponentCodes{};
-		ECSManager*_ECSManager;
+		std::unordered_map<size_t, size_t> _ComponentArrayVersion{};
+		std::unordered_map<size_t, std::vector<uint32_t>> _EntityCache{};
 	};
 }

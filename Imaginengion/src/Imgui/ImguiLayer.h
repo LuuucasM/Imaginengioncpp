@@ -32,6 +32,8 @@ namespace IM {
 		void End();
 
 		void SetBlockEvents(bool block) { _bBlockEvents = block; }
+		void SetDarkThemeColors();
+		
 	private:
 		bool _bBlockEvents = true;
 	};

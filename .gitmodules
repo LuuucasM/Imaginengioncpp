@@ -14,3 +14,6 @@
 [submodule "Imaginengion/Vendor/stduuid"]
 	path = Imaginengion/Vendor/stduuid
 	url = https://github.com/mariusbancila/stduuid.git
+[submodule "Imaginengion/Vendor/yaml-cpp"]
+	path = Imaginengion/Vendor/yaml-cpp
+	url = https://github.com/jbeder/yaml-cpp.git

@@ -249,40 +249,40 @@ namespace IM {
 	}
 
 	void OpenGLShader::SetValue(const std::string& name, bool value) {
-		IMAGINE_CORE_ASSERT(_Uniforms.find(name) != _Uniforms.end(), "Cannot find union with the given name in OpenGLShader::Setbool");
+		IMAGINE_CORE_ASSERT(_Uniforms.contains(name), "Cannot find union with the given name in OpenGLShader::Setbool");
 		glUniform1i(_Uniforms[name], (int)value);
 	}
 	void OpenGLShader::SetValue(const std::string& name, int value) {
-		IMAGINE_CORE_ASSERT(_Uniforms.find(name) != _Uniforms.end(), "Cannot find union with the given name in OpenGLShader::SetInt");
+		IMAGINE_CORE_ASSERT(_Uniforms.contains(name), "Cannot find union with the given name in OpenGLShader::SetInt");
 		glUniform1i(_Uniforms[name], value);
 	}
 	void OpenGLShader::SetValue(const std::string& name, int* values, uint32_t count)
 	{
-		IMAGINE_CORE_ASSERT(_Uniforms.find(name) != _Uniforms.end(), "Cannot find union with the given name in OpenGLShader::SetIntArray");
+		IMAGINE_CORE_ASSERT(_Uniforms.contains(name), "Cannot find union with the given name in OpenGLShader::SetIntArray");
 		glUniform1iv(_Uniforms[name], count, values);
 	}
 	void OpenGLShader::SetValue(const std::string& name, float value) {
-		IMAGINE_CORE_ASSERT(_Uniforms.find(name) != _Uniforms.end(), "Cannot find union with the given name in OpenGLShader::SetFloat");
+		IMAGINE_CORE_ASSERT(_Uniforms.contains(name), "Cannot find union with the given name in OpenGLShader::SetFloat");
 		glUniform1f(_Uniforms[name], value);
 	}
 	void OpenGLShader::SetValue(const std::string& name, glm::vec2 value) {
-		IMAGINE_CORE_ASSERT(_Uniforms.find(name) != _Uniforms.end(), "Cannot find union with the given name in OpenGLShader::SetVec2");
+		IMAGINE_CORE_ASSERT(_Uniforms.contains(name), "Cannot find union with the given name in OpenGLShader::SetVec2");
 		glUniform2f(_Uniforms[name], value.x, value.y);
 	}
 	void OpenGLShader::SetValue(const std::string& name, glm::vec3 value) {
-		IMAGINE_CORE_ASSERT(_Uniforms.find(name) != _Uniforms.end(), "Cannot find union with the given name in OpenGLShader::SetVec3");
+		IMAGINE_CORE_ASSERT(_Uniforms.contains(name), "Cannot find union with the given name in OpenGLShader::SetVec3");
 		glUniform3f(_Uniforms[name], value.x, value.y, value.z);
 	}
 	void OpenGLShader::SetValue(const std::string& name, glm::vec4 value) {
-		IMAGINE_CORE_ASSERT(_Uniforms.find(name) != _Uniforms.end(), "Cannot find union with the given name in OpenGLShader::SetVec4");
+		IMAGINE_CORE_ASSERT(_Uniforms.contains(name), "Cannot find union with the given name in OpenGLShader::SetVec4");
 		glUniform4f(_Uniforms[name], value.x, value.y, value.z, value.w);
 	}
 	void OpenGLShader::SetValue(const std::string& name, glm::mat3 value) {
-		IMAGINE_CORE_ASSERT(_Uniforms.find(name) != _Uniforms.end(), "Cannot find union with the given name in OpenGLShader::SetMat3");
+		IMAGINE_CORE_ASSERT(_Uniforms.contains(name), "Cannot find union with the given name in OpenGLShader::SetMat3");
 		glUniformMatrix3fv(_Uniforms[name], 1, GL_FALSE, glm::value_ptr(value));
 	}
 	void OpenGLShader::SetValue(const std::string& name, glm::mat4 value) {
-		IMAGINE_CORE_ASSERT(_Uniforms.find(name) != _Uniforms.end(), "Cannot find union with the given name in OpenGLShader::SetMat4");
+		IMAGINE_CORE_ASSERT(_Uniforms.contains(name), "Cannot find union with the given name in OpenGLShader::SetMat4");
 		glUniformMatrix4fv(_Uniforms[name], 1, GL_FALSE, glm::value_ptr(value));
 	}
 }

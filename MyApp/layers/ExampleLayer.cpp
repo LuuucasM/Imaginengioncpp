@@ -2,6 +2,8 @@
 
 #include "Imgui/imgui.h"
 
+#include <glm/gtc/type_ptr.hpp>
+
 ExampleLayer::ExampleLayer()
 	: Layer("Example"), _CameraController(1280.0f / 720.0f) {
 	_VertexArray = IM::VertexArray::Create();
@@ -13,13 +15,11 @@ ExampleLayer::ExampleLayer()
 		0.0f, 0.5f, 0.0f, 0.1f, 0.3f, 0.8f, 1.0f
 	};
 
+	_TextureShader = IM::Shader::Create("assets/shaders/Texture.glsl");
+
 	IM::RefPtr<IM::VertexBuffer> vertexBuffer;
 	vertexBuffer = IM::VertexBuffer::Create(vertices, sizeof(vertices));
-	IM::BufferLayout layout = {
-		{IM::ShaderDataType::Float3, "a_Position"},
-		{IM::ShaderDataType::Float4, "a_Color"}
-	};
-	vertexBuffer->SetLayout(layout);
+	vertexBuffer->SetLayout(_TextureShader->GetLayout());
 	_VertexArray->AddVertexBuffer(vertexBuffer);
 
 	//Index Buffer
@@ -37,86 +37,19 @@ ExampleLayer::ExampleLayer()
 		-0.5f, 0.5f, 0.0f, 0.0, 1.0f
 	};
 
+	
+
 	IM::RefPtr<IM::VertexBuffer> squareVB;
 	squareVB = IM::VertexBuffer::Create(vertices2, sizeof(vertices2));
-	squareVB->SetLayout({
-		{IM::ShaderDataType::Float3, "a_Position"},
-		{IM::ShaderDataType::Float2, "a_TexCoord"}
-		});
+	squareVB->SetLayout(_TextureShader->GetLayout());
 	_SquareVA->AddVertexBuffer(squareVB);
 
 	uint32_t squareIndices[6] = { 0, 1, 2, 2, 3, 0 };
 	IM::RefPtr<IM::IndexBuffer> squareIB;
 	squareIB = IM::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
 	_SquareVA->SetIndexBuffer(squareIB);
-	//TEMPORARY------------------
-	std::string vertexSrc = R"(
-		#version 330 core
-			
-		layout(location = 0) in vec3 a_Position;
-		layout(location = 1) in vec4 a_Color;
 
-		uniform mat4 u_ViewProjection;
-		uniform mat4 u_Transform;
-
-		out vec3 v_Position;
-		out vec4 v_Color;
-
-		void main() {
-			v_Position = a_Position;
-			v_Color = a_Color;
-			gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
-		}
-	)";
-	std::string fragmentSrc = R"(
-		#version 330 core
-			
-		layout(location = 0) out vec4 color;
-
-		in vec3 v_Position;
-		in vec4 v_Color;
-
-		void main() {
-			color = vec4(0.2, 0.3, 0.8, 1.0);
-			color = v_Color;
-		}
-	)";
-
-	std::string vertexSrc2 = R"(
-		#version 330 core
-			
-		layout(location = 0) in vec3 a_Position;
-
-		uniform mat4 u_ViewProjection;
-		uniform mat4 u_Transform;
-
-			
-		out vec3 v_Position;			
-
-		void main() {
-			v_Position = a_Position;
-			gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
-		}
-	)";
-	std::string fragmentSrc2 = R"(
-		#version 330 core
-			
-		layout(location = 0) out vec4 color;
-
-		in vec3 v_Position;
-
-		uniform vec4 u_Color;
-			
-		void main() {
-			color = u_Color;
-		}
-	)";
-	_Shader = IM::Shader::Create("TriangleShader", vertexSrc, fragmentSrc);
-	_Shader2 = IM::Shader::Create("SquareShader", vertexSrc2, fragmentSrc2);
-
-	//
-
-	_TextureShader = IM::Shader::Create("assets/shaders/Texture.glsl");
+	
 
 	//IM::Shader::Create(textureShaderVertexSrc, textureShaderFragSrc);
 

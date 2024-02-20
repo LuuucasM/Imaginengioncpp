@@ -10,9 +10,9 @@ namespace IM {
 	class ECSManager {
 	public:
 		ECSManager() {
-			_EntityManager = CreateScopePtr<EntityManager>(this);
-			_ComponentManager = CreateScopePtr<ComponentManager>(this);
-			_SystemManager = CreateScopePtr<SystemManager>(this);
+			_EntityManager = CreateScopePtr<EntityManager>();
+			_ComponentManager = CreateScopePtr<ComponentManager>();
+			_SystemManager = CreateScopePtr<SystemManager>();
 		}
 		~ECSManager() = default;
 
@@ -54,18 +54,18 @@ namespace IM {
 			return _ComponentManager->GetComponents<Args...>(entity);
 		}
 		template<typename ...Args>
-		std::vector<uint32_t> GetGroup() {
+		const std::vector<uint32_t>& GetGroup() {
 			return _ComponentManager->GetGroup<Args...>();
 		}
 
 		//Systems
-		template<typename S_Type>
+		template<typename S_Type, typename... Args>
 		void RegisterSystem() {
-
+			_SystemManager->RegisterSystem<S_Type, Args...>();
 		}
-		template<typename ...Args>
-		void SystemOnUpdate() {
-			(_SystemManager->SystemOnUpdate<Args>(), ...);
+		template<typename S_Type>
+		void SystemOnUpdate(float dt) {
+			_SystemManager->SystemOnUpdate<S_Type>(_ComponentManager, dt);
 		}
 
 	private:

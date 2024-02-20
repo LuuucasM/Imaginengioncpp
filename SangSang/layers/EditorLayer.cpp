@@ -4,6 +4,10 @@
 
 #include <Imgui/imgui.h>
 
+#include "glm/gtc/type_ptr.hpp"
+
+#include "Scene/SceneSerializer.h"
+
 namespace IM {
     EditorLayer::EditorLayer()
         : Layer("MyApp2D"), _CameraController(1280.0f / 720.0f) {
@@ -31,9 +35,8 @@ namespace IM {
         _SquareEntity = _ActiveScene->CreateEntity("BlueSquare");
         _SquareEntity.AddComponent<C_SpriteRenderer>(glm::vec4(0.3f, 0.3f, 0.8f, 1.0f));
 
-        _CameraEntity = _ActiveScene->CreateEntity("Camera");
+        _CameraEntity = _ActiveScene->CreateEntity("Camera1");
         _CameraEntity.AddComponent<C_Camera>()._ProjectionType = C_Camera::ProjectionType::Orthographic;
-
         _CameraEntity2 = _ActiveScene->CreateEntity("Camera2");
         _CameraEntity2.AddComponent<C_Camera>()._bPrimary = false;
         class CameraController : public ScriptClass {
@@ -57,11 +60,15 @@ namespace IM {
                     transform.Translation.y -= speed * dt;
             }
         };
+
         _CameraEntity.AddComponent<C_NativeScript>().Bind<CameraController>();
         _CameraEntity2.AddComponent<C_NativeScript>().Bind<CameraController>();
 
         _SceneHierarchyPanel = CreateRefPtr<SceneHierarchyPanel>(_ActiveScene);
         _PropertiesPanel = CreateRefPtr<PropertiesPanel>(_SceneHierarchyPanel);
+
+        SceneSerializer serializer(_ActiveScene);
+        serializer.SerializeText("assets/scenes/Example.im");
     }
 
     void EditorLayer::OnDetach()

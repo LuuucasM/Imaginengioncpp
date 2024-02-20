@@ -25,6 +25,10 @@ project "Imgui"
 		"%{prj.name}/imgui_demo.cpp"
 	}
 
+	defines{
+		"_CRT_SECURE_NO_WARNINGS"
+	}
+
 	filter "system:windows"
 		systemversion "latest"
 		
@@ -159,6 +163,52 @@ project "Glad"
         systemversion "latest"
 
 		filter "configurations:Debug"
+		runtime "Debug"
+		symbols "on"
+
+	filter "configurations:Release"
+		runtime "Release"
+		optimize "on"
+
+    filter "configurations:Dist"
+        runtime "Release"
+		optimize "on"
+
+--[[=====================================
+------------------YAML-----------------
+=========================================]]--
+project "yaml-cpp"
+    location "yaml-cpp"
+    kind "StaticLib"
+    language "C++"
+	staticruntime "on"
+
+    targetdir("bin/" .. outputdir .. "/%{prj.name}")
+    targetdir("bin-int/" .. outputdir .. "/%{prj.name}")
+
+	defines{
+		"YAML_CPP_STATIC_DEFINE"
+	}
+
+    files{
+        "%{prj.name}/src/**.h",
+		"%{prj.name}/src/**.cpp",
+		"%{prj.name}/include/**.h"
+    }
+
+    includedirs{
+        "%{prj.name}/include"
+    }
+    filter "system:linux"
+		pic "On"
+		systemversion "latest"
+		cppdialect "C++20"        
+
+    filter "system:windows"
+		systemversion "latest"
+		cppdialect "C++20"
+
+	filter "configurations:Debug"
 		runtime "Debug"
 		symbols "on"
 

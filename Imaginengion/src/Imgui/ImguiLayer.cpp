@@ -32,6 +32,9 @@ namespace IM {
         //io.ConfigViewportsNoAutoMerge = true;
         //io.ConfigViewportsNoTaskBarIcon = true;
 
+        io.Fonts->AddFontFromFileTTF("assets/fonts/noto sans/static/NotoSans-Bold.ttf", 16.0);
+        io.FontDefault = io.Fonts->AddFontFromFileTTF("assets/fonts/noto sans/static/NotoSans-Regular.ttf", 16.0);
+
         // Setup Dear ImGui style
         ImGui::StyleColorsDark();
         //ImGui::StyleColorsLight();
@@ -43,6 +46,8 @@ namespace IM {
             style.WindowRounding = 0.0f;
             style.Colors[ImGuiCol_WindowBg].w = 1.0f;
         }
+
+        SetDarkThemeColors();
 
         // Setup Platform/Renderer backends
         ImGui_ImplGlfw_InitForOpenGL(static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow()), true);
@@ -96,5 +101,38 @@ namespace IM {
             ImGui::RenderPlatformWindowsDefault();
             glfwMakeContextCurrent(backup_current_context);
         }
+    }
+    void ImguiLayer::SetDarkThemeColors()
+    {
+        auto& colors = ImGui::GetStyle().Colors;
+
+        colors[ImGuiCol_WindowBg] = ImVec4{ 0.032f, 0.047f, 0.048f, 1.0f };
+
+
+        //Headers
+        colors[ImGuiCol_Header] = ImVec4{ 0.204f, 0.194f, 0.312f, 1.0f };
+        colors[ImGuiCol_HeaderHovered] = ImVec4{ 0.306f, 0.291f, 0.468f, 1.0f };
+        colors[ImGuiCol_HeaderActive] = ImVec4{ 0.255f, 0.242f, 0.39f, 1.0f };
+        
+        //Buttons
+        colors[ImGuiCol_Button] = ImVec4{ 0.203f, 0.283f, 0.376f, 1.0f };
+        colors[ImGuiCol_ButtonHovered] = ImVec4{ 0.304f, 0.424f, 0.564f, 1.0f };
+        colors[ImGuiCol_ButtonActive] = ImVec4{ 0.253f, 0.353f, 0.470f, 1.0f };
+        //Frame BG
+        colors[ImGuiCol_FrameBg] = ImVec4{ 0.127f, 0.177f, 0.235f, 1.0f };
+        colors[ImGuiCol_FrameBgHovered] = ImVec4{ 0.190f, 0.265f, 0.352f, 1.0f };
+        colors[ImGuiCol_FrameBgActive] = ImVec4{ 0.158f, 0.221f, 0.293f, 1.0f };
+        
+        //Tabs
+        colors[ImGuiCol_Tab] = ImVec4{ 0.8f, 0.3f, 0.3f, 1.0f };
+        colors[ImGuiCol_TabHovered] = ImVec4{ 0.8f, 0.3f, 0.3f, 1.0f };
+        colors[ImGuiCol_TabActive] = ImVec4{ 0.317f, 0.484f, 0.552f, 1.0f };
+        colors[ImGuiCol_TabUnfocused] = ImVec4{ 0.8f, 0.3f, 0.3f, 1.0f };
+        colors[ImGuiCol_TabUnfocusedActive] = ImVec4{ 0.185f, 0.282f, 0.322f, 1.0f };
+        
+        //titles
+        colors[ImGuiCol_TitleBg] = ImVec4{ 0.052f, 0.080f, 0.092f, 1.0f };
+        colors[ImGuiCol_TitleBgActive] = ImVec4{ 0.078f, 0.120f, 0.138f, 1.0f };
+        colors[ImGuiCol_TitleBgCollapsed] = ImVec4{ 0.8f, 0.3f, 0.3f, 1.0f };
     }
 }

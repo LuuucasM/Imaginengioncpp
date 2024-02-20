@@ -9,6 +9,7 @@ namespace IM {
 	class Scene {
 	friend class SceneHierarchyPanel;
 	friend class Entity;
+	friend class SceneSerializer;
 	public:
 		Scene();
 		~Scene();

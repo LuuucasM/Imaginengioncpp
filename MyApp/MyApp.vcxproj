@@ -138,10 +138,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="layers\ExampleLayer.h" />
     <ClInclude Include="layers\MyApp2D.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MyApp.cpp" />
+    <ClCompile Include="layers\ExampleLayer.cpp" />
     <ClCompile Include="layers\MyApp2D.cpp" />
   </ItemGroup>
   <ItemGroup>

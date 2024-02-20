@@ -15,6 +15,7 @@ namespace IM {
 		virtual void RemoveComponent(uint32_t entity) = 0;
 		std::unordered_map<uint32_t, size_t> _EntityToIndexMap{};
 		std::vector<uint32_t> _EntityList;
+		size_t _VersionNumber;
 	};
 
 	template<typename C_Type>
@@ -30,6 +31,8 @@ namespace IM {
 			_ComponentList.emplace_back(C_Type{args...});
 			_EntityList.emplace_back(entity);
 			
+			_VersionNumber++;
+
 			return _ComponentList.back();
 		}
 
@@ -43,9 +46,11 @@ namespace IM {
 			_ComponentList.pop_back();
 			_EntityList.pop_back();
 			_EntityToIndexMap.erase(entity);
+
+			_VersionNumber++;
 		}
 
-		auto& GetComponent(uint32_t entity) {
+		C_Type& GetComponent(uint32_t entity) {
 			return _ComponentList[_EntityToIndexMap[entity]];
 		}
 

@@ -76,8 +76,8 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>impch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>IMAGINE_BUILD_DLL;GLFW_INCLUDE_NONE;IMAGINE_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;Vendor\spdlog\include;Vendor\GLFW\include;Vendor\Glad\include;Vendor\Imgui;Vendor\glm;Vendor\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>IMAGINE_BUILD_DLL;GLFW_INCLUDE_NONE;YAML_CPP_STATIC_DEFINE;IMAGINE_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>src;Vendor\spdlog\include;Vendor\GLFW\include;Vendor\Glad\include;Vendor\Imgui;Vendor\glm;Vendor\stb;Vendor\yaml-cpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -99,8 +99,8 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>impch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>IMAGINE_BUILD_DLL;GLFW_INCLUDE_NONE;IMAGINE_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;Vendor\spdlog\include;Vendor\GLFW\include;Vendor\Glad\include;Vendor\Imgui;Vendor\glm;Vendor\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>IMAGINE_BUILD_DLL;GLFW_INCLUDE_NONE;YAML_CPP_STATIC_DEFINE;IMAGINE_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>src;Vendor\spdlog\include;Vendor\GLFW\include;Vendor\Glad\include;Vendor\Imgui;Vendor\glm;Vendor\stb;Vendor\yaml-cpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -125,8 +125,8 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>impch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>IMAGINE_BUILD_DLL;GLFW_INCLUDE_NONE;IMAGINE_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;Vendor\spdlog\include;Vendor\GLFW\include;Vendor\Glad\include;Vendor\Imgui;Vendor\glm;Vendor\stb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>IMAGINE_BUILD_DLL;GLFW_INCLUDE_NONE;YAML_CPP_STATIC_DEFINE;IMAGINE_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>src;Vendor\spdlog\include;Vendor\GLFW\include;Vendor\Glad\include;Vendor\Imgui;Vendor\glm;Vendor\stb;Vendor\yaml-cpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -147,14 +147,6 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\ECS\ComponentArray.h" />
-    <ClInclude Include="src\ECS\ComponentManager.h" />
-    <ClInclude Include="src\ECS\Components.h" />
-    <ClInclude Include="src\ECS\ECSManager.h" />
-    <ClInclude Include="src\ECS\Entity.h" />
-    <ClInclude Include="src\ECS\EntityManager.h" />
-    <ClInclude Include="src\ECS\SystemManager.h" />
-    <ClInclude Include="src\Scene\ScriptClass.h" />
     <ClInclude Include="Vendor\glm\glm\common.hpp" />
     <ClInclude Include="Vendor\glm\glm\detail\_features.hpp" />
     <ClInclude Include="Vendor\glm\glm\detail\_fixes.hpp" />
@@ -446,11 +438,21 @@
     <ClInclude Include="src\Core\Timer.h" />
     <ClInclude Include="src\Core\Window.h" />
     <ClInclude Include="src\Debug\PerfProfiler.h" />
-    <ClInclude Include="src\ECS_New\ComponentArray.h" />
-    <ClInclude Include="src\ECS_New\ComponentManager.h" />
-    <ClInclude Include="src\ECS_New\ECSCoordinator.h" />
-    <ClInclude Include="src\ECS_New\EntityManager.h" />
-    <ClInclude Include="src\ECS_New\SystemManager.h" />
+    <ClInclude Include="src\ECS\ComponentArray.h" />
+    <ClInclude Include="src\ECS\ComponentManager.h" />
+    <ClInclude Include="src\ECS\Components.h" />
+    <ClInclude Include="src\ECS\Components\C_Camera.h" />
+    <ClInclude Include="src\ECS\Components\C_Name.h" />
+    <ClInclude Include="src\ECS\Components\C_NativeScript.h" />
+    <ClInclude Include="src\ECS\Components\C_SpriteRenderer.h" />
+    <ClInclude Include="src\ECS\Components\C_Transform.h" />
+    <ClInclude Include="src\ECS\ECSManager.h" />
+    <ClInclude Include="src\ECS\Entity.h" />
+    <ClInclude Include="src\ECS\EntityManager.h" />
+    <ClInclude Include="src\ECS\SystemManager.h" />
+    <ClInclude Include="src\ECS\Systems.h" />
+    <ClInclude Include="src\ECS\Systems\RenderSystem.h" />
+    <ClInclude Include="src\ECS\Systems\System.h" />
     <ClInclude Include="src\Events\Delegate.h" />
     <ClInclude Include="src\Events\Event.h" />
     <ClInclude Include="src\Events\SystemEvents.h" />
@@ -480,6 +482,8 @@
     <ClInclude Include="src\Renderer\VertexArray.h" />
     <ClInclude Include="src\Renderer\VertexBuffer.h" />
     <ClInclude Include="src\Scene\Scene.h" />
+    <ClInclude Include="src\Scene\SceneSerializer.h" />
+    <ClInclude Include="src\Scene\ScriptClass.h" />
     <ClInclude Include="src\impch.h" />
   </ItemGroup>
   <ItemGroup>
@@ -489,6 +493,7 @@
     <ClCompile Include="src\Core\LayerManager.cpp" />
     <ClCompile Include="src\Core\Log.cpp" />
     <ClCompile Include="src\Core\Timer.cpp" />
+    <ClCompile Include="src\ECS\Systems\RenderSystem.cpp" />
     <ClCompile Include="src\Imgui\ImguiBuild.cpp" />
     <ClCompile Include="src\Imgui\ImguiLayer.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLContext.cpp" />
@@ -516,6 +521,7 @@
     <ClCompile Include="src\Renderer\VertexArray.cpp" />
     <ClCompile Include="src\Renderer\VertexBuffer.cpp" />
     <ClCompile Include="src\Scene\Scene.cpp" />
+    <ClCompile Include="src\Scene\SceneSerializer.cpp" />
     <ClCompile Include="src\impch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
@@ -529,6 +535,9 @@
     </ProjectReference>
     <ProjectReference Include="Vendor\Imgui\Imgui.vcxproj">
       <Project>{E087650D-4C9C-8DBE-151E-311E81F189EF}</Project>
+    </ProjectReference>
+    <ProjectReference Include="Vendor\yaml-cpp\yaml-cpp.vcxproj">
+      <Project>{88F1A057-74BE-FB62-9DD7-E90A890331F1}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

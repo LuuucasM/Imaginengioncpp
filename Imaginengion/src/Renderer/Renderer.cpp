@@ -162,10 +162,9 @@ namespace IM {
 		_Data.TextureSlotIndex = 1;
 
 	}
-	void Renderer::R2D::BeginScene(const C_Camera camera, const C_Transform transform)
+	void Renderer::R2D::BeginScene(const C_Camera camera, C_Transform transform)
 	{
 		IMAGINE_PROFILE_FUNCTION();
-
 		glm::mat4 viewProj = camera.Projection * glm::inverse(transform.GetTransform());
 
 		_Data._TextureShader->Bind();
@@ -194,7 +193,7 @@ namespace IM {
 			_Data.TextureSlots[i]->Bind(i);
 		}
 		RenderCommand::DrawIndexed(_Data._VertexArray, _Data.RectIndexCount);
-		_Data.Stats.DrawCalls++;
+		++_Data.Stats.DrawCalls;
 	}
 
 	void Renderer::R2D::FlushAndReset() {

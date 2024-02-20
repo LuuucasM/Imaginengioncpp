@@ -34,8 +34,14 @@
     <Filter Include="src\Debug">
       <UniqueIdentifier>{63A3C3B2-CF0D-7829-184C-29CF84F5557E}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\ECS_New">
-      <UniqueIdentifier>{C002C96E-2CB8-4164-B5AC-3B3B21613868}</UniqueIdentifier>
+    <Filter Include="src\ECS">
+      <UniqueIdentifier>{F76D2FA9-634D-AE44-6C65-391BD8C314A6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ECS\Components">
+      <UniqueIdentifier>{AC4A8D64-982E-4EBA-018F-480DED91383C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ECS\Systems">
+      <UniqueIdentifier>{FECA3740-6A56-A504-7367-28F9DF710105}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Events">
       <UniqueIdentifier>{7162C20E-5D1A-045C-C621-DDB7B2F89E4C}</UniqueIdentifier>
@@ -933,20 +939,50 @@
     <ClInclude Include="src\Debug\PerfProfiler.h">
       <Filter>src\Debug</Filter>
     </ClInclude>
-    <ClInclude Include="src\ECS_New\ComponentArray.h">
-      <Filter>src\ECS_New</Filter>
+    <ClInclude Include="src\ECS\ComponentArray.h">
+      <Filter>src\ECS</Filter>
     </ClInclude>
-    <ClInclude Include="src\ECS_New\ComponentManager.h">
-      <Filter>src\ECS_New</Filter>
+    <ClInclude Include="src\ECS\ComponentManager.h">
+      <Filter>src\ECS</Filter>
     </ClInclude>
-    <ClInclude Include="src\ECS_New\ECSCoordinator.h">
-      <Filter>src\ECS_New</Filter>
+    <ClInclude Include="src\ECS\Components.h">
+      <Filter>src\ECS</Filter>
     </ClInclude>
-    <ClInclude Include="src\ECS_New\EntityManager.h">
-      <Filter>src\ECS_New</Filter>
+    <ClInclude Include="src\ECS\Components\C_Camera.h">
+      <Filter>src\ECS\Components</Filter>
     </ClInclude>
-    <ClInclude Include="src\ECS_New\SystemManager.h">
-      <Filter>src\ECS_New</Filter>
+    <ClInclude Include="src\ECS\Components\C_Name.h">
+      <Filter>src\ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ECS\Components\C_NativeScript.h">
+      <Filter>src\ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ECS\Components\C_SpriteRenderer.h">
+      <Filter>src\ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ECS\Components\C_Transform.h">
+      <Filter>src\ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ECS\ECSManager.h">
+      <Filter>src\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ECS\Entity.h">
+      <Filter>src\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ECS\EntityManager.h">
+      <Filter>src\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ECS\SystemManager.h">
+      <Filter>src\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ECS\Systems.h">
+      <Filter>src\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ECS\Systems\RenderSystem.h">
+      <Filter>src\ECS\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ECS\Systems\System.h">
+      <Filter>src\ECS\Systems</Filter>
     </ClInclude>
     <ClInclude Include="src\Events\Delegate.h">
       <Filter>src\Events</Filter>
@@ -989,9 +1025,6 @@
     </ClInclude>
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h">
       <Filter>src\Platform\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Renderer\BufferLayout.h">
-      <Filter>src\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\FrameBuffer.h">
       <Filter>src\Renderer</Filter>
@@ -1038,6 +1071,12 @@
     <ClInclude Include="src\Scene\Scene.h">
       <Filter>src\Scene</Filter>
     </ClInclude>
+    <ClInclude Include="src\Scene\SceneSerializer.h">
+      <Filter>src\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scene\ScriptClass.h">
+      <Filter>src\Scene</Filter>
+    </ClInclude>
     <ClInclude Include="src\impch.h">
       <Filter>src</Filter>
     </ClInclude>
@@ -1060,6 +1099,9 @@
     </ClCompile>
     <ClCompile Include="src\Core\Timer.cpp">
       <Filter>src\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ECS\Systems\RenderSystem.cpp">
+      <Filter>src\ECS\Systems</Filter>
     </ClCompile>
     <ClCompile Include="src\Imgui\ImguiBuild.cpp">
       <Filter>src\Imgui</Filter>
@@ -1096,9 +1138,6 @@
     </ClCompile>
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp">
       <Filter>src\Platform\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Renderer\BufferLayout.cpp">
-      <Filter>src\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Renderer\FrameBuffer.cpp">
       <Filter>src\Renderer</Filter>
@@ -1143,6 +1182,9 @@
       <Filter>src\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Scene\Scene.cpp">
+      <Filter>src\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene\SceneSerializer.cpp">
       <Filter>src\Scene</Filter>
     </ClCompile>
     <ClCompile Include="src\impch.cpp">

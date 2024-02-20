@@ -1,6 +1,8 @@
 #include "MyApp2D.h"
 #include <Imgui/imgui.h>
 
+#include "glm/glm.hpp"
+#include <glm/gtc/type_ptr.hpp>
 
 MyApp2D::MyApp2D()
 	: Layer("MyApp2D"), _CameraController(1280.0f / 720.0f) {

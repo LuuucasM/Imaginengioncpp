@@ -9,9 +9,7 @@ namespace IM {
 	class EntityManager {
 	friend class ECSManager;
 	public:
-		EntityManager(ECSManager* ecs) {
-			_ECSManager = ecs;
-		}
+		EntityManager() = default;
 
 		~EntityManager() = default;
 	private:
@@ -37,6 +35,5 @@ namespace IM {
 		IDGenerator _Generator;
 		std::unordered_set<uint32_t> IDsInUse;
 		std::unordered_set<uint32_t> IDsRemoved;
-		ECSManager*_ECSManager;
 	};
 }
