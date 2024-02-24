@@ -163,7 +163,7 @@ namespace IM {
 	{
 		YAML::Emitter out;
 		out << YAML::BeginMap;
-		out << YAML::Key << "Scene" << YAML::Value << "Scene name goes here";
+		out << YAML::Key << "Scene" << YAML::Value << _Scene->_Name;
 		out << YAML::Key << "Entities";
 		out << YAML::Value << YAML::BeginSeq;
 		std::unordered_set<uint32_t>& entities = _Scene->_ECSManager.GetAllEntityID();

@@ -16,6 +16,12 @@ namespace IM {
 		void OnImguiRender() override;
 		void OnEvent(Event& e) override;
 	private:
+		bool OnKeyPressed(KeyPressedEvent& e);
+
+		void NewScene();
+		void OpenScene();
+		void SaveAsScene();
+	private:
 		OrthographicCameraController _CameraController;
 
 		RefPtr<Shader> _Shader;
@@ -35,6 +41,8 @@ namespace IM {
 
 		bool _bViewportFocus = false, _bViewportHovered = false;
 		glm::vec2 _ViewportSize = glm::vec2(0.0f);
+
+		int _GizmoType = -1;
 
 		RefPtr<SceneHierarchyPanel> _SceneHierarchyPanel;
 		RefPtr<PropertiesPanel> _PropertiesPanel;

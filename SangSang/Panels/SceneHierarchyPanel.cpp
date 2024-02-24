@@ -9,6 +9,7 @@ namespace IM{
 	void SceneHierarchyPanel::SetContext(const WeakPtr<Scene>& scene)
 	{
 		_Context = scene;
+		_SelectionContext = {0, nullptr};
 	}
 	void SceneHierarchyPanel::OnImGuiRender()
 	{

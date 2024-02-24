@@ -2,12 +2,12 @@
 
 #include "System.h"
 namespace IM {
-	class RenderSystem : public System {
+	class Render2DSystem : public System {
 	public:
-		RenderSystem() = default;
-		RenderSystem(size_t id)
+		Render2DSystem() = default;
+		Render2DSystem(size_t id)
 			: System(id) {}
-		~RenderSystem() = default;
+		~Render2DSystem() = default;
 		void OnUpdate(ScopePtr<ComponentManager>& _ComponentManager, float dt) override;
 	};
 }

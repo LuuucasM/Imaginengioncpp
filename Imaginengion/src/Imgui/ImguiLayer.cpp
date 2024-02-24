@@ -9,6 +9,7 @@
 #include "Core/Application.h"
 
 #include <GLFW/glfw3.h>
+#include <ImGuizmo.h>
 
 namespace IM {
 
@@ -79,6 +80,7 @@ namespace IM {
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
+        ImGuizmo::BeginFrame();
 
 
     }
@@ -106,33 +108,38 @@ namespace IM {
     {
         auto& colors = ImGui::GetStyle().Colors;
 
-        colors[ImGuiCol_WindowBg] = ImVec4{ 0.032f, 0.047f, 0.048f, 1.0f };
+        colors[ImGuiCol_WindowBg] = ImVec4{ 0.082f, 0.082f, 0.082f, 1.0f };
 
 
         //Headers
-        colors[ImGuiCol_Header] = ImVec4{ 0.204f, 0.194f, 0.312f, 1.0f };
-        colors[ImGuiCol_HeaderHovered] = ImVec4{ 0.306f, 0.291f, 0.468f, 1.0f };
-        colors[ImGuiCol_HeaderActive] = ImVec4{ 0.255f, 0.242f, 0.39f, 1.0f };
+        colors[ImGuiCol_Header] = ImVec4{ 0.176f, 0.190f, 0.229f, 1.0f };
+        colors[ImGuiCol_HeaderHovered] = ImVec4{ 0.293f, 0.317f, 0.382f, 1.0f };
+        colors[ImGuiCol_HeaderActive] = ImVec4{ 0.235f, 0.254f, 0.306f, 1.0f };
         
         //Buttons
-        colors[ImGuiCol_Button] = ImVec4{ 0.203f, 0.283f, 0.376f, 1.0f };
-        colors[ImGuiCol_ButtonHovered] = ImVec4{ 0.304f, 0.424f, 0.564f, 1.0f };
-        colors[ImGuiCol_ButtonActive] = ImVec4{ 0.253f, 0.353f, 0.470f, 1.0f };
+        colors[ImGuiCol_Button] = ImVec4{ 0.250f, 0.266f, 0.358f, 1.0f };
+        colors[ImGuiCol_ButtonHovered] = ImVec4{ 0.375f, 0.399f, 0.537f, 1.0f };
+        colors[ImGuiCol_ButtonActive] = ImVec4{ 0.312f, 0.332f, 0.447f, 1.0f };
         //Frame BG
-        colors[ImGuiCol_FrameBg] = ImVec4{ 0.127f, 0.177f, 0.235f, 1.0f };
-        colors[ImGuiCol_FrameBgHovered] = ImVec4{ 0.190f, 0.265f, 0.352f, 1.0f };
-        colors[ImGuiCol_FrameBgActive] = ImVec4{ 0.158f, 0.221f, 0.293f, 1.0f };
+        colors[ImGuiCol_FrameBg] = ImVec4{ 0.317f, 0.290f, 0.290f, 1.0f };
+        colors[ImGuiCol_FrameBgHovered] = ImVec4{ 0.475f, 0.435f, 0.435f, 1.0f };
+        colors[ImGuiCol_FrameBgActive] = ImVec4{ 0.396f, 0.362f, 0.362f, 1.0f };
         
         //Tabs
         colors[ImGuiCol_Tab] = ImVec4{ 0.8f, 0.3f, 0.3f, 1.0f };
-        colors[ImGuiCol_TabHovered] = ImVec4{ 0.8f, 0.3f, 0.3f, 1.0f };
-        colors[ImGuiCol_TabActive] = ImVec4{ 0.317f, 0.484f, 0.552f, 1.0f };
+        colors[ImGuiCol_TabHovered] = ImVec4{ 0.45f, 0.252f, 0.592f, 1.0f };
+        //colors[ImGuiCol_TabActive] = ImVec4{ 0.317f, 0.484f, 0.552f, 1.0f };
+        colors[ImGuiCol_TabActive] = ImVec4{ 0.375f, 0.21f, 0.493f, 1.0f };
         colors[ImGuiCol_TabUnfocused] = ImVec4{ 0.8f, 0.3f, 0.3f, 1.0f };
-        colors[ImGuiCol_TabUnfocusedActive] = ImVec4{ 0.185f, 0.282f, 0.322f, 1.0f };
+        colors[ImGuiCol_TabUnfocusedActive] = ImVec4{ 0.300f, 0.168f, 0.395f, 1.0f };
         
         //titles
-        colors[ImGuiCol_TitleBg] = ImVec4{ 0.052f, 0.080f, 0.092f, 1.0f };
-        colors[ImGuiCol_TitleBgActive] = ImVec4{ 0.078f, 0.120f, 0.138f, 1.0f };
+        colors[ImGuiCol_TitleBg] = ImVec4{ 0.094f, 0.052f, 0.123f, 1.0f };
+        colors[ImGuiCol_TitleBgActive] = ImVec4{ 0.188f, 0.104f, 0.246f, 1.0f };
         colors[ImGuiCol_TitleBgCollapsed] = ImVec4{ 0.8f, 0.3f, 0.3f, 1.0f };
+
+        colors[ImGuiCol_ResizeGrip] = ImVec4{ 0.8f, 0.3f, 0.3f, 1.0f };           // Resize grip in lower-right and lower-left corners of windows.
+        colors[ImGuiCol_ResizeGripHovered] = ImVec4{ 0.303f, 0.333f, 0.340f, 1.0f };
+        colors[ImGuiCol_ResizeGripActive] = ImVec4{ 0.404f, 0.444f, 0.454f, 1.0f };
     }
 }

@@ -1,0 +1,56 @@
+Scene: TestScene
+Entities:
+  - Entity: 12345
+    Name Component:
+      Name: Square
+    Transform Component:
+      Translation: [0, 0, 0]
+      Rotation: [0.335975885, 0.62395519, 0]
+      Scale: [1, 1, 1]
+    Sprite Renderer Component:
+      Color: [0.800000012, 0.300000012, 0.300000012, 1]
+  - Entity: 12345
+    Name Component:
+      Name: BlueSquare
+    Transform Component:
+      Translation: [0, 1.58000004, -2.48000002]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    Sprite Renderer Component:
+      Color: [0.300000012, 0.300000012, 0.800000012, 1]
+  - Entity: 12345
+    Name Component:
+      Name: Camera1
+    Transform Component:
+      Translation: [0, 0, 6]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    Camera Component:
+      Camera:
+        ProjectionType: 0
+        PerspectiveFOV: 0.785398185
+        PerspectiveNear: 0.00999999978
+        PerspectiveFar: 1000
+        OrthographicSize: 10
+        OrthographicNear: -1
+        OrthographicFar: 1
+      Primary: true
+      FixedAspectRatio: false
+  - Entity: 12345
+    Name Component:
+      Name: Camera2
+    Transform Component:
+      Translation: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    Camera Component:
+      Camera:
+        ProjectionType: 0
+        PerspectiveFOV: 0.785398185
+        PerspectiveNear: 0.00999999978
+        PerspectiveFar: 1000
+        OrthographicSize: 10
+        OrthographicNear: -1
+        OrthographicFar: 1
+      Primary: false
+      FixedAspectRatio: false

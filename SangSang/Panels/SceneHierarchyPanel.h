@@ -14,6 +14,8 @@ namespace IM {
 		void SetContext(const WeakPtr<Scene>& scene);
 
 		void OnImGuiRender();
+
+		Entity GetSelectedEntity() { return _SelectionContext; }
 	private:
 		void DrawEntityNode(Entity entity);
 	private:

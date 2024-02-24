@@ -17,3 +17,6 @@
 [submodule "Imaginengion/Vendor/yaml-cpp"]
 	path = Imaginengion/Vendor/yaml-cpp
 	url = https://github.com/jbeder/yaml-cpp.git
+[submodule "Imaginengion/Vendor/ImGuizmo"]
+	path = Imaginengion/Vendor/ImGuizmo
+	url = https://github.com/CedricGuillemet/ImGuizmo.git

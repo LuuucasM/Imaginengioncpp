@@ -1,0 +1,29 @@
+Scene: WhatTest
+Entities:
+  - Entity: 12345
+    Name Component:
+      Name: What
+    Transform Component:
+      Translation: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    Sprite Renderer Component:
+      Color: [0.863109648, 1, 0.0168776512, 1]
+  - Entity: 12345
+    Name Component:
+      Name: WhatCam
+    Transform Component:
+      Translation: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    Camera Component:
+      Camera:
+        ProjectionType: 1
+        PerspectiveFOV: 0.785398185
+        PerspectiveNear: 0.00999999978
+        PerspectiveFar: 1000
+        OrthographicSize: 10
+        OrthographicNear: -1
+        OrthographicFar: 1
+      Primary: true
+      FixedAspectRatio: false

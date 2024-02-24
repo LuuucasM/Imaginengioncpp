@@ -8,6 +8,16 @@
 
 #include "Scene/SceneSerializer.h"
 
+#include "Utils/PlatformUtils.h"
+
+#include <filesystem>
+
+#include <ImGuizmo/ImGuizmo.h>
+
+#include "glm/gtx/matrix_decompose.hpp"
+
+#include "Math/Math.h"
+
 namespace IM {
     EditorLayer::EditorLayer()
         : Layer("MyApp2D"), _CameraController(1280.0f / 720.0f) {
@@ -66,9 +76,6 @@ namespace IM {
 
         _SceneHierarchyPanel = CreateRefPtr<SceneHierarchyPanel>(_ActiveScene);
         _PropertiesPanel = CreateRefPtr<PropertiesPanel>(_SceneHierarchyPanel);
-
-        SceneSerializer serializer(_ActiveScene);
-        serializer.SerializeText("assets/scenes/Example.im");
     }
 
     void EditorLayer::OnDetach()
@@ -165,7 +172,15 @@ namespace IM {
             {
                 if (ImGui::BeginMenu("File"))
                 {
-                    if (ImGui::MenuItem("Exit")) { Application::Get().Close(); }
+                    if (ImGui::MenuItem("New", "Ctrl+N"))
+                        NewScene();
+                    if (ImGui::MenuItem("Open...", "Ctrl+O"))
+                        OpenScene();
+                    if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
+                        SaveAsScene();
+                    if (ImGui::MenuItem("Exit"))
+                        Application::Get().Close();
+
                     ImGui::EndMenu();
                 }
                 ImGui::EndMenuBar();
@@ -190,13 +205,58 @@ namespace IM {
 
             _bViewportFocus = ImGui::IsWindowFocused();
             _bViewportHovered = ImGui::IsWindowHovered();
-            Application::Get().GetImGuiLayer()->SetBlockEvents(!_bViewportFocus || !_bViewportHovered);
+            Application::Get().GetImGuiLayer()->SetBlockEvents(!_bViewportFocus && !_bViewportHovered);
+            
 
             ImVec2 viewportSize = ImGui::GetContentRegionAvail();
             _ViewportSize = { viewportSize.x, viewportSize.y };
 
             uint32_t textureID = _FrameBuffer->GetColorAttachmentID();
             ImGui::Image((void *)textureID, ImVec2{ _ViewportSize.x, _ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+
+            
+
+            //ImGuizmo stuff
+            Entity selectedEntity = _SceneHierarchyPanel->GetSelectedEntity();
+            if (selectedEntity) {
+
+                ImGuizmo::SetDrawlist();
+                float windowWidth = (float)ImGui::GetWindowWidth();
+                float windowHeight = (float)ImGui::GetWindowHeight();
+                ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
+
+                //camera
+                auto cameraEntity = _ActiveScene->GetPrimaryCameraEntity();
+                const auto& cameraComponent = cameraEntity.GetComponent<C_Camera>();
+                glm::mat4 cameraView = glm::inverse(cameraEntity.GetComponent<C_Transform>().GetTransform());
+                ImGuizmo::SetOrthographic((cameraComponent._ProjectionType == C_Camera::ProjectionType::Orthographic) ? true : false);
+
+                //entity
+                auto& transformComponent = selectedEntity.GetComponent<C_Transform>();
+                glm::mat4 transform = transformComponent.GetTransform();
+
+                //snapping
+                bool snap = Input::IsKeyPressed(Key::LeftControl);
+                float snapValue = (_GizmoType != ImGuizmo::OPERATION::ROTATE) ? 0.5f : 30.0f;
+
+                float snapValues[3] = { snapValue, snapValue, snapValue };
+
+                ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraComponent.Projection),
+                    (ImGuizmo::OPERATION)_GizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform),
+                    nullptr, snap ? snapValues : nullptr);
+
+                if (ImGuizmo::IsUsing()) {
+
+                    glm::vec3 scale;
+                    glm::vec3 rotation;
+                    glm::vec3 translation;
+                    Math::DecomposeTransform(transform, translation, rotation, scale);
+
+                    transformComponent.Translation = translation;
+                    transformComponent.Rotation = rotation;
+                    transformComponent.Scale = scale;
+                }
+            }
 
             ImGui::End();
             ImGui::PopStyleVar();
@@ -207,6 +267,79 @@ namespace IM {
     void EditorLayer::OnEvent(Event& e)
     {
         _CameraController.OnEvent(e);
-    }
 
+        EventDispatcher dispatcher(e);
+        dispatcher.Dispatch<KeyPressedEvent>(IMAGINE_BIND_EVENT(EditorLayer::OnKeyPressed));
+    }
+    bool EditorLayer::OnKeyPressed(KeyPressedEvent& e)
+    {
+        bool control = Input::IsKeyPressed(Key::LeftControl) || Input::IsKeyPressed(Key::RightControl);
+        bool shift = Input::IsKeyPressed(Key::LeftShift) || Input::IsKeyPressed(Key::RightShift);
+        //shortcuts
+        if (e.GetRepeatCount() > 0) {
+            return false;
+        }
+
+        switch (e.GetKeyCode()) {
+            case Key::N:
+                if (control) {
+                    NewScene();
+                    break;
+                }
+            case Key::O:
+                if (control) {
+                    OpenScene();
+                    break;
+                }
+            case Key::S:
+                if (control && shift) {
+                    SaveAsScene();
+                    break;
+                }
+            case Key::Q:
+                _GizmoType - 3;
+                break;
+            case Key::W:
+                _GizmoType = ImGuizmo::OPERATION::TRANSLATE;
+                break;
+            case Key::E:
+                _GizmoType = ImGuizmo::OPERATION::ROTATE;
+                break;
+            case Key::R:
+                _GizmoType = ImGuizmo::OPERATION::SCALE;
+                break;
+                
+        }
+
+        return false;
+    }
+    void EditorLayer::NewScene()
+    {
+        _ActiveScene = CreateRefPtr<Scene>();
+        _ActiveScene->OnViewportResize((size_t)_ViewportSize.x, (size_t)_ViewportSize.y);
+        _SceneHierarchyPanel->SetContext(_ActiveScene);
+    }
+    void EditorLayer::OpenScene()
+    {
+        std::string filepath = FileDialogs::OpenFile("Imagine Scene (*.imsc)\0*.imsc\0");
+        if (!filepath.empty()) {
+
+            _ActiveScene = CreateRefPtr<Scene>();
+            SceneSerializer serializer(_ActiveScene);
+            serializer.DeSerializeText(filepath);
+
+            _ActiveScene->OnViewportResize((size_t)_ViewportSize.x, (size_t)_ViewportSize.y);
+            _SceneHierarchyPanel->SetContext(_ActiveScene);
+        }
+    }
+    void EditorLayer::SaveAsScene()
+    {
+        std::string filepath = FileDialogs::SaveFile("Imagine Scene (*.imsc)\0*.imsc\0");
+        std::string sceneName(std::filesystem::path(filepath).stem().string());
+        _ActiveScene->SetName(sceneName);
+        if (!filepath.empty()) {
+            SceneSerializer serializer(_ActiveScene);
+            serializer.SerializeText(filepath);
+        }
+    }
 }

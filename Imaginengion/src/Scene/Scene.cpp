@@ -12,7 +12,7 @@
 namespace IM {
 	Scene::Scene()
 	{
-		_ECSManager.RegisterSystem<RenderSystem, C_Transform, C_SpriteRenderer>();
+		_ECSManager.RegisterSystem<Render2DSystem, C_Transform, C_SpriteRenderer>();
 	}
 	Scene::~Scene()
 	{
@@ -68,7 +68,7 @@ namespace IM {
 				auto [transform, sprite] = _ECSManager.GetComponents<C_Transform, C_SpriteRenderer>(entity);
 				Renderer::R2D::DrawRect(transform.GetTransform(), sprite.Color);
 			}*/
-			_ECSManager.SystemOnUpdate<RenderSystem>(dt);
+			_ECSManager.SystemOnUpdate<Render2DSystem>(dt);
 
 			Renderer::R2D::EndScene();//------------------------
 		}
@@ -87,6 +87,18 @@ namespace IM {
 				cam.SetViewportSize(viewportWidth, viewportHeight);
 			}
 		}
+	}
+
+	Entity Scene::GetPrimaryCameraEntity()
+	{
+		auto& group = _ECSManager.GetGroup<C_Camera>();
+		for (auto entity : group) {
+			auto& cameraComponent = _ECSManager.GetComponent<C_Camera>(entity);
+			if (cameraComponent._bPrimary) {
+				return Entity(entity, this);
+			}
+		}
+		return { 0, nullptr };
 	}
 
 	template<typename T>

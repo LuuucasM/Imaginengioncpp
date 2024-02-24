@@ -20,6 +20,7 @@ IncludeDir["Imgui"] = "Imaginengion/Vendor/Imgui"
 IncludeDir["glm"] = "Imaginengion/Vendor/glm"
 IncludeDir["stb"] = "Imaginengion/Vendor/stb"
 IncludeDir["yaml_cpp"] = "Imaginengion/Vendor/yaml-cpp/include"
+IncludeDir["ImGuizmo"] = "Imaginengion/Vendor/ImGuizmo"
 
 include "Imaginengion/Vendor"
 
@@ -42,7 +43,9 @@ project "Imaginengion"
         "%{prj.name}/Vendor/stb/**.h",
         "%{prj.name}/Vendor/stb/**.cpp",
         "%{prj.name}/Vendor/glm/glm/**.hpp",
-        "%{prj.name}/Vendor/glm/glm/**.ini"
+        "%{prj.name}/Vendor/glm/glm/**.ini",
+        "%{prj.name}/Vendor/ImGuizmo/ImGuizmo.h",
+        "%{prj.name}/Vendor/ImGuizmo/ImGuizmo.cpp"
     }
 
     includedirs{
@@ -53,7 +56,8 @@ project "Imaginengion"
         "%{IncludeDir.Imgui}",
         "%{IncludeDir.glm}",
         "%{IncludeDir.stb}",
-        "%{IncludeDir.yaml_cpp}"
+        "%{IncludeDir.yaml_cpp}",
+        "%{IncludeDir.ImGuizmo}"
     }
 
     links{
@@ -64,6 +68,10 @@ project "Imaginengion"
         "dwmapi.lib",
         "yaml-cpp"
     }
+
+    filter "files:Imaginengion/Vendor/ImGuizmo/ImGuizmo.cpp"
+        flags {"NoPCH"}
+
     filter "system:windows"
 
         staticruntime "On"
@@ -150,7 +158,8 @@ project "SangSang"
         "Imaginengion/Vendor/spdlog/include",
         "Imaginengion/src",
         "Imaginengion/Vendor",
-        "%{IncludeDir.glm}"
+        "%{IncludeDir.glm}",
+        "%{IncludeDir.ImGuizmo}"
     }
 
     links{
