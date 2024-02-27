@@ -18,8 +18,9 @@ namespace IM {
 		}
 
 		void DestroyEntity(uint32_t entity) {
-			IDsInUse.erase(entity);
-			IDsRemoved.insert(entity);
+			if (IDsInUse.erase(entity)) {
+				IDsRemoved.insert(entity);
+			}
 		}
 
 		std::unordered_set<uint32_t>& GetAllEntityID() {

@@ -176,6 +176,20 @@ namespace IM {
 
 		_Data.TextureSlotIndex = 1;
 	}
+	void Renderer::R2D::BeginScene(EditorCamera& camera)
+	{
+		IMAGINE_PROFILE_FUNCTION();
+		glm::mat4 viewProj = camera.GetViewProjection();
+
+		_Data._TextureShader->Bind();
+		_Data._TextureShader->SetValue("u_ViewProjection", viewProj);
+
+		_Data.RectIndexCount = 0;
+
+		_Data.RectVertexBufferPtr = _Data.RectVertexBufferBase;
+
+		_Data.TextureSlotIndex = 1;
+	}
 	void Renderer::R2D::EndScene()
 	{
 		//nothing right now :)

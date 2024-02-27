@@ -20,9 +20,7 @@ namespace IM {
 			};
 			size_t num = std::accumulate(typeHashes.begin(), typeHashes.end(), 0, Pairing);
 
-			_SystemList[typeid(T_Sys).hash_code()] = CreateRefPtr<T_Sys>(num);
-
-			_SystemList[typeid(T_Sys).hash_code()]->_TypeHashes = typeHashes;
+			_SystemList[typeid(T_Sys).hash_code()] = CreateRefPtr<T_Sys>(num, typeHashes);
 		}
 
 		template<typename T_Sys>

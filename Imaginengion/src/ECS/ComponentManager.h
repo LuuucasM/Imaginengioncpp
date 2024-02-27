@@ -65,20 +65,13 @@ namespace IM {
 				return _EmptyVector;
 			}
 
-			//get a list of ids for this group
-			const std::vector<uint32_t>& ids = [&]()->const std::vector<uint32_t>&{
-				if (typeHashes.size() == 1) {
-					return _ComponentArrayList[*typeHashes.begin()]->_EntityList;
-				}
-				else {
-					auto Pairing = [](size_t a, size_t b) {
-						return (int)(a >= b ? a * a + a + b : a + b * b);
-					};
-					size_t num = std::accumulate(typeHashes.begin(), typeHashes.end(), 0, Pairing);
+			auto Pairing = [](size_t a, size_t b) {
+				return (int)(a >= b ? a * a + a + b : a + b * b);
+			};
+			size_t num = std::accumulate(typeHashes.begin(), typeHashes.end(), 0, Pairing);
 
-					return GetGroupIDs(typeHashes, num);
-				}
-			}();
+			//get a list of ids for this group
+			const std::vector<uint32_t>& ids = GetGroupIDs(typeHashes, num);
 
 			//sort components of the IDs so that they are contiguous in memory
 			GetGroupSort(ids);
@@ -87,6 +80,9 @@ namespace IM {
 		}
 		template<typename ...Args>
 		const std::vector<uint32_t>& GetGroup(std::set<size_t>& typeHashes, size_t num) {
+			if (!GetGroupValidate(typeHashes)) {
+				return _EmptyVector;
+			}
 			//get a list of ids for this group
 			const std::vector<uint32_t>& ids = GetGroupIDs(typeHashes, num);
 			//sort components of the IDs so that they are contiguous in memory
@@ -113,6 +109,7 @@ namespace IM {
 			std::unordered_set<uint32_t> keys(componentArrays[0]->_EntityList.begin(), componentArrays[0]->_EntityList.end());
 
 			std::vector<uint32_t> result;
+			result.reserve(keys.size());
 			for (uint32_t i = 1; i < componentArrays.size(); ++i) {
 				for (auto entity : componentArrays[i]->_EntityList) {
 					if (size_t n = keys.erase(entity); n) {
@@ -120,6 +117,7 @@ namespace IM {
 					}
 				}
 			}
+			result.shrink_to_fit();
 			_EntityCache[num] = result;
 		}
 

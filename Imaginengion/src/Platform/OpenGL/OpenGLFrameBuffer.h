@@ -15,5 +15,6 @@ namespace IM {
 		void Unbind() override;
 
 		void Resize(size_t width, size_t height) override;
+		uint32_t ReadPixel(uint32_t attachmentIndex, int x, int y) override;
 	};
 }

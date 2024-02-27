@@ -2,7 +2,8 @@
 
 #include "Imagine.h"
 #include "../Panels/SceneHierarchyPanel.h"
-#include "../Panels//PropertiesPanel.h"
+#include "../Panels/PropertiesPanel.h"
+#include "Renderer/EditorCamera.h"
 
 namespace IM {
 	class EditorLayer : public Layer
@@ -36,11 +37,14 @@ namespace IM {
 
 		bool _PrimaryCamera = true;
 
+		EditorCamera _EditorCamera;
+
 		RefPtr<Texture2D> _Texture;
 		RefPtr<Texture2D> _TextureZealot;
 
 		bool _bViewportFocus = false, _bViewportHovered = false;
 		glm::vec2 _ViewportSize = glm::vec2(0.0f);
+		glm::vec2 _ViewportBounds[2];
 
 		int _GizmoType = -1;
 

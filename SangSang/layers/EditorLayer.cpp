@@ -34,11 +34,14 @@ namespace IM {
         _CameraController.SetZoomLevel(5.0f);
 
         FrameBufferSpecification fbspec;
+        fbspec._Attachments = { FrameBufferTextureFormat::RGBA8, FrameBufferTextureFormat::RED_INTEGER, FrameBufferTextureFormat::Depth };
         fbspec.Width = 1280;
         fbspec.Height = 720;
         _FrameBuffer = FrameBuffer::Create(fbspec);
 
         _ActiveScene = CreateRefPtr<Scene>();
+
+        _EditorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
 
         _SquareEntity = _ActiveScene->CreateEntity("Square");
         _SquareEntity.AddComponent<C_SpriteRenderer>(glm::vec4(0.8f, 0.3f, 0.3f, 1.0f));
@@ -96,20 +99,37 @@ namespace IM {
             (spec.Width != _ViewportSize.x || spec.Height != _ViewportSize.y)) {
             _FrameBuffer->Resize((size_t)_ViewportSize.x, (size_t)_ViewportSize.y);
             _CameraController.OnResize((size_t)_ViewportSize.x, (size_t)_ViewportSize.y);
-
+            _EditorCamera.SetViewportSize(_ViewportSize.x, _ViewportSize.y);
             _ActiveScene->OnViewportResize((size_t)_ViewportSize.x, (size_t)_ViewportSize.y);
         }
 
         if (_bViewportFocus) {
             _CameraController.OnUpdate(dt);
+            _EditorCamera.OnUpdate(dt);
         }
+
+        
 
         Renderer::R2D::ResetStats();
         _FrameBuffer->Bind();
         Renderer::SetClearColor({ 0.31f, 0.31f, 0.31f, 1.0f });
         Renderer::Clear();
 
-        _ActiveScene->OnUpdate(dt);
+        _ActiveScene->OnUpdateEditor(dt, _EditorCamera);
+        
+        auto [mx, my] = ImGui::GetMousePos();
+        mx -= _ViewportBounds[0].x;
+        my -= _ViewportBounds[0].y;
+        glm::vec2 viewportSize = _ViewportBounds[1] - _ViewportBounds[0];
+        my = viewportSize.y - my;
+
+        int mouseX = (int)mx;
+        int mouseY = (int)my;
+
+        if (mouseX >= 0 && mouseY >= 0 && mouseX < (int)viewportSize.x && mouseY < (int)viewportSize.y) {
+            uint32_t pixelData = _FrameBuffer->ReadPixel(1, mouseX, mouseY);
+            IMAGINE_CORE_WARN("Mouse = {}, {}, {}", mouseX, mouseY, pixelData);
+        }
 
         _FrameBuffer->Unbind();
     }
@@ -202,6 +222,7 @@ namespace IM {
 
             ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
             ImGui::Begin("Viewport");
+            auto viewportOffset = ImGui::GetCursorPos(); // includes tab bar
 
             _bViewportFocus = ImGui::IsWindowFocused();
             _bViewportHovered = ImGui::IsWindowHovered();
@@ -214,11 +235,18 @@ namespace IM {
             uint32_t textureID = _FrameBuffer->GetColorAttachmentID();
             ImGui::Image((void *)textureID, ImVec2{ _ViewportSize.x, _ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 
-            
+            auto windowSize = ImGui::GetWindowSize();
+            ImVec2 minBound = ImGui::GetWindowPos();
+            //minBound.x += viewportOffset.x;
+            //minBound.y += viewportOffset.y;
+
+            ImVec2 maxBound = { minBound.x + windowSize.x, minBound.y + windowSize.y };
+            _ViewportBounds[0] = { minBound.x, minBound.y };
+            _ViewportBounds[1] = { maxBound.x, maxBound.y };
 
             //ImGuizmo stuff
             Entity selectedEntity = _SceneHierarchyPanel->GetSelectedEntity();
-            if (selectedEntity) {
+            if (selectedEntity && _GizmoType != -1) {
 
                 ImGuizmo::SetDrawlist();
                 float windowWidth = (float)ImGui::GetWindowWidth();
@@ -226,10 +254,9 @@ namespace IM {
                 ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
 
                 //camera
-                auto cameraEntity = _ActiveScene->GetPrimaryCameraEntity();
-                const auto& cameraComponent = cameraEntity.GetComponent<C_Camera>();
-                glm::mat4 cameraView = glm::inverse(cameraEntity.GetComponent<C_Transform>().GetTransform());
-                ImGuizmo::SetOrthographic((cameraComponent._ProjectionType == C_Camera::ProjectionType::Orthographic) ? true : false);
+                const glm::mat4 cameraProj = _EditorCamera.GetProjection();
+                glm::mat4 cameraView = _EditorCamera.GetViewMatrix();
+                //ImGuizmo::SetOrthographic((cameraComponent._ProjectionType == C_Camera::ProjectionType::Orthographic) ? true : false);
 
                 //entity
                 auto& transformComponent = selectedEntity.GetComponent<C_Transform>();
@@ -240,8 +267,7 @@ namespace IM {
                 float snapValue = (_GizmoType != ImGuizmo::OPERATION::ROTATE) ? 0.5f : 30.0f;
 
                 float snapValues[3] = { snapValue, snapValue, snapValue };
-
-                ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraComponent.Projection),
+                ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProj),
                     (ImGuizmo::OPERATION)_GizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform),
                     nullptr, snap ? snapValues : nullptr);
 
@@ -267,6 +293,7 @@ namespace IM {
     void EditorLayer::OnEvent(Event& e)
     {
         _CameraController.OnEvent(e);
+        _EditorCamera.OnEvent(e);
 
         EventDispatcher dispatcher(e);
         dispatcher.Dispatch<KeyPressedEvent>(IMAGINE_BIND_EVENT(EditorLayer::OnKeyPressed));
@@ -295,9 +322,11 @@ namespace IM {
                 if (control && shift) {
                     SaveAsScene();
                     break;
-                }
+                }                
+        }
+        switch (e.GetKeyCode()) {
             case Key::Q:
-                _GizmoType - 3;
+                _GizmoType = -1;
                 break;
             case Key::W:
                 _GizmoType = ImGuizmo::OPERATION::TRANSLATE;
@@ -308,7 +337,6 @@ namespace IM {
             case Key::R:
                 _GizmoType = ImGuizmo::OPERATION::SCALE;
                 break;
-                
         }
 
         return false;

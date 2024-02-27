@@ -7,6 +7,7 @@
 #include "Texture.h"
 #include "Subtexture2D.h"
 #include "ECS/Components.h"
+#include "EditorCamera.h"
 
 namespace IM {
 	class Renderer
@@ -48,6 +49,7 @@ namespace IM {
 		public:
 			static void BeginScene(const OrthographicCamera& camera); //TODO: Remove
 			static void BeginScene(const C_Camera camera, const C_Transform transform);
+			static void BeginScene(EditorCamera& camera);
 			static void EndScene();
 			static void FlushScene();
 

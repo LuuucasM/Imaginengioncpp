@@ -4,12 +4,12 @@ namespace IM {
 	using MouseCode = uint16_t;
 	namespace Mouse {
 		enum : MouseCode {
-			ModShift = 0x0001,
-			ModControl = 0x0002,
-			ModAlt = 0x0004,
-			ModSuper = 0x0008,
-			ModCapsLock = 0x0010,
-			ModNumLock = 0x0020,
+			//ModShift = 0x0001,
+			//ModControl = 0x0002,
+			//ModAlt = 0x0004,
+			//ModSuper = 0x0008,
+			//ModCapsLock = 0x0010,
+			//ModNumLock = 0x0020,
 
 			Button0 = 0,
 			Button1 = 1,

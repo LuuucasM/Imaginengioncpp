@@ -12,6 +12,10 @@ namespace IM {
 			: _TypeID(id){
 
 		}
+		System(size_t id, std::set<size_t> hashes)
+			: _TypeID(id), _TypeHashes(hashes) {
+
+		}
 		~System() = default;
 		size_t _TypeID;
 		std::set<size_t> _TypeHashes;

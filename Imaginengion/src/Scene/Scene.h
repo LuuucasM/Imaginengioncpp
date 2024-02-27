@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ECS/ECSManager.h"
+#include "Renderer/EditorCamera.h"
 
 namespace IM {
 	
@@ -17,7 +18,8 @@ namespace IM {
 		Entity CreateEntity(const std::string& name = "Entity");
 		void DestroyEntity(Entity entity);
 
-		void OnUpdate(float dt);
+		void OnUpdateRuntime(float dt);
+		void OnUpdateEditor(float dt, EditorCamera& camera);
 
 		void OnViewportResize(size_t viewportWidth, size_t viewportHeight);
 

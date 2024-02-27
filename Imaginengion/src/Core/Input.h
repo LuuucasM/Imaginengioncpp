@@ -4,13 +4,15 @@
 #include "Keycodes.h"
 #include "MouseCodes.h"
 
+#include <glm/glm.hpp>
+
 namespace IM {
 	class Input {
 
 	public:
 		static bool IsKeyPressed(KeyCode key);
 		static bool IsMouseButtonPressed(MouseCode button);
-		static std::pair<float, float> GetMousePos();
+		static glm::vec2 GetMousePos();
 	};
 
 }

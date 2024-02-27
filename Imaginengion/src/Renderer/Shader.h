@@ -15,6 +15,7 @@ namespace IM {
 		Mat3,
 		Mat4,
 		Int,
+		UInt,
 		Int2,
 		Int3,
 		Int4,
@@ -30,6 +31,7 @@ namespace IM {
 		case ShaderDataType::Mat3:    return 4 * 3 * 3;
 		case ShaderDataType::Mat4:    return 4 * 4 * 4;
 		case ShaderDataType::Int:     return 4;
+		case ShaderDataType::UInt:     return 4;
 		case ShaderDataType::Int2:    return 4 * 2;
 		case ShaderDataType::Int3:    return 4 * 3;
 		case ShaderDataType::Int4:    return 4 * 4;
@@ -40,10 +42,18 @@ namespace IM {
 	}
 
 	static std::unordered_map<std::string, ShaderDataType> StrToDataType = {
+		{"float", ShaderDataType::Float},
 		{"vec2", ShaderDataType::Float2},
 		{"vec3", ShaderDataType::Float3},
 		{"vec4", ShaderDataType::Float4},
-		{"float", ShaderDataType::Float},
+		{"mat3", ShaderDataType::Mat3},
+		{"mat4", ShaderDataType::Mat4},
+		{"int", ShaderDataType::Int},
+		{"uint", ShaderDataType::UInt},
+		//{"int", ShaderDataType::Int2},
+		//{"int", ShaderDataType::Int3},
+		//{"int", ShaderDataType::Int4},
+		{"bool", ShaderDataType::Int}
 	};
 
 	struct BufferElement {
