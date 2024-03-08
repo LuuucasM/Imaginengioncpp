@@ -63,6 +63,9 @@ namespace IM {
 
 		virtual void Resize(size_t width, size_t height) = 0;
 		virtual uint32_t ReadPixel(uint32_t attachmentIndex, int x, int y) = 0;
+
+		virtual void ClearColorAttachment(uint32_t attachmentIndex, uint32_t value) = 0;
+
 	protected:
 		std::vector<FrameBufferTextureSpecification> _ColorAttachmentSpecs;
 		FrameBufferTextureSpecification _DepthAttachmentSpecs;

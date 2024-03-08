@@ -41,6 +41,11 @@ namespace IM{
 		ImGui::End();
 	}
 
+	void SceneHierarchyPanel::SetSelectedEntity(Entity& entity)
+	{
+		_SelectionContext = entity;
+	}
+
 	void SceneHierarchyPanel::DrawEntityNode(Entity entity)
 	{
 		auto& nameComponent = entity.GetComponent<C_Name>();;

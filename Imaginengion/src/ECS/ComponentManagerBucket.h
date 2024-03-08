@@ -6,28 +6,30 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <set>
-#include <algorithm>
 #include <numeric>
 #include <memory>
-#include <iostream>
-#include <typeindex>
 
 namespace IM {
-	class ComponentManager {
+	class ComponentManagerBucket {
 		friend class ECSManager;
 		friend class System;
 	public:
-		ComponentManager() = default;
-		~ComponentManager() = default;
+		ComponentManagerBucket() = default;
+		~ComponentManagerBucket() = default;
 	private:
 
+		template<typename C_Type>
+		void RegisterComponent() {
+			auto type_hash = typeid(C_Type).hash_code();
+			_ComponentArrayList[type_hash] = CreateRefPtr<ComponentArray<C_Type>>();
+			_ComponentArrayVersion[type_hash] = 0;
+		}
 		template<typename C_Type, typename... Args>
 		C_Type& AddComponent(uint32_t entity, Args &&...args) {
 			auto type_hash = typeid(C_Type).hash_code();
 
 			if (!_ComponentArrayList.contains(type_hash)) {
-				_ComponentArrayList[type_hash] = CreateRefPtr<ComponentArray<C_Type>>();
-				_ComponentArrayVersion[type_hash] = 0;
+				RegisterComponent<C_Type>();
 			}
 
 			_EntityToComponentCodes[entity].insert(type_hash);
@@ -73,20 +75,15 @@ namespace IM {
 			//get a list of ids for this group
 			const std::vector<uint32_t>& ids = GetGroupIDs(typeHashes, num);
 
-			//sort components of the IDs so that they are contiguous in memory
-			GetGroupSort(ids);
-
 			return ids;
 		}
 		template<typename ...Args>
-		const std::vector<uint32_t>& GetGroup(std::set<size_t>& typeHashes, size_t num) {
+		const std::vector<uint32_t>& GetGroup(const std::set<size_t>& typeHashes, const size_t num) {
 			if (!GetGroupValidate(typeHashes)) {
 				return _EmptyVector;
 			}
 			//get a list of ids for this group
 			const std::vector<uint32_t>& ids = GetGroupIDs(typeHashes, num);
-			//sort components of the IDs so that they are contiguous in memory
-			GetGroupSort(ids);
 
 			return ids;
 		}
@@ -98,7 +95,7 @@ namespace IM {
 			_EntityToComponentCodes.erase(entity);
 		}
 	private:
-		void ComputeGroupIDs(const std::set<size_t>& typeHashes, size_t num) {
+		void ComputeGroupIDs(const std::set<size_t>& typeHashes, const size_t num) {
 			std::vector<RefPtr<IComponentArray>> componentArrays;
 			for (auto ele : typeHashes) {
 				componentArrays.emplace_back(_ComponentArrayList[ele]);
@@ -121,7 +118,7 @@ namespace IM {
 			_EntityCache[num] = result;
 		}
 
-		const std::vector<uint32_t>& GetGroupIDs(std::set<size_t>& typeHashes, size_t num) {
+		const std::vector<uint32_t>& GetGroupIDs(const std::set<size_t>& typeHashes, const size_t num) {
 
 			//if we only are getting 1 component type then we can just return that component type containers entity list
 			if (typeHashes.size() == 1) {
@@ -148,10 +145,7 @@ namespace IM {
 			return _EntityCache[num];
 
 		}
-		void GetGroupSort(const std::vector<uint32_t>& idList) {
-
-		}
-		bool GetGroupValidate(std::set<size_t>& typehashes) {
+		bool GetGroupValidate(const std::set<size_t>& typehashes) {
 			bool valid = true;
 			for (auto ele : typehashes) {
 				if (!_ComponentArrayList.contains(ele)) {

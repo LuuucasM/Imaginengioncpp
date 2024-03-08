@@ -5,16 +5,19 @@
 #include "PlatformDetection.h"
 
 #ifdef IMAGINE_DEBUG
+	#ifdef IMAGINE_PLATFORM_WINDOWS
+		#define IMAGINE_DEBUGBREAK() __debugbreak()
+	#elif defined(IMAGINE_PLATFORM_LINUX)
+		#include <signal.h>
+		#define IMAGINE_DEBUGBREAK() raise(SIGTRAP)
+	#else
+		#error "Platform doesnt support debugbreak yet!"
+	#endif
 	#define IMAGINE_ENABLE_ASSERTS
 #endif
 
-#ifdef IMAGINE_ENABLE_ASSERTS
-	#define IMAGINE_ASSERT(x, ...) { if(!(x)) {IMAGINE_ERROR("Assertion Failed: {}", __VA_ARGS__); __debugbreak(); } }
-	#define IMAGINE_CORE_ASSERT(x, ...) { if(!(x)) {IMAGINE_CORE_ERROR("Assertion Failed: {}", __VA_ARGS__); __debugbreak(); } }
-#else
-	#define IMAGINE_ASSERT(x, ...)
-	#define IMAGINE_CORE_ASSERT(x, ...)
-#endif
+#define IMAGINE_EXPAND_MACRO(x) x
+#define IMAGINE_STRINGIFY_MACRO(x) #x
 
 #define BIT(x) (1 << x)
 
@@ -40,3 +43,6 @@ namespace IM {
 	template<typename T>
 	using WeakPtr = std::weak_ptr<T>;
 }
+
+#include "Core/Log.h"
+#include "Core/Assert.h"

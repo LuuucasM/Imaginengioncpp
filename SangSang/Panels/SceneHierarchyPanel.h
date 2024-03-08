@@ -15,6 +15,7 @@ namespace IM {
 
 		void OnImGuiRender();
 
+		void SetSelectedEntity(Entity& entity);
 		Entity GetSelectedEntity() { return _SelectionContext; }
 	private:
 		void DrawEntityNode(Entity entity);

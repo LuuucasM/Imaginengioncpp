@@ -15,6 +15,7 @@ namespace IM {
 		case ShaderDataType::Mat3:     return GL_FLOAT;
 		case ShaderDataType::Mat4:     return GL_FLOAT;
 		case ShaderDataType::Int:      return GL_INT;
+		case ShaderDataType::UInt:     return GL_UNSIGNED_INT;
 		case ShaderDataType::Int2:     return GL_INT;
 		case ShaderDataType::Int3:     return GL_INT;
 		case ShaderDataType::Int4:     return GL_INT;
@@ -61,11 +62,20 @@ namespace IM {
 		const auto& layout = vertexBuffer->GetLayout();
 		for (const auto& element : layout) {
 			glEnableVertexAttribArray(index);
-			glVertexAttribPointer(index, element.GetComponentCount(),
-				ShaderDataTypeToOpneGLBaseType(element.Type),
-				element.bNormalized ? GL_TRUE : GL_FALSE,
-				vertexBuffer->GetStride(),
-				(const void*)(intptr_t)element.Offset);
+			if (element.Type == ShaderDataType::Bool || element.Type == ShaderDataType::UInt || element.Type == ShaderDataType::Int ||
+				element.Type == ShaderDataType::Int2 || element.Type == ShaderDataType::Int3 || element.Type == ShaderDataType::Int4) {
+				glVertexAttribIPointer(index, element.GetComponentCount(),
+					ShaderDataTypeToOpneGLBaseType(element.Type),
+					vertexBuffer->GetStride(),
+					(const void*)(intptr_t)element.Offset);
+			}
+			else {
+				glVertexAttribPointer(index, element.GetComponentCount(),
+					ShaderDataTypeToOpneGLBaseType(element.Type),
+					element.bNormalized ? GL_TRUE : GL_FALSE,
+					vertexBuffer->GetStride(),
+					(const void*)(intptr_t)element.Offset);
+			}
 			++index;
 		}
 

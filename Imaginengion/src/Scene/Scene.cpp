@@ -12,7 +12,8 @@
 namespace IM {
 	Scene::Scene()
 	{
-		_ECSManager.RegisterSystem<Render2DSystem, C_Transform, C_SpriteRenderer>();
+		_ECSManager.RegisterComponent<C_Transform>();
+		_ECSManager.RegisterComponent<C_SpriteRenderer>();
 	}
 	Scene::~Scene()
 	{
@@ -60,14 +61,22 @@ namespace IM {
 
 		if (mainCamera) {
 			Renderer::R2D::BeginScene(*mainCamera, *cameraTransform);
-			_ECSManager.SystemOnUpdate<Render2DSystem>(dt);
+			auto& group = _ECSManager.GetGroup<C_Transform, C_SpriteRenderer>();
+			for (auto entity : group) {
+				auto [transform, sprite] = _ECSManager.GetComponents<C_Transform, C_SpriteRenderer>(entity);
+				Renderer::R2D::DrawSprite(transform.GetTransform(), sprite, entity);
+			}
 			Renderer::R2D::EndScene();
 		}
 	}
 	void Scene::OnUpdateEditor(float dt, EditorCamera& camera)
 	{
 		Renderer::R2D::BeginScene(camera);
-		_ECSManager.SystemOnUpdate<Render2DSystem>(dt);
+		auto& group = _ECSManager.GetGroup<C_Transform, C_SpriteRenderer>();
+		for (auto entity : group) {
+			auto [transform, sprite] = _ECSManager.GetComponents<C_Transform, C_SpriteRenderer>(entity);
+			Renderer::R2D::DrawSprite(transform.GetTransform(), sprite, entity);
+		}
 		Renderer::R2D::EndScene();
 	}
 	void Scene::OnViewportResize(size_t viewportWidth, size_t viewportHeight)

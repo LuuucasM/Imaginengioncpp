@@ -33,8 +33,8 @@ namespace IM {
 			dataFormat = GL_RGB;
 		}
 
-		IMAGINE_CORE_ASSERT(internalFormat, "Texture format not supported in OpenGLTexture2D: {}", path);
-		IMAGINE_CORE_ASSERT(dataFormat, "Texture format not supported in OpenGLTexture2D: {}", path);
+		IMAGINE_CORE_ASSERT(internalFormat, "Texture format not supported in OpenGLTexture2D: {}");
+		IMAGINE_CORE_ASSERT(dataFormat, "Texture format not supported in OpenGLTexture2D: {}");
 
 		_InternalFormat = internalFormat;
 		_DataFormat = dataFormat;

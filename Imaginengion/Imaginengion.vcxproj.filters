@@ -951,7 +951,7 @@
     <ClInclude Include="src\ECS\ComponentArray.h">
       <Filter>src\ECS</Filter>
     </ClInclude>
-    <ClInclude Include="src\ECS\ComponentManager.h">
+    <ClInclude Include="src\ECS\ComponentManagerBucket.h">
       <Filter>src\ECS</Filter>
     </ClInclude>
     <ClInclude Include="src\ECS\Components.h">
@@ -1095,6 +1095,9 @@
     <ClInclude Include="src\Math\Math.h" />
     <ClInclude Include="src\Renderer\EditorCamera.h" />
     <ClInclude Include="src\Core\PlatformDetection.h" />
+    <ClInclude Include="src\Core\Assert.h" />
+    <ClInclude Include="src\ECS\ArchetypeArray.h" />
+    <ClInclude Include="src\ECS\ComponentManagerArchetype.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Vendor\ImGuizmo\ImGuizmo.cpp">

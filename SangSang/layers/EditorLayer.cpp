@@ -115,6 +115,8 @@ namespace IM {
         Renderer::SetClearColor({ 0.31f, 0.31f, 0.31f, 1.0f });
         Renderer::Clear();
 
+        _FrameBuffer->ClearColorAttachment(1, 0);
+
         _ActiveScene->OnUpdateEditor(dt, _EditorCamera);
         
         auto [mx, my] = ImGui::GetMousePos();
@@ -128,7 +130,7 @@ namespace IM {
 
         if (mouseX >= 0 && mouseY >= 0 && mouseX < (int)viewportSize.x && mouseY < (int)viewportSize.y) {
             uint32_t pixelData = _FrameBuffer->ReadPixel(1, mouseX, mouseY);
-            IMAGINE_CORE_WARN("Mouse = {}, {}, {}", mouseX, mouseY, pixelData);
+            _HoveredEntity = pixelData == 0 ? Entity() : Entity(pixelData, _ActiveScene.get());
         }
 
         _FrameBuffer->Unbind();
@@ -222,7 +224,11 @@ namespace IM {
 
             ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
             ImGui::Begin("Viewport");
-            auto viewportOffset = ImGui::GetCursorPos(); // includes tab bar
+            auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
+            auto viewportMaxRegion = ImGui::GetWindowContentRegionMax();
+            auto viewportOffset = ImGui::GetWindowPos();
+            _ViewportBounds[0] = { viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y };
+            _ViewportBounds[1] = { viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y };
 
             _bViewportFocus = ImGui::IsWindowFocused();
             _bViewportHovered = ImGui::IsWindowHovered();
@@ -235,23 +241,12 @@ namespace IM {
             uint32_t textureID = _FrameBuffer->GetColorAttachmentID();
             ImGui::Image((void *)textureID, ImVec2{ _ViewportSize.x, _ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 
-            auto windowSize = ImGui::GetWindowSize();
-            ImVec2 minBound = ImGui::GetWindowPos();
-            //minBound.x += viewportOffset.x;
-            //minBound.y += viewportOffset.y;
-
-            ImVec2 maxBound = { minBound.x + windowSize.x, minBound.y + windowSize.y };
-            _ViewportBounds[0] = { minBound.x, minBound.y };
-            _ViewportBounds[1] = { maxBound.x, maxBound.y };
-
             //ImGuizmo stuff
             Entity selectedEntity = _SceneHierarchyPanel->GetSelectedEntity();
             if (selectedEntity && _GizmoType != -1) {
-
+                ImGuizmo::SetOrthographic(false);
                 ImGuizmo::SetDrawlist();
-                float windowWidth = (float)ImGui::GetWindowWidth();
-                float windowHeight = (float)ImGui::GetWindowHeight();
-                ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
+                ImGuizmo::SetRect(_ViewportBounds[0].x, _ViewportBounds[0].y, _ViewportBounds[1].x - _ViewportBounds[0].x, _ViewportBounds[1].y - _ViewportBounds[0].y);
 
                 //camera
                 const glm::mat4 cameraProj = _EditorCamera.GetProjection();
@@ -297,6 +292,7 @@ namespace IM {
 
         EventDispatcher dispatcher(e);
         dispatcher.Dispatch<KeyPressedEvent>(IMAGINE_BIND_EVENT(EditorLayer::OnKeyPressed));
+        dispatcher.Dispatch<MouseButtonPressedEvent>(IMAGINE_BIND_EVENT(EditorLayer::OnMouseButtonPressed));
     }
     bool EditorLayer::OnKeyPressed(KeyPressedEvent& e)
     {
@@ -339,6 +335,14 @@ namespace IM {
                 break;
         }
 
+        return false;
+    }
+    bool EditorLayer::OnMouseButtonPressed(MouseButtonPressedEvent& e)
+    {
+        //for mouse picking in the viewport
+        if (e.GetMouseButton() == Mouse::ButtonLeft && _bViewportHovered && !ImGuizmo::IsOver() && !Input::IsKeyPressed(Key::LeftAlt)) {
+            _SceneHierarchyPanel->SetSelectedEntity(_HoveredEntity);
+        }
         return false;
     }
     void EditorLayer::NewScene()

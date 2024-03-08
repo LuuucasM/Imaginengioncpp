@@ -62,6 +62,19 @@ namespace IM {
 		return false;
 	}
 
+	static GLenum ImagineFBTextureFormatToGl(FrameBufferTextureFormat format) {
+		switch (format) {
+			case FrameBufferTextureFormat::RGBA8: return GL_RGBA8;
+			case FrameBufferTextureFormat::RGBA16F: return GL_RGBA16F;
+			case FrameBufferTextureFormat::RGBA32F: return GL_RGBA32F;
+			case FrameBufferTextureFormat::RG32F: return GL_RG32F;
+			case FrameBufferTextureFormat::RED_INTEGER: return GL_RED_INTEGER;
+			case FrameBufferTextureFormat::DEPTH32F: return GL_DEPTH32F_STENCIL8;
+			case FrameBufferTextureFormat::DEPTH24STENCIL8: return GL_DEPTH24_STENCIL8;
+		}
+		IMAGINE_CORE_ASSERT(0, "Unkown FrameBufferTextureFormat in ImagineFBTextureFormatToGl!");
+	}
+
 	OpenGLFrameBuffer::OpenGLFrameBuffer(const FrameBufferSpecification& spec)
 	{
 		_Specification = spec;
@@ -140,6 +153,10 @@ namespace IM {
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, _BufferID);
 		glViewport(0, 0, (GLsizei)_Specification.Width, (GLsizei)_Specification.Height);
+
+		//ClearColorAttachment(1, 
+
+
 	}
 	void OpenGLFrameBuffer::Unbind()
 	{
@@ -163,5 +180,14 @@ namespace IM {
 		uint32_t pixelData;
 		glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_UNSIGNED_INT, &pixelData);
 		return pixelData;
+	}
+	void OpenGLFrameBuffer::ClearColorAttachment(uint32_t attachmentIndex, uint32_t value)
+	{
+		IMAGINE_CORE_ASSERT(attachmentIndex < _ColorAttachments.size(), "attachment index must be within bounds of color attachments.size() in ClearColorAttachment()");
+
+		auto& spec = _ColorAttachmentSpecs[attachmentIndex];
+
+		glClearTexImage(_ColorAttachments[attachmentIndex], 0,
+			ImagineFBTextureFormatToGl(spec._TextureFormat), GL_UNSIGNED_INT, &value);
 	}
 }

@@ -18,6 +18,7 @@ namespace IM {
 		void OnEvent(Event& e) override;
 	private:
 		bool OnKeyPressed(KeyPressedEvent& e);
+		bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
 
 		void NewScene();
 		void OpenScene();
@@ -34,6 +35,8 @@ namespace IM {
 		Entity _SquareEntity;
 		Entity _CameraEntity;
 		Entity _CameraEntity2;
+
+		Entity _HoveredEntity;
 
 		bool _PrimaryCamera = true;
 

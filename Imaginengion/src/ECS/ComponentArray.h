@@ -28,7 +28,8 @@ namespace IM {
 		C_Type& AddComponent(uint32_t entity, Args &&...args) {
 			size_t loc = _ComponentList.size();
 			_EntityToIndexMap[entity] = loc;
-			_ComponentList.emplace_back(C_Type{args...});
+			//_ComponentList.emplace_back(C_Type{args...});
+			_ComponentList.emplace_back(std::forward<Args>(args)...);
 			_EntityList.emplace_back(entity);
 			
 			_VersionNumber++;

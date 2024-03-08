@@ -28,10 +28,11 @@ namespace IM {
 		}
 	private:
 		struct IDGenerator {
-			uint32_t next_id = 1;
 			uint32_t GetID() {
 				return next_id++;
 			}
+		private:
+			uint32_t next_id = 1;
 		};
 		IDGenerator _Generator;
 		std::unordered_set<uint32_t> IDsInUse;

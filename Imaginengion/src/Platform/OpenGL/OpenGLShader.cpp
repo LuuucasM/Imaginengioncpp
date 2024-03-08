@@ -182,7 +182,8 @@ namespace IM {
 				glDeleteShader(glShaderIDs[i]);
 			}
 			// Use the infoLog as you see fit.
-			IMAGINE_CORE_ASSERT(false, "Shader Program linking failure!\n {0}", infoLog.data());
+			IMAGINE_CORE_ERROR("{}", infoLog.data());
+			IMAGINE_CORE_ASSERT(false, "Shader Program linking failure!");
 			// In this simple program, we'll just leave
 			return false;
 		}
@@ -236,7 +237,6 @@ namespace IM {
 		GLsizei length;
 
 		glGetProgramiv(_ProgramID, GL_ACTIVE_UNIFORMS, &count);
-		std::cout << "Active Uniforms: " << count << std::endl;
 
 		for (i = 0; i < count; i++) {
 			glGetActiveUniform(_ProgramID, (GLuint)i, bufSize, &length, &size, &type, uniname);

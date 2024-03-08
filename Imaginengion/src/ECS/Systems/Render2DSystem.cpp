@@ -6,12 +6,12 @@
 #include "Renderer/Renderer.h"
 
 namespace IM {
-	void Render2DSystem::OnUpdate(ScopePtr<ComponentManager>& _ComponentManager, float dt) {
+	void Render2DSystem::OnUpdate(ScopePtr<ComponentManagerBucket>& _ComponentManager, float dt) {
 
-		auto& group = System::GetGroup<C_Transform, C_SpriteRenderer>(_ComponentManager, _TypeHashes, _TypeID);
+		auto& group = System::GetGroup<C_Transform, C_SpriteRenderer>(_ComponentManager);
 		for (auto entity : group) {
 			auto [transform, sprite] = System::GetComponents<C_Transform, C_SpriteRenderer>(_ComponentManager, entity);
-			Renderer::R2D::DrawRect(transform.GetTransform(), sprite.Color);
+			Renderer::R2D::DrawSprite(transform.GetTransform(), sprite, entity);
 		}
 	}
 }

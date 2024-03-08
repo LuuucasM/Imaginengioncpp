@@ -55,7 +55,9 @@ namespace IM {
 		glm::vec2 TexCoord;
 		float TexIndex;
 		float TilingFactor;
-		// TODO: texid, maskid
+		// TODO: maskid
+		//Editor only
+		uint32_t EntityID;
 	};
 
 	struct Renderer2DData {
@@ -340,7 +342,7 @@ namespace IM {
 		_Data.Stats.RectCount++;
 	}
 
-	void Renderer::R2D::DrawRect(const glm::mat4& transform, const glm::vec4& color)
+	void Renderer::R2D::DrawRect(const glm::mat4& transform, const glm::vec4& color, uint32_t entityID)
 	{
 		IMAGINE_PROFILE_FUNCTION();
 
@@ -353,6 +355,7 @@ namespace IM {
 		_Data.RectVertexBufferPtr->TexCoord = { 0.0f, 0.0f };
 		_Data.RectVertexBufferPtr->TexIndex = 0.0f;
 		_Data.RectVertexBufferPtr->TilingFactor = 1.0f;
+		_Data.RectVertexBufferPtr->EntityID = entityID;
 		_Data.RectVertexBufferPtr++;
 
 		_Data.RectVertexBufferPtr->Position = transform * _Data.RectVertexPositions[1];
@@ -360,6 +363,7 @@ namespace IM {
 		_Data.RectVertexBufferPtr->TexCoord = { 1.0f, 0.0f };
 		_Data.RectVertexBufferPtr->TexIndex = 0.0f;
 		_Data.RectVertexBufferPtr->TilingFactor = 1.0f;
+		_Data.RectVertexBufferPtr->EntityID = entityID;
 		_Data.RectVertexBufferPtr++;
 
 		_Data.RectVertexBufferPtr->Position = transform * _Data.RectVertexPositions[2];
@@ -367,6 +371,7 @@ namespace IM {
 		_Data.RectVertexBufferPtr->TexCoord = { 1.0f, 1.0f };
 		_Data.RectVertexBufferPtr->TexIndex = 0.0f;
 		_Data.RectVertexBufferPtr->TilingFactor = 1.0f;
+		_Data.RectVertexBufferPtr->EntityID = entityID;
 		_Data.RectVertexBufferPtr++;
 
 		_Data.RectVertexBufferPtr->Position = transform * _Data.RectVertexPositions[3];
@@ -374,6 +379,7 @@ namespace IM {
 		_Data.RectVertexBufferPtr->TexCoord = { 0.0f, 1.0f };
 		_Data.RectVertexBufferPtr->TexIndex = 0.0f;
 		_Data.RectVertexBufferPtr->TilingFactor = 1.0f;
+		_Data.RectVertexBufferPtr->EntityID = entityID;
 		_Data.RectVertexBufferPtr++;
 
 		_Data.RectIndexCount += 6;
@@ -381,7 +387,7 @@ namespace IM {
 		_Data.Stats.RectCount++;
 	}
 
-	void Renderer::R2D::DrawRect(const glm::mat4& transform, const RefPtr<Texture2D> texture, float tilingFactor, const glm::vec4& tintColor)
+	void Renderer::R2D::DrawRect(const glm::mat4& transform, const RefPtr<Texture2D> texture, float tilingFactor, const glm::vec4& tintColor, uint32_t entityID)
 	{
 		IMAGINE_PROFILE_FUNCTION();
 
@@ -411,6 +417,7 @@ namespace IM {
 		_Data.RectVertexBufferPtr->TexCoord = { 0.0f, 0.0f };
 		_Data.RectVertexBufferPtr->TexIndex = textureIndex;
 		_Data.RectVertexBufferPtr->TilingFactor = tilingFactor;
+		_Data.RectVertexBufferPtr->EntityID = entityID;
 		_Data.RectVertexBufferPtr++;
 
 		_Data.RectVertexBufferPtr->Position = transform * _Data.RectVertexPositions[1];
@@ -418,6 +425,7 @@ namespace IM {
 		_Data.RectVertexBufferPtr->TexCoord = { 1.0f, 0.0f };
 		_Data.RectVertexBufferPtr->TexIndex = textureIndex;
 		_Data.RectVertexBufferPtr->TilingFactor = tilingFactor;
+		_Data.RectVertexBufferPtr->EntityID = entityID;
 		_Data.RectVertexBufferPtr++;
 
 		_Data.RectVertexBufferPtr->Position = transform * _Data.RectVertexPositions[2];
@@ -425,6 +433,7 @@ namespace IM {
 		_Data.RectVertexBufferPtr->TexCoord = { 1.0f, 1.0f };
 		_Data.RectVertexBufferPtr->TexIndex = textureIndex;
 		_Data.RectVertexBufferPtr->TilingFactor = tilingFactor;
+		_Data.RectVertexBufferPtr->EntityID = entityID;
 		_Data.RectVertexBufferPtr++;
 
 		_Data.RectVertexBufferPtr->Position = transform * _Data.RectVertexPositions[3];
@@ -432,6 +441,7 @@ namespace IM {
 		_Data.RectVertexBufferPtr->TexCoord = { 0.0f, 1.0f };
 		_Data.RectVertexBufferPtr->TexIndex = textureIndex;
 		_Data.RectVertexBufferPtr->TilingFactor = tilingFactor;
+		_Data.RectVertexBufferPtr->EntityID = entityID;
 		_Data.RectVertexBufferPtr++;
 
 		_Data.RectIndexCount += 6;
@@ -629,6 +639,11 @@ namespace IM {
 		_Data.RectIndexCount += 6;
 
 		_Data.Stats.RectCount++;
+	}
+
+	void Renderer::R2D::DrawSprite(const glm::mat4& transform, const C_SpriteRenderer& src, uint32_t entityID)
+	{
+		DrawRect(transform, src.Color, entityID);
 	}
 
 	Renderer::R2D::Statistics Renderer::R2D::GetStats() {
