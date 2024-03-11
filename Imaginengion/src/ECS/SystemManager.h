@@ -24,7 +24,7 @@ namespace IM {
 		}
 
 		template<typename T_Sys>
-		void SystemOnUpdate(ScopePtr<ComponentManagerBucket>& _ComponentManager, float dt) {
+		void SystemOnUpdate(ScopePtr<ComponentManager>& _ComponentManager, float dt) {
 			_SystemList[typeid(T_Sys).hash_code()]->OnUpdate(_ComponentManager, dt);
 		}
 	private:

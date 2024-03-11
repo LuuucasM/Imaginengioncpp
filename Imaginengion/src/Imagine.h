@@ -22,12 +22,12 @@
 
 //-------------ECS-------------------
 #include "ECS/Components.h"
+#include "ECS/Components/ScriptClass.h"
 #include "ECS/Entity.h"
 //-----------------------------------
 
 //------------SCENE------------------
 #include "Scene/Scene.h"
-#include "Scene/ScriptClass.h"
 //-----------------------------------
 
 //------------RENDERING--------------

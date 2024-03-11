@@ -1,0 +1,20 @@
+Scene: OrthographicTest
+Entities:
+  - Entity: 12345
+    Name Component:
+      Name: Red Square
+    Transform Component:
+      Translation: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    Sprite Renderer Component:
+      Color: [0.843881845, 0.284854621, 0.284854621, 1]
+  - Entity: 12345
+    Name Component:
+      Name: Blue Square
+    Transform Component:
+      Translation: [1.5, 0, -6.82999992]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    Sprite Renderer Component:
+      Color: [0.103687063, 0.252806753, 0.945147693, 1]

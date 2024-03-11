@@ -1,10 +1,11 @@
 #pragma once
+#include "Component.h"
 
 #include "glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace IM {
-	struct C_Camera {
+	struct C_Camera : Component{
 		enum class ProjectionType { Perspective = 0, Orthographic = 1 };
 		glm::mat4 Projection = glm::mat4(1.0f);
 		float _OrthographicSize = 10.0f;

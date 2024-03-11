@@ -951,7 +951,7 @@
     <ClInclude Include="src\ECS\ComponentArray.h">
       <Filter>src\ECS</Filter>
     </ClInclude>
-    <ClInclude Include="src\ECS\ComponentManagerBucket.h">
+    <ClInclude Include="src\ECS\ComponentManager.h">
       <Filter>src\ECS</Filter>
     </ClInclude>
     <ClInclude Include="src\ECS\Components.h">
@@ -1083,7 +1083,7 @@
     <ClInclude Include="src\Scene\SceneSerializer.h">
       <Filter>src\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="src\Scene\ScriptClass.h">
+    <ClInclude Include="src\ECS\Components\ScriptClass.h">
       <Filter>src\Scene</Filter>
     </ClInclude>
     <ClInclude Include="src\Utils\PlatformUtils.h">
@@ -1096,8 +1096,7 @@
     <ClInclude Include="src\Renderer\EditorCamera.h" />
     <ClInclude Include="src\Core\PlatformDetection.h" />
     <ClInclude Include="src\Core\Assert.h" />
-    <ClInclude Include="src\ECS\ArchetypeArray.h" />
-    <ClInclude Include="src\ECS\ComponentManagerArchetype.h" />
+    <ClInclude Include="src\ECS\Components\Component.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Vendor\ImGuizmo\ImGuizmo.cpp">

@@ -1,4 +1,5 @@
 #pragma once
+#include "Component.h"
 
 #include "glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>
@@ -8,7 +9,7 @@
 #include <iostream>
 
 namespace IM {
-	struct C_Transform {
+	struct C_Transform : public Component {
 
 		glm::vec3 Translation = { 0.0f, 0.0f, 0.0f };
 		glm::vec3 Rotation = { 0.0f, 0.0f, 0.0f };

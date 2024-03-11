@@ -39,16 +39,22 @@ bld/
 
 # Binaries
 **/bin/
+!vendor/premake/bin/
 bin-int/
-!vendor/bin/premake/
 
-# Visual Studio 2017 auto generated files
-#Generated\ Files/
+*.log
+
+# Visual Studio files and folder
 .vs/
-*.sln
-*.vcxproj
-*.vcxproj.filters
-*.vcxproj.user
+**.sln
+**.vcxproj
+**.vcxproj.filters
+**.vcxproj.user
+
+# Directories
+Imaginengion/Vendor/VulkanSDK
+SangSang/assets/cache
+scripts/__pycache__
 
 #Performance Profile files
 *Runtime.json

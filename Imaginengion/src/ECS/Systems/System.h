@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ECS/ComponentManagerBucket.h"
+#include "ECS/ComponentManager.h"
 
 #include <set>
 
@@ -12,20 +12,20 @@ namespace IM {
 
 
 		template<typename C_Type>
-		C_Type& GetComponent(ScopePtr<ComponentManagerBucket>& _ComponentManager, uint32_t entity) {
+		C_Type& GetComponent(ScopePtr<ComponentManager>& _ComponentManager, uint32_t entity) {
 			return _ComponentManager->GetComponent<C_Type>(entity);
 		}
 
 		template<typename ...Args>
-		auto GetComponents(ScopePtr<ComponentManagerBucket>& _ComponentManager, uint32_t entity) {
+		auto GetComponents(ScopePtr<ComponentManager>& _ComponentManager, uint32_t entity) {
 			return _ComponentManager->GetComponents<Args...>(entity);
 		}
 
 		template<typename... Args>
-		const std::vector<uint32_t>& GetGroup(ScopePtr<ComponentManagerBucket>& _ComponentManager) {
+		const std::vector<uint32_t>& GetGroup(ScopePtr<ComponentManager>& _ComponentManager) {
 			return _ComponentManager->GetGroup<Args...>();
 		}
-		virtual void OnUpdate(ScopePtr<ComponentManagerBucket>& _ComponentManager, float dt) = 0;
+		virtual void OnUpdate(ScopePtr<ComponentManager>& _ComponentManager, float dt) = 0;
 	private:
 		
 	};

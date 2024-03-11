@@ -149,8 +149,7 @@
   <ItemGroup>
     <ClInclude Include="src\Core\Assert.h" />
     <ClInclude Include="src\Core\PlatformDetection.h" />
-    <ClInclude Include="src\ECS\ArchetypeArray.h" />
-    <ClInclude Include="src\ECS\ComponentManagerArchetype.h" />
+    <ClInclude Include="src\ECS\Components\Component.h" />
     <ClInclude Include="src\Renderer\EditorCamera.h" />
     <ClInclude Include="src\Math\Math.h" />
     <ClInclude Include="Vendor\ImGuizmo\ImGuizmo.h" />
@@ -446,7 +445,7 @@
     <ClInclude Include="src\Core\Window.h" />
     <ClInclude Include="src\Debug\PerfProfiler.h" />
     <ClInclude Include="src\ECS\ComponentArray.h" />
-    <ClInclude Include="src\ECS\ComponentManagerBucket.h" />
+    <ClInclude Include="src\ECS\ComponentManager.h" />
     <ClInclude Include="src\ECS\Components.h" />
     <ClInclude Include="src\ECS\Components\C_Camera.h" />
     <ClInclude Include="src\ECS\Components\C_Name.h" />
@@ -490,7 +489,7 @@
     <ClInclude Include="src\Renderer\VertexBuffer.h" />
     <ClInclude Include="src\Scene\Scene.h" />
     <ClInclude Include="src\Scene\SceneSerializer.h" />
-    <ClInclude Include="src\Scene\ScriptClass.h" />
+    <ClInclude Include="src\ECS\Components\ScriptClass.h" />
     <ClInclude Include="src\Utils\PlatformUtils.h" />
     <ClInclude Include="src\impch.h" />
   </ItemGroup>

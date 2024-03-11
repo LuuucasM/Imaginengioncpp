@@ -3,8 +3,7 @@
 #include "Core/Core.h"
 
 #include "EntityManager.h"
-#include "ComponentManagerBucket.h"
-#include "ComponentManagerArchetype.h"
+#include "ComponentManager.h"
 #include "SystemManager.h"
 
 namespace IM {
@@ -12,8 +11,7 @@ namespace IM {
 	public:
 		ECSManager() {
 			_EntityManager = CreateScopePtr<EntityManager>();
-			_ComponentManagerBucket = CreateScopePtr<ComponentManagerBucket>();
-			_ComponentManagerArchetype = CreateScopePtr<ComponentManagerArchetype>();
+			_ComponentManager = CreateScopePtr<ComponentManager>();
 			_SystemManager = CreateScopePtr<SystemManager>();
 		}
 		~ECSManager() = default;
@@ -25,7 +23,7 @@ namespace IM {
 
 		void DestroyEntity(uint32_t entity) {
 			_EntityManager->DestroyEntity(entity);
-			_ComponentManagerBucket->DestroyEntity(entity);
+			_ComponentManager->DestroyEntity(entity);
 		}
 
 		std::unordered_set<uint32_t>& GetAllEntityID() {
@@ -35,34 +33,34 @@ namespace IM {
 		//-------------Components--------------
 		template<typename C_Type>
 		void RegisterComponent() {
-			_ComponentManagerBucket->RegisterComponent<C_Type>();
+			_ComponentManager->RegisterComponent<C_Type>();
 		}
 		template<typename C_Type, typename... Args>
 		C_Type& AddComponent(uint32_t entity, Args &&...args) {
-			return _ComponentManagerBucket->AddComponent<C_Type>(entity, std::forward<Args>(args)...);
+			return _ComponentManager->AddComponent<C_Type>(entity, std::forward<Args>(args)...);
 		}
 		template<typename C_Type>
 		void RemoveComponent(uint32_t entity) {
-			_ComponentManagerBucket->RemoveComponent<C_Type>(entity);
+			_ComponentManager->RemoveComponent<C_Type>(entity);
 		}
 
 		template <typename C_Type>
 		bool HasComponent(uint32_t entity) {
-			return _ComponentManagerBucket->HasComponent<C_Type>(entity);
+			return _ComponentManager->HasComponent<C_Type>(entity);
 		}
 
 		template<typename C_Type>
 		C_Type& GetComponent(uint32_t entity) {
-			return _ComponentManagerBucket->GetComponent<C_Type>(entity);
+			return _ComponentManager->GetComponent<C_Type>(entity);
 		}
 
 		template<typename ...Args>
 		auto GetComponents(uint32_t entity) {
-			return _ComponentManagerBucket->GetComponents<Args...>(entity);
+			return _ComponentManager->GetComponents<Args...>(entity);
 		}
 		template<typename ...Args>
 		const std::vector<uint32_t>& GetGroup() {
-			return _ComponentManagerBucket->GetGroup<Args...>();
+			return _ComponentManager->GetGroup<Args...>();
 		}
 
 		//Systems
@@ -72,13 +70,12 @@ namespace IM {
 		}
 		template<typename S_Type>
 		void SystemOnUpdate(float dt) {
-			_SystemManager->SystemOnUpdate<S_Type>(_ComponentManagerBucket, dt);
+			_SystemManager->SystemOnUpdate<S_Type>(_ComponentManager, dt);
 		}
 
 	private:
 		ScopePtr<EntityManager> _EntityManager;
-		ScopePtr<ComponentManagerBucket> _ComponentManagerBucket;
-		ScopePtr<ComponentManagerArchetype> _ComponentManagerArchetype;
+		ScopePtr<ComponentManager> _ComponentManager;
 		ScopePtr<SystemManager> _SystemManager;
 	};
 }

@@ -43,15 +43,6 @@ namespace IM {
 
         _EditorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
 
-        _SquareEntity = _ActiveScene->CreateEntity("Square");
-        _SquareEntity.AddComponent<C_SpriteRenderer>(glm::vec4(0.8f, 0.3f, 0.3f, 1.0f));
-        _SquareEntity = _ActiveScene->CreateEntity("BlueSquare");
-        _SquareEntity.AddComponent<C_SpriteRenderer>(glm::vec4(0.3f, 0.3f, 0.8f, 1.0f));
-
-        _CameraEntity = _ActiveScene->CreateEntity("Camera1");
-        _CameraEntity.AddComponent<C_Camera>()._ProjectionType = C_Camera::ProjectionType::Orthographic;
-        _CameraEntity2 = _ActiveScene->CreateEntity("Camera2");
-        _CameraEntity2.AddComponent<C_Camera>()._bPrimary = false;
         class CameraController : public ScriptClass {
         public:
             void OnCreate() override {
@@ -73,9 +64,6 @@ namespace IM {
                     transform.Translation.y -= speed * dt;
             }
         };
-
-        _CameraEntity.AddComponent<C_NativeScript>().Bind<CameraController>();
-        _CameraEntity2.AddComponent<C_NativeScript>().Bind<CameraController>();
 
         _SceneHierarchyPanel = CreateRefPtr<SceneHierarchyPanel>(_ActiveScene);
         _PropertiesPanel = CreateRefPtr<PropertiesPanel>(_SceneHierarchyPanel);

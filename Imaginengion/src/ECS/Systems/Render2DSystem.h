@@ -6,6 +6,6 @@ namespace IM {
 	public:
 		Render2DSystem() = default;
 		~Render2DSystem() = default;
-		void OnUpdate(ScopePtr<ComponentManagerBucket>& _ComponentManager, float dt) override;
+		void OnUpdate(ScopePtr<ComponentManager>& _ComponentManager, float dt) override;
 	};
 }

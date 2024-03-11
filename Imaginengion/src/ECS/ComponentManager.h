@@ -10,12 +10,12 @@
 #include <memory>
 
 namespace IM {
-	class ComponentManagerBucket {
+	class ComponentManager {
 		friend class ECSManager;
 		friend class System;
 	public:
-		ComponentManagerBucket() = default;
-		~ComponentManagerBucket() = default;
+		ComponentManager() = default;
+		~ComponentManager() = default;
 	private:
 
 		template<typename C_Type>

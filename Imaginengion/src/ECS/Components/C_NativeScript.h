@@ -1,9 +1,10 @@
 #pragma once
+#include "Component.h"
 
-#include "Scene/ScriptClass.h"
+#include "ScriptClass.h"
 
 namespace IM {
-	struct C_NativeScript {
+	struct C_NativeScript : Component {
 		ScriptClass* Instance = nullptr;
 		ScriptClass* (*CreateScript)();
 		void (*DestroyScript)(C_NativeScript*);

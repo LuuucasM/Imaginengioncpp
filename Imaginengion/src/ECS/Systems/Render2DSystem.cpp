@@ -6,7 +6,7 @@
 #include "Renderer/Renderer.h"
 
 namespace IM {
-	void Render2DSystem::OnUpdate(ScopePtr<ComponentManagerBucket>& _ComponentManager, float dt) {
+	void Render2DSystem::OnUpdate(ScopePtr<ComponentManager>& _ComponentManager, float dt) {
 
 		auto& group = System::GetGroup<C_Transform, C_SpriteRenderer>(_ComponentManager);
 		for (auto entity : group) {
