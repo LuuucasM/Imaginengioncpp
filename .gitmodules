@@ -1,0 +1,3 @@
+[submodule "Imaginengion/vendor/GLFW"]
+	path = Imaginengion/vendor/GLFW
+	url = https://github.com/LuuucasM/glfw.git
