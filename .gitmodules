@@ -1,8 +1,8 @@
 [submodule "Imaginengion/Vendor/glfw"]
-	path = Imaginengion/Vendor/glfw
+	path = Imaginengion/Vendor/GLFW
 	url = https://github.com/glfw/glfw.git
 [submodule "Imaginengion/Vendor/glm"]
-	path = Imaginengion/Vendor/glm
+	path = Imaginengion/Vendor/GLM
 	url = https://github.com/g-truc/glm.git
 [submodule "Imaginengion/Vendor/imgui"]
 	path = Imaginengion/Vendor/imgui
