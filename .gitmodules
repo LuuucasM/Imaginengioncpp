@@ -7,13 +7,13 @@
 [submodule "Imaginengion/vendor/glm"]
 	path = Imaginengion/vendor/glm
 	url = https://github.com/LuuucasM/glm.git
-[submodule "Imaginengion/vendor/imgui"]
-	path = Imaginengion/vendor/imgui
-	url = https://github.com/LuuucasM/imgui.git
-	branch = docking
 [submodule "Imaginengion/vendor/spdlog"]
 	path = Imaginengion/vendor/spdlog
 	url = https://github.com/LuuucasM/spdlog.git
 [submodule "Imaginengion/vendor/yaml-cpp"]
 	path = Imaginengion/vendor/yaml-cpp
 	url = https://github.com/LuuucasM/yaml-cpp.git
+[submodule "Imaginengion/vendor/imgui"]
+	path = Imaginengion/vendor/imgui
+	url = https://github.com/LuuucasM/imgui.git
+	branch = docking

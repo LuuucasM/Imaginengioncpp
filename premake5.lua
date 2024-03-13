@@ -30,8 +30,8 @@ group "Dependencies"
 	include "Imaginengion/vendor/Glad"
 	include "Imaginengion/vendor/imgui"
 	include "Imaginengion/vendor/yaml-cpp"
+	
 group ""
-
-include "Imaginengion"
-include "Sandbox"
-include "SangSang"
+	include "Imaginengion"
+	include "Sandbox"
+	include "SangSang"
