@@ -12,11 +12,6 @@ workspace "Imaginengion"
 		"Dist"
 	}
 
-	solution_items
-	{
-		".editorconfig"
-	}
-
 	flags
 	{
 		"MultiProcessorCompile"

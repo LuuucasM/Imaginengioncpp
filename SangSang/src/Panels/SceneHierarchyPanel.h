@@ -2,7 +2,6 @@
 
 #include "Scene/Scene.h"
 #include "ECS/Entity.h"
-#include "Imgui/imgui.h"
 
 namespace IM {
 	class SceneHierarchyPanel{

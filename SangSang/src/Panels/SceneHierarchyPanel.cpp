@@ -1,6 +1,8 @@
 #include "SceneHierarchyPanel.h"
 #include "Imagine.h"
 
+#include <Imgui/imgui.h>
+
 namespace IM{
 	SceneHierarchyPanel::SceneHierarchyPanel(const WeakPtr<Scene>& scene)
 	{

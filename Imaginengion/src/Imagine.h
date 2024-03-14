@@ -14,21 +14,21 @@
 #include "Core/Mousecodes.h"
 
 #include "Imgui/ImguiLayer.h"
-//-----------------------------------
+//-----------END CORE----------------
 
 //------------EVENTS-----------------
 #include "Events/Delegate.h"
-//-----------------------------------
+//-------------END EVENTS------------
 
 //-------------ECS-------------------
 #include "ECS/Components.h"
 #include "ECS/Components/ScriptClass.h"
 #include "ECS/Entity.h"
-//-----------------------------------
+//------------END ECS----------------
 
 //------------SCENE------------------
 #include "Scene/Scene.h"
-//-----------------------------------
+//------------END SCENE--------------
 
 //------------RENDERING--------------
 #include "Renderer/Renderer.h"
@@ -43,8 +43,9 @@
 
 #include "Renderer/OrthographicCamera.h"
 #include "Renderer/OrthographicCameraController.h"
-//---------------------------------------
+//-----------END RENDERING------------
 
 
-//---------------ENTITY COMPONENT SYSTEM------------
+//--------ENTITY COMPONENT SYSTEM------------
 #include "ECS/Components.h"
+//---------------------------------------

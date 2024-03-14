@@ -4,16 +4,15 @@
 VULKAN_SDK = os.getenv("VULKAN_SDK")
 
 IncludeDir = {}
-IncludeDir["stb_image"] = "%{wks.location}/Imaginengion/Vendor/stb_image"
-IncludeDir["yaml_cpp"] = "%{wks.location}/Imaginengion/Vendor/yaml-cpp/include"
-IncludeDir["GLFW"] = "%{wks.location}/Imaginengion/Vendor/GLFW/include"
-IncludeDir["Glad"] = "%{wks.location}/Imaginengion/Vendor/Glad/include"
-IncludeDir["ImGui"] = "%{wks.location}/Imaginengion/Vendor/ImGui"
-IncludeDir["ImGuizmo"] = "%{wks.location}/Imaginengion/Vendor/ImGuizmo"
-IncludeDir["glm"] = "%{wks.location}/Imaginengion/Vendor/glm"
-IncludeDir["entt"] = "%{wks.location}/Imaginengion/Vendor/entt/include"
-IncludeDir["shaderc"] = "%{wks.location}/Imaginengion/Vendor/shaderc/include"
-IncludeDir["SPIRV_Cross"] = "%{wks.location}/Imaginengion/Vendor/SPIRV-Cross"
+IncludeDir["stb_image"] = "%{wks.location}/Imaginengion/vendor/stb_image"
+IncludeDir["yaml_cpp"] = "%{wks.location}/Imaginengion/vendor/yaml-cpp/include"
+IncludeDir["GLFW"] = "%{wks.location}/Imaginengion/vendor/GLFW/include"
+IncludeDir["Glad"] = "%{wks.location}/Imaginengion/vendor/Glad/include"
+IncludeDir["ImGui"] = "%{wks.location}/Imaginengion/vendor/imgui"
+IncludeDir["ImGuizmo"] = "%{wks.location}/Imaginengion/vendor/ImGuizmo"
+IncludeDir["glm"] = "%{wks.location}/Imaginengion/vendor/glm"
+IncludeDir["shaderc"] = "%{wks.location}/Imaginengion/vendor/shaderc/include"
+IncludeDir["SPIRV_Cross"] = "%{wks.location}/Imaginengion/vendor/SPIRV-Cross"
 IncludeDir["VulkanSDK"] = "%{VULKAN_SDK}/Include"
 
 LibraryDir = {}
