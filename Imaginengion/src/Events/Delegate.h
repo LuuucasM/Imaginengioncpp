@@ -2,7 +2,7 @@
 
 #include "Core/Core.h"
 #include "Core/Log.h"
-#include "Debug/PerfProfiler.h"
+#include "Profiler/PerfProfiler.h"
 
 #include <any>
 #include <functional>

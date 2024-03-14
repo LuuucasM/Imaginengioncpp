@@ -1,7 +1,7 @@
 #include "Imagine.h"
 #include "Core/Entry.h"
 
-#include "layers/EditorLayer.h"
+#include "EditorLayer.h"
 
 namespace IM {
 	class SangSang : public Application {

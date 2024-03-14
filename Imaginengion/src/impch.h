@@ -17,7 +17,7 @@
 
 #include "Core/Core.h"
 #include "Core/Log.h"
-#include "Debug/PerfProfiler.h"
+#include "Profiler/PerfProfiler.h"
 
 
 #ifdef IMAGINE_PLATFORM_WINDOWS

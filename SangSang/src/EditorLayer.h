@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Imagine.h"
-#include "../Panels/SceneHierarchyPanel.h"
-#include "../Panels/PropertiesPanel.h"
+#include "Panels/SceneHierarchyPanel.h"
+#include "Panels/PropertiesPanel.h"
 #include "Renderer/EditorCamera.h"
 
 namespace IM {
