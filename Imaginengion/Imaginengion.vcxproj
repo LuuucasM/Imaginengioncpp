@@ -77,7 +77,7 @@
       <PrecompiledHeaderFile>impch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_NONE;IMAGINE_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\spdlog\include;Vendor\GLFW\include;Vendor\Glad\include;Vendor\ImGui;Vendor\glm;Vendor\stb_image;Vendor\entt\include;Vendor\yaml-cpp\include;Vendor\ImGuizmo;C:\VulkanSDK\1.3.243.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;Vendor\GLFW\include;Vendor\Glad\include;Vendor\ImGui;Vendor\glm;Vendor\stb_image;Vendor\entt\include;Vendor\yaml-cpp\include;Vendor\ImGuizmo;C:\VulkanSDK\1.3.275.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -100,7 +100,7 @@
       <PrecompiledHeaderFile>impch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_NONE;IMAGINE_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\spdlog\include;Vendor\GLFW\include;Vendor\Glad\include;Vendor\ImGui;Vendor\glm;Vendor\stb_image;Vendor\entt\include;Vendor\yaml-cpp\include;Vendor\ImGuizmo;C:\VulkanSDK\1.3.243.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;Vendor\GLFW\include;Vendor\Glad\include;Vendor\ImGui;Vendor\glm;Vendor\stb_image;Vendor\entt\include;Vendor\yaml-cpp\include;Vendor\ImGuizmo;C:\VulkanSDK\1.3.275.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -117,7 +117,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>opengl32.lib;C:\VulkanSDK\1.3.243.0\Lib\shaderc_shared.lib;C:\VulkanSDK\1.3.243.0\Lib\spirv-cross-core.lib;C:\VulkanSDK\1.3.243.0\Lib\spirv-cross-glsl.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;C:\VulkanSDK\1.3.275.0\Lib\shaderc_shared.lib;C:\VulkanSDK\1.3.275.0\Lib\spirv-cross-core.lib;C:\VulkanSDK\1.3.275.0\Lib\spirv-cross-glsl.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
@@ -126,7 +126,7 @@
       <PrecompiledHeaderFile>impch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_NONE;IMAGINE_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\spdlog\include;Vendor\GLFW\include;Vendor\Glad\include;Vendor\ImGui;Vendor\glm;Vendor\stb_image;Vendor\entt\include;Vendor\yaml-cpp\include;Vendor\ImGuizmo;C:\VulkanSDK\1.3.243.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\spdlog\include;Vendor\GLFW\include;Vendor\Glad\include;Vendor\ImGui;Vendor\glm;Vendor\stb_image;Vendor\entt\include;Vendor\yaml-cpp\include;Vendor\ImGuizmo;C:\VulkanSDK\1.3.275.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -143,7 +143,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>opengl32.lib;C:\VulkanSDK\1.3.243.0\Lib\shaderc_shared.lib;C:\VulkanSDK\1.3.243.0\Lib\spirv-cross-core.lib;C:\VulkanSDK\1.3.243.0\Lib\spirv-cross-glsl.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;C:\VulkanSDK\1.3.275.0\Lib\shaderc_shared.lib;C:\VulkanSDK\1.3.275.0\Lib\spirv-cross-core.lib;C:\VulkanSDK\1.3.275.0\Lib\spirv-cross-glsl.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
