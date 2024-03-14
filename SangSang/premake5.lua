@@ -2,7 +2,7 @@ project "SangSang"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++20"
-	staticruntime "off"
+	staticruntime "on"
 
 	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")
@@ -19,7 +19,6 @@ project "SangSang"
 		"%{wks.location}/Imaginengion/src",
 		"%{wks.location}/Imaginengion/vendor",
 		"%{IncludeDir.glm}",
-		"%{IncludeDir.entt}",
 		"%{IncludeDir.ImGuizmo}"
 	}
 

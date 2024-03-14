@@ -5,8 +5,8 @@
 
 #include "Imgui/imgui.h"
 
-#include "layers/ExampleLayer.h"
-#include "layers/MyApp2D.h"
+#include "ExampleLayer.h"
+#include "MyApp2D.h"
 
 class MyApp : public IM::Application {
 public:

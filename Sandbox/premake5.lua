@@ -19,7 +19,6 @@ project "Sandbox"
 		"%{wks.location}/Imaginengion/src",
 		"%{wks.location}/Imaginengion/vendor",
 		"%{IncludeDir.glm}",
-		"%{IncludeDir.entt}"
 	}
 
 	links
