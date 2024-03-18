@@ -1,10 +1,6 @@
 #include "Imagine.h"
 #include "Core/Entry.h"
 
-#include "Platform/OpenGL/OpenGLShader.h"
-
-#include "Imgui/imgui.h"
-
 #include "ExampleLayer.h"
 #include "MyApp2D.h"
 

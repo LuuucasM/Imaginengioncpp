@@ -8,7 +8,6 @@ namespace IM {
 	public:
 		SangSang() 
 			: Application("SangSang") {
-			//PushLayer(new ExampleLayer());
 			PushLayer(new EditorLayer());
 		}
 		~SangSang() {
