@@ -335,6 +335,7 @@ namespace IM {
     }
     void EditorLayer::NewScene()
     {
+        std::cout << "this is happening" << std::endl;
         _ActiveScene = CreateRefPtr<Scene>();
         _ActiveScene->OnViewportResize((size_t)_ViewportSize.x, (size_t)_ViewportSize.y);
         _SceneHierarchyPanel->SetContext(_ActiveScene);
