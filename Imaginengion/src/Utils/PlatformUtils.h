@@ -1,7 +1,7 @@
 #pragma once
 
-
 #include <string>
+
 namespace IM {
 	class FileDialogs {
 	public:

@@ -4,11 +4,14 @@ namespace IM {
 	class RenderContext
 	{
 	public:
-		virtual ~RenderContext() = default;
+		RenderContext(void* window);
+		~RenderContext() = default;
 
-		virtual void Init() = 0;
-		virtual void SwapBuffers() = 0;
+		void Init();
+		void SwapBuffers();
 
-		static ScopePtr<RenderContext> Create(void* window);
+		static ScopePtr<RenderContext> Create(void* window) {
+			return CreateScopePtr<RenderContext>(window);
+		};
 	};
 }

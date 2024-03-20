@@ -3,14 +3,17 @@
 namespace IM {
 	class IndexBuffer {
 	public:
-		virtual ~IndexBuffer() = default;
+		IndexBuffer(uint32_t* indices, uint32_t count);
+		~IndexBuffer();
 
 		//virtual void SetData() = 0;
 
-		virtual void Bind() const = 0;
-		virtual void Unbind() const = 0;
+		void Bind() const;
+		void Unbind() const;
 
-		static RefPtr<IndexBuffer> Create(uint32_t* indices, uint32_t count);
+		static RefPtr<IndexBuffer> Create(uint32_t* indices, uint32_t count) {
+			return CreateRefPtr<IndexBuffer>(indices, count);
+		};
 
 		uint32_t GetCount() const { return _Count; }
 	protected:

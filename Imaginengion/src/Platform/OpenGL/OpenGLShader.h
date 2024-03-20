@@ -28,8 +28,18 @@ namespace IM {
 		void CreateLayout(const std::string& vertexShader) override;
 		void DiscoverUniforms() override;
 	private:
+		bool Compile(std::unordered_map<GLenum, std::string> shaderSources);
+
+		void CompileOrGetVulkanBinaries(const std::unordered_map<GLenum, std::string>& shaderSources);
+		void CompileOrGetOpenGLBinaries();
+		void CreateProgram();
+		void Reflect(GLenum stage, const std::vector<uint32_t>& shaderData);
 		std::string ReadFile(const std::string& filepath);
 		std::unordered_map<GLenum, std::string> PreProcess(std::string& source);
-		bool Compile(std::unordered_map<GLenum, std::string> shaderSources);
+	private:
+		std::unordered_map<GLenum, std::vector<uint32_t>> _VulkanSPIRV;
+		std::unordered_map<GLenum, std::vector<uint32_t>> _OpenGLSPIRV;
+		std::unordered_map<GLenum, std::string> _OpenGLSourceCode;
+		
 	};
 }

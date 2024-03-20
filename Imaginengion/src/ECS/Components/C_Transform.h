@@ -4,6 +4,7 @@
 #include "glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
+#define GLM_FORCE_QUAT_DATA_WXYZ 
 #include <glm/gtx/quaternion.hpp>
 
 #include <iostream>

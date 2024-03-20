@@ -1,17 +1,19 @@
 #include "impch.h"
-#include "OpenGLContext.h"
 
+#ifdef IMAGINE_OPENGL
+#include "Renderer/RenderContext.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 namespace IM {
-	OpenGLContext::OpenGLContext(GLFWwindow* window)
-		: _Window(window){
-		IMAGINE_CORE_ASSERT(window, "Window is null when initializing OpenGLContext!")
+	namespace {
+		GLFWwindow* _Window;
 	}
-
-	void OpenGLContext::Init() {
-
+	RenderContext::RenderContext(void* window) {
+		IMAGINE_CORE_ASSERT(window, "Window is null when initializing OpenGLContext!");
+		_Window = static_cast<GLFWwindow*>(window);
+	}
+	void RenderContext::Init() {
 		IMAGINE_PROFILE_FUNCTION();
 
 		glfwMakeContextCurrent(_Window);
@@ -27,9 +29,9 @@ namespace IM {
 
 		IMAGINE_CORE_ASSERT(GLVersion.major > 4 || (GLVersion.major == 4 && GLVersion.minor >= 5), "Imaginengion requires at least OpenGL version 4.5!");
 	}
-
-	void OpenGLContext::SwapBuffers() {
+	void RenderContext::SwapBuffers() {
 		IMAGINE_PROFILE_FUNCTION();
 		glfwSwapBuffers(_Window);
 	}
 }
+#endif

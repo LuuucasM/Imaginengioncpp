@@ -126,7 +126,9 @@ namespace IM {
 	}
 	template<>
 	void Scene::OnComponentAdded<C_Camera>(Entity entity, C_Camera& component) {
-		component.SetViewportSize(_ViewportWidth, _ViewportHeight);
+		if (_ViewportWidth > 0 && _ViewportHeight > 0) {
+			component.SetViewportSize(_ViewportWidth, _ViewportHeight);
+		}
 	}
 	template<>
 	void Scene::OnComponentAdded<C_NativeScript>(Entity entity, C_NativeScript& component) {

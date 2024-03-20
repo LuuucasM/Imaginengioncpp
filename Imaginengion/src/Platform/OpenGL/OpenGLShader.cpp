@@ -5,19 +5,34 @@
 #include <glad/glad.h>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <shaderc/shaderc.hpp>
+#include <spirv_cross/spirv_glsl.hpp>
+
 namespace IM {
 
-	static GLenum ShaderTypeFromStr(const std::string& type) {
-		if (type.find("vertex") != std::string::npos) {
-			return GL_VERTEX_SHADER;
-		}
-		if (type.find("fragment") != std::string::npos || type.find("pixel") != std::string::npos) {
-			return GL_FRAGMENT_SHADER;
+	namespace {
+		GLenum ShaderTypeFromStr(const std::string& type) {
+			if (type.find("vertex") != std::string::npos) {
+				return GL_VERTEX_SHADER;
+			}
+			if (type.find("fragment") != std::string::npos || type.find("pixel") != std::string::npos) {
+				return GL_FRAGMENT_SHADER;
+			}
+
+			IMAGINE_CORE_ASSERT(false, "Unknown shader type in OpenGLShader!");
+			return 0;
 		}
 
-		IMAGINE_CORE_ASSERT(false, "Unknown shader type in OpenGLShader!");
-		return 0;
+		const char* GLShaderStageToString(GLenum stage) {
+			switch (stage) {
+				case GL_VERTEX_SHADER: return "GL_VERTEX_SHADER";
+				case GL_FRAGMENT_SHADER: return "GL_FRAGMENT_SHADER";
+			}
+			IMAGINE_CORE_ASSERT(0, "stage unknown in GLShaderStageToString !");
+			return nullptr;
+		}
 	}
+
 
 	OpenGLShader::OpenGLShader(const std::string& filepath) {
 
@@ -194,6 +209,95 @@ namespace IM {
 			glDeleteShader(glShaderIDs[i]);
 		}
 		return true;
+	}
+
+	void OpenGLShader::CompileOrGetVulkanBinaries(const std::unordered_map<GLenum, std::string>& shaderSources)
+	{
+	}
+
+	void OpenGLShader::CompileOrGetOpenGLBinaries()
+	{
+		auto& shaderData = _OpenGLSPIRV;
+		shaderc::Compiler compiler;
+		shaderc::CompileOptions options;
+		options.SetTargetEnvironment(shaderc_target_env_opengl, shaderc_env_version_opengl_4_5);
+		const bool optimize = false; //TODO: do something about this later
+		if (optimize) {
+			options.SetOptimizationLevel(shaderc_optimization_level_performance);
+		}
+		if (!std::filesystem::exists("assets/cache/shader/opengl")) {
+			std::filesystem::create_directories("assets/cache/shader/opengl");
+		}
+		std::filesystem::path cacheDirectory = "assets/cache/shader/opengl";
+
+		shaderData.clear();
+		_OpenGLSourceCode.clear();
+		for (auto&& [stage, spirv] : _VulkanSPIRV) {
+			std::filesystem::path shaderFilePath = _Filepath;
+			std::filesystem::path cachedPath = cacheDirectory / (shaderFilePath.filename().string() + );
+				//NOTE I AM HERE RIGHT NOW AT COMPILER OR GET OPENGL BINARIES.
+				//I AM GOING TO ADD THE STATIC FUNCTIONS GETCACHEDIRECTORY AND CREATECACHEDIRECTORYIFNEEDED
+				//THEN I WILL DO A SMALL CHANGE ABOVE FOR THE FILE PATH STUFF AND THEN CONTINUE CODING OUT THE REST OF THIS FILE !
+		}
+
+	}
+
+	void OpenGLShader::CreateProgram()
+	{
+		GLuint program = glCreateProgram();
+		std::vector<GLuint> shaderIDs;
+		for (auto&& [stage, spirv] : _OpenGLSPIRV) {
+			GLuint shaderID = shaderIDs.emplace_back(glCreateShader(stage));
+			glShaderBinary(1, &shaderID, GL_SHADER_BINARY_FORMAT_SPIR_V, spirv.data(), spirv.size() * sizeof(uint32_t));
+			glSpecializeShader(shaderID, "main", 0, nullptr, nullptr);
+			glAttachShader(program, shaderID);
+		}
+		glLinkProgram(program);
+		GLint isLinked;
+		glGetProgramiv(program, GL_LINK_STATUS, &isLinked);
+		if (isLinked == GL_FALSE) {
+			GLint maxLength;
+			glGetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
+			std::vector<GLchar> infoLog(maxLength);
+			glGetProgramInfoLog(program, maxLength, &maxLength, infoLog.data());
+			IMAGINE_CORE_ERROR("Shader linking failed ({}):\n{}", _Filepath, infoLog.data());
+			glDeleteProgram(program);
+			for (auto id : shaderIDs) {
+				glDeleteShader(id);
+			}
+		}
+		for (auto id : shaderIDs) {
+			glDetachShader(program, id);
+			glDeleteShader(id);
+		}
+		_ProgramID = program;
+	}
+
+	void OpenGLShader::Reflect(GLenum stage, const std::vector<uint32_t>& shaderData)
+	{
+		spirv_cross::Compiler compiler(shaderData);
+		spirv_cross::ShaderResources resources = compiler.get_shader_resources();
+
+		IMAGINE_CORE_TRACE("OpenGLShader::Reflect - {} {}", GLShaderStageToString(stage), _Filepath);
+
+		IMAGINE_CORE_TRACE("Stage Inputs:");
+		std::sort(resources.stage_inputs.begin(), resources.stage_inputs.end(),
+			[compiler](const spirv_cross::Resource& a, const spirv_cross::Resource& b) {
+				return compiler.get_decoration(a.id, spv::DecorationLocation) < compiler.get_decoration(b.id, spv::DecorationLocation);
+			});
+		for (const auto& resource : resources.stage_inputs) {
+			const auto& type = compiler.get_type(resource.base_type_id);
+			const std::string name = compiler.get_name(resource.id);
+			IMAGINE_CORE_TRACE("\t{}", name);
+			_BufferElements.emplace_back(SpirTypeToType(type), name);
+		}
+		CalculateOffsets();
+		CalculateStride();
+
+		IMAGINE_CORE_TRACE("UniformBuffers:");
+		for (const auto& resource : resources.uniform_buffers) {
+			IMAGINE_CORE_TRACE("\t{}", resource.name);
+		}
 	}
 
 	void OpenGLShader::CreateLayout(const std::string& vertexShader)

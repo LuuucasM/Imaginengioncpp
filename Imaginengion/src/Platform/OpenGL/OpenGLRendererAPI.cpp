@@ -1,37 +1,38 @@
 #include "impch.h"
-#include "OpenGLRendererAPI.h"
+
+#ifdef IMAGINE_OPENGL
+#include "Renderer/RendererAPI.h"
 
 #include "glad/glad.h"
 
 namespace IM {
+	namespace {
+		void OpenGLMessageCallback(
+			unsigned souce,
+			unsigned type,
+			unsigned id,
+			unsigned severity,
+			int length,
+			const char* message,
+			const void* userParam) {
+			switch (severity) {
+				case GL_DEBUG_SEVERITY_HIGH:
+					IMAGINE_CORE_CRITICAL(message);
+					return;
+				case GL_DEBUG_SEVERITY_MEDIUM:
+					IMAGINE_CORE_ERROR(message);
+					return;
+				case GL_DEBUG_SEVERITY_LOW:
+					IMAGINE_CORE_WARN(message);
+					return;
+				case GL_DEBUG_SEVERITY_NOTIFICATION:
+					IMAGINE_CORE_INFO(message);
 
-	void OpenGLMessageCallback(
-		unsigned souce,
-		unsigned type,
-		unsigned id,
-		unsigned severity,
-		int length,
-		const char* message,
-		const void* userParam) {
-		switch (severity) {
-			case GL_DEBUG_SEVERITY_HIGH:
-				IMAGINE_CORE_CRITICAL(message);
-				return;
-			case GL_DEBUG_SEVERITY_MEDIUM:
-				IMAGINE_CORE_ERROR(message);
-				return;
-			case GL_DEBUG_SEVERITY_LOW:
-				IMAGINE_CORE_WARN(message);
-				return;
-			case GL_DEBUG_SEVERITY_NOTIFICATION:
-				IMAGINE_CORE_INFO(message);
-
+			}
+			IMAGINE_CORE_ASSERT(0, "Unknown severity level!");
 		}
-		IMAGINE_CORE_ASSERT(0, "Unknown severity level!");
 	}
-
-	void OpenGLRendererAPI::Init() {
-
+	void RendererAPI::Init() {
 		IMAGINE_PROFILE_FUNCTION();
 
 		#ifdef IMAGINE_DEBUG
@@ -49,23 +50,22 @@ namespace IM {
 		glEnable(GL_DEPTH_TEST);
 	}
 
-	void OpenGLRendererAPI::SetViewport(int x, int y, size_t width, size_t height)
-	{
+	void RendererAPI::SetViewport(int x, int y, size_t width, size_t height) {
 		glViewport(x, y, (GLsizei)width, (GLsizei)height);
 	}
 
-	void OpenGLRendererAPI::SetClearColor(const glm::vec4& color) {
+	void RendererAPI::SetClearColor(const glm::vec4& color) {
 		glClearColor(color.r, color.g, color.b, color.a);
 	}
 
-	void OpenGLRendererAPI::Clear() {
+	void RendererAPI::Clear() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
-	void OpenGLRendererAPI::DrawIndexed(const RefPtr<VertexArray>& vertexArray, uint32_t indexCount) {
-
+	void RendererAPI::DrawIndexed(const RefPtr<VertexArray>& vertexArray, uint32_t indexCount) {
 		uint32_t count = indexCount ? indexCount : vertexArray->GetIndexBuffer()->GetCount();
 		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 }
+#endif

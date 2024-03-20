@@ -7,22 +7,24 @@
 namespace IM {
 	class RendererAPI {
 	public:
-
+		RendererAPI() = default;
 		virtual ~RendererAPI() = default;
 		enum class API {
 			None = 0,
 			OpenGL = 1
 		};
 
-		virtual void Init() = 0;
-		virtual void SetViewport(int x, int y, size_t width, size_t height) = 0;
-		virtual void SetClearColor(const glm::vec4& color) = 0;
-		virtual void Clear() = 0;
+		void Init();
+		void SetViewport(int x, int y, size_t width, size_t height);
+		void SetClearColor(const glm::vec4& color);
+		void Clear();
 
-		virtual void DrawIndexed(const RefPtr<VertexArray>& vertexArray, uint32_t indexCount = 0) = 0;
+		void DrawIndexed(const RefPtr<VertexArray>& vertexArray, uint32_t indexCount = 0);
 
 		static API GetCurrentAPI() { return _API; }
-		static ScopePtr<RendererAPI> Create();
+		static ScopePtr<RendererAPI> Create() {
+			return ScopePtr<RendererAPI>();
+		};
 	private:
 		static API _API;
 	};

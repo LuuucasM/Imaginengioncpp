@@ -10,8 +10,7 @@ from urllib.request import urlopen
 from zipfile import ZipFile
 
 VULKAN_SDK = os.environ.get('VULKAN_SDK')
-VULKAN_SDK_INSTALLER_URL = 'https://sdk.lunarg.com/sdk/download/1.2.170.0/windows/vulkan_sdk.exe'
-HAZEL_VULKAN_VERSION = '1.2.170.0'
+VULKAN_SDK_INSTALLER_URL = 'https://sdk.lunarg.com/sdk/download/latest/windows/vulkan-sdk.exe'
 VULKAN_SDK_EXE_PATH = 'Imaginengion/vendor/VulkanSDK/VulkanSDK.exe'
 
 def InstallVulkanSDK():
@@ -33,18 +32,12 @@ def CheckVulkanSDK():
     if (VULKAN_SDK is None):
         print("You don't have the Vulkan SDK installed!")
         InstallVulkanPrompt()
-        return False
-    elif (HAZEL_VULKAN_VERSION not in VULKAN_SDK):
-        print(f"Located Vulkan SDK at {VULKAN_SDK}")
-        print(f"You don't have the correct Vulkan SDK version! (Hazel requires {HAZEL_VULKAN_VERSION})")
-        InstallVulkanPrompt()
-        return False
-    
+        return False    
     print(f"Correct Vulkan SDK located at {VULKAN_SDK}")
     return True
 
 VulkanSDKDebugLibsURL = 'https://files.lunarg.com/SDK-1.2.170.0/VulkanSDK-1.2.170.0-DebugLibs.zip'
-OutputDirectory = "Hazel/vendor/VulkanSDK"
+OutputDirectory = "Imaginengion/vendor/VulkanSDK"
 TempZipFile = f"{OutputDirectory}/VulkanSDK.zip"
 
 def CheckVulkanSDKDebugLibs():

@@ -1,12 +1,11 @@
 #include "impch.h"
-
-#include "OpenGLIndexBuffer.h"
+#ifdef IMAGINE_OPENGL
+#include "Renderer/IndexBuffer.h"
 
 #include "glad/glad.h"
 
 namespace IM {
-	OpenGLIndexBuffer::OpenGLIndexBuffer(uint32_t* indices, uint32_t count)
-	{
+	IndexBuffer::IndexBuffer(uint32_t* indices, uint32_t count) {
 		_Count = count;
 		glCreateBuffers(1, &_BufferID);
 
@@ -15,13 +14,17 @@ namespace IM {
 		glBindBuffer(GL_ARRAY_BUFFER, _BufferID);
 		glBufferData(GL_ARRAY_BUFFER, count * sizeof(uint32_t), indices, GL_STATIC_DRAW);
 	}
-	OpenGLIndexBuffer::~OpenGLIndexBuffer() {
+
+	IndexBuffer::~IndexBuffer() {
 		glDeleteBuffers(1, &_BufferID);
 	}
-	void OpenGLIndexBuffer::Bind() const {
+
+	void IndexBuffer::Bind() const {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _BufferID);
 	}
-	void OpenGLIndexBuffer::Unbind() const {
+
+	void IndexBuffer::Unbind() const {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
 }
+#endif

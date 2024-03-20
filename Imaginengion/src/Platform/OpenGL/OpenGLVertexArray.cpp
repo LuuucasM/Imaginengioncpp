@@ -1,56 +1,59 @@
 #include "impch.h"
-#include "OpenGLVertexArray.h"
+
+#ifdef IMAGINE_OPENGL
+#include "Renderer/VertexArray.h"
 
 #include "glad/glad.h"
 
 namespace IM {
 
-	static GLenum ShaderDataTypeToOpneGLBaseType(ShaderDataType type) {
-		switch (type)
-		{
-		case ShaderDataType::Float:    return GL_FLOAT;
-		case ShaderDataType::Float2:   return GL_FLOAT;
-		case ShaderDataType::Float3:   return GL_FLOAT;
-		case ShaderDataType::Float4:   return GL_FLOAT;
-		case ShaderDataType::Mat3:     return GL_FLOAT;
-		case ShaderDataType::Mat4:     return GL_FLOAT;
-		case ShaderDataType::Int:      return GL_INT;
-		case ShaderDataType::UInt:     return GL_UNSIGNED_INT;
-		case ShaderDataType::Int2:     return GL_INT;
-		case ShaderDataType::Int3:     return GL_INT;
-		case ShaderDataType::Int4:     return GL_INT;
-		case ShaderDataType::Bool:     return GL_BOOL;
+	namespace {
+		GLenum ShaderDataTypeToOpneGLBaseType(ShaderDataType type) {
+			switch (type)
+			{
+			case ShaderDataType::Float:    return GL_FLOAT;
+			case ShaderDataType::Float2:   return GL_FLOAT;
+			case ShaderDataType::Float3:   return GL_FLOAT;
+			case ShaderDataType::Float4:   return GL_FLOAT;
+			case ShaderDataType::Mat3:     return GL_FLOAT;
+			case ShaderDataType::Mat4:     return GL_FLOAT;
+			case ShaderDataType::Int:      return GL_INT;
+			case ShaderDataType::UInt:     return GL_UNSIGNED_INT;
+			case ShaderDataType::Int2:     return GL_INT;
+			case ShaderDataType::Int3:     return GL_INT;
+			case ShaderDataType::Int4:     return GL_INT;
+			case ShaderDataType::Bool:     return GL_BOOL;
+			}
+			IMAGINE_CORE_ASSERT(false, "Unknown ShaderDataType!");
+			return 0;
 		}
-		IMAGINE_CORE_ASSERT(false, "Unknown ShaderDataType!");
-		return 0;
 	}
 
-	OpenGLVertexArray::OpenGLVertexArray() {
-
+	VertexArray::VertexArray() {
 		IMAGINE_PROFILE_FUNCTION();
 
 		glCreateVertexArrays(1, &_ArrayID);
 	}
-	OpenGLVertexArray::~OpenGLVertexArray() {
 
+	VertexArray::~VertexArray() {
 		IMAGINE_PROFILE_FUNCTION();
 
 		glDeleteVertexArrays(1, &_ArrayID);
 	}
-	void OpenGLVertexArray::Bind() const {
 
+	void VertexArray::Bind() const {
 		IMAGINE_PROFILE_FUNCTION();
 
 		glBindVertexArray(_ArrayID);
 	}
-	void OpenGLVertexArray::Unbind() const {
 
+	void VertexArray::Unbind() const {
 		IMAGINE_PROFILE_FUNCTION();
 
 		glBindVertexArray(0);
 	}
-	void OpenGLVertexArray::AddVertexBuffer(const RefPtr<VertexBuffer> vertexBuffer) {
 
+	void VertexArray::AddVertexBuffer(const RefPtr<VertexBuffer> vertexBuffer) {
 		IMAGINE_PROFILE_FUNCTION();
 
 		IMAGINE_CORE_ASSERT(vertexBuffer->GetLayout().size(), "Vertex Buffer has no layout!");
@@ -81,8 +84,8 @@ namespace IM {
 
 		_VertexBuffers.push_back(vertexBuffer);
 	}
-	void OpenGLVertexArray::SetIndexBuffer(const RefPtr<IndexBuffer> indexBuffer) {
 
+	void VertexArray::SetIndexBuffer(const RefPtr<IndexBuffer> indexBuffer) {
 		IMAGINE_PROFILE_FUNCTION();
 
 		glBindVertexArray(_ArrayID);
@@ -91,3 +94,4 @@ namespace IM {
 		_IndexBuffer = indexBuffer;
 	}
 }
+#endif

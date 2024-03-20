@@ -11,10 +11,10 @@ IncludeDir["Glad"] = "%{wks.location}/Imaginengion/vendor/Glad/include"
 IncludeDir["ImGui"] = "%{wks.location}/Imaginengion/vendor/imgui"
 IncludeDir["ImGuizmo"] = "%{wks.location}/Imaginengion/vendor/ImGuizmo"
 IncludeDir["glm"] = "%{wks.location}/Imaginengion/vendor/glm"
---IncludeDir["shaderc"] = "%{wks.location}/Imaginengion/vendor/shaderc/include"
---IncludeDir["SPIRV_Cross"] = "%{wks.location}/Imaginengion/vendor/SPIRV-Cross"
---IncludeDir["VulkanSDK"] = "%{VULKAN_SDK}/Include"
---[[
+IncludeDir["shaderc"] = "%{wks.location}/Imaginengion/vendor/shaderc/include"
+IncludeDir["SPIRV_Cross"] = "%{wks.location}/Imaginengion/vendor/SPIRV-Cross"
+IncludeDir["VulkanSDK"] = "%{VULKAN_SDK}/Include"
+
 LibraryDir = {}
 
 LibraryDir["VulkanSDK"] = "%{VULKAN_SDK}/Lib"
@@ -32,4 +32,3 @@ Library["SPIRV_Tools_Debug"] = "%{LibraryDir.VulkanSDK_Debug}/SPIRV-Toolsd.lib"
 Library["ShaderC_Release"] = "%{LibraryDir.VulkanSDK}/shaderc_shared.lib"
 Library["SPIRV_Cross_Release"] = "%{LibraryDir.VulkanSDK}/spirv-cross-core.lib"
 Library["SPIRV_Cross_GLSL_Release"] = "%{LibraryDir.VulkanSDK}/spirv-cross-glsl.lib"
-]]

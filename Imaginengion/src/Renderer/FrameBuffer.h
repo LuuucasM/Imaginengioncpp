@@ -49,22 +49,27 @@ namespace IM {
 	public:
 		const FrameBufferSpecification& GetSpecification() const { return _Specification; };
 
-		static RefPtr<FrameBuffer> Create(const FrameBufferSpecification& spec);
+		static RefPtr<FrameBuffer> Create(const FrameBufferSpecification& spec) {
+			return CreateRefPtr<FrameBuffer>(spec);
+		};
 
 		uint32_t GetColorAttachmentID(uint32_t index = 0) const { 
 			IMAGINE_CORE_ASSERT(index < _ColorAttachments.size(), "Index for Color Attachment ID does not exist!"); 
 			return _ColorAttachments[index]; 
 		}
 
-		virtual ~FrameBuffer() = default;
+		FrameBuffer(const FrameBufferSpecification& spec);
+		~FrameBuffer();
 
-		virtual void Bind() = 0;
-		virtual void Unbind() = 0;
+		void Invalidate();
 
-		virtual void Resize(size_t width, size_t height) = 0;
-		virtual uint32_t ReadPixel(uint32_t attachmentIndex, int x, int y) = 0;
+		void Bind();
+		void Unbind();
 
-		virtual void ClearColorAttachment(uint32_t attachmentIndex, uint32_t value) = 0;
+		void Resize(size_t width, size_t height);
+		uint32_t ReadPixel(uint32_t attachmentIndex, int x, int y);
+
+		void ClearColorAttachment(uint32_t attachmentIndex, uint32_t value);
 
 	protected:
 		std::vector<FrameBufferTextureSpecification> _ColorAttachmentSpecs;

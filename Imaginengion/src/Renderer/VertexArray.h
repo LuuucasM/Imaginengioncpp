@@ -9,15 +9,18 @@ namespace IM {
 	class VertexArray
 	{
 	public:
-		virtual ~VertexArray() = default;
+		VertexArray();
+		~VertexArray();
 
-		virtual void Bind() const = 0;
-		virtual void Unbind() const = 0;
+		void Bind() const;
+		void Unbind() const;
 
-		virtual void AddVertexBuffer(const RefPtr<VertexBuffer> vertexBuffer) = 0;
-		virtual void SetIndexBuffer(const RefPtr<IndexBuffer> indexBuffer) = 0;
+		void AddVertexBuffer(const RefPtr<VertexBuffer> vertexBuffer);
+		void SetIndexBuffer(const RefPtr<IndexBuffer> indexBuffer);
 
-		static RefPtr<VertexArray> Create();
+		static RefPtr<VertexArray> Create() {
+			return CreateRefPtr<VertexArray>();
+		};
 
 		const std::vector<RefPtr<VertexBuffer>>& GetVertexBuffers() const {
 			return _VertexBuffers;

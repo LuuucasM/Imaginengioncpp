@@ -62,7 +62,7 @@ namespace IM {
 
 	struct Renderer2DData {
 
-		static const uint32_t MaxRect = 10000;
+		static const uint32_t MaxRect = 10000; //TODO: MAKE CLASS RENDERER CAPABILITIES
 		static const uint32_t MaxVerticies = MaxRect * 4;
 		static const uint32_t MaxIndices = MaxRect * 6;
 		static const uint32_t MaxTextureSlots = 32; //TODO: MAKE CLASS RENDERER CAPABILITIES
