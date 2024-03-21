@@ -6,8 +6,8 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <shaderc/shaderc.hpp>
-#include <spirv_cross/spirv_cross.hpp>
-#include <spirv_cross/spirv_glsl.hpp>
+#include <spirv_cross.hpp>
+#include <spirv_glsl.hpp>
 
 namespace IM {
 
@@ -264,7 +264,7 @@ namespace IM {
 				}
 			}
 		}
-
+		CreateBufferLayout(shaderData[GL_VERTEX_SHADER]);
 		for (auto&& [stage, data] : shaderData) {
 			Reflect(stage, data);
 		}
@@ -355,6 +355,24 @@ namespace IM {
 		_ProgramID = program;
 	}
 
+	void OpenGLShader::CreateBufferLayout(std::vector<uint32_t>& shaderData) {
+		spirv_cross::Compiler compiler(shaderData);
+		spirv_cross::ShaderResources resources = compiler.get_shader_resources();
+
+		std::sort(resources.stage_inputs.begin(), resources.stage_inputs.end(),
+			[&compiler](const spirv_cross::Resource& a, const spirv_cross::Resource& b) {
+				return compiler.get_decoration(a.id, spv::DecorationLocation) < compiler.get_decoration(b.id, spv::DecorationLocation);
+			});
+		for (const auto& resource : resources.stage_inputs) {
+			const auto& type = compiler.get_type(resource.base_type_id);
+			const std::string name = compiler.get_name(resource.id);
+			_BufferElements.emplace_back(SpirTypeToType(type), name);
+		}
+
+		CalculateOffsets();
+		CalculateStride();
+	}
+
 	void OpenGLShader::Reflect(GLenum stage, const std::vector<uint32_t>& shaderData)
 	{
 		spirv_cross::Compiler compiler(shaderData);
@@ -363,19 +381,10 @@ namespace IM {
 		IMAGINE_CORE_TRACE("OpenGLShader::Reflect - {} {}", GLShaderStageToString(stage), _Filepath);
 
 		IMAGINE_CORE_TRACE("Stage Inputs:");
-		std::sort(resources.stage_inputs.begin(), resources.stage_inputs.end(),
-			[compiler](const spirv_cross::Resource& a, const spirv_cross::Resource& b) {
-				return compiler.get_decoration(a.id, spv::DecorationLocation) < compiler.get_decoration(b.id, spv::DecorationLocation);
-			});
 		for (const auto& resource : resources.stage_inputs) {
 			const auto& type = compiler.get_type(resource.base_type_id);
 			const std::string name = compiler.get_name(resource.id);
-			IMAGINE_CORE_TRACE("\t{}", name);
-			_BufferElements.emplace_back(SpirTypeToType(type), name);
 		}
-		CalculateOffsets();
-		CalculateStride();
-
 		IMAGINE_CORE_TRACE("UniformBuffers:");
 		for (const auto& resource : resources.uniform_buffers) {
 			IMAGINE_CORE_TRACE("\t{}", resource.name);

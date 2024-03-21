@@ -22,7 +22,7 @@ struct VertexOutput{
 };
 
 layout (location = 0) out VertexOutput Output;
-layout (location = 4) out flat int v_EntityID;
+layout (location = 4) out flat uint v_EntityID;
 
 void main()
 {
@@ -50,7 +50,7 @@ struct VertexOutput
 };
 
 layout (location = 0) in VertexOutput Input;
-layout (location = 4) in flat int v_EntityID;
+layout (location = 4) in flat uint v_EntityID;
 
 layout (binding = 0) uniform sampler2D u_Textures[32];
 

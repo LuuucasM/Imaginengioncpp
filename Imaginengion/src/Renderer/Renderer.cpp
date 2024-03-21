@@ -109,8 +109,6 @@ namespace IM {
 		}
 
 		_Data._TextureShader = Shader::Create("assets/shaders/Texture.glsl");
-		_Data._TextureShader->Bind();
-		_Data._TextureShader->SetValue("u_Textures", samplers, _Data.MaxTextureSlots);
 
 		_Data._VertexBuffer = VertexBuffer::Create(_Data.MaxVerticies * sizeof(RectVertex));
 		_Data._VertexBuffer->SetLayout(_Data._TextureShader->GetLayout());

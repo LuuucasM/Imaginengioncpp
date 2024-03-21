@@ -137,9 +137,6 @@ namespace IM {
 			}
 		}
 
-		virtual void CreateLayout(const std::string& vertexShader) = 0;
-		virtual void DiscoverUniforms() = 0;
-
 		std::vector<BufferElement> _BufferElements;
 		std::unordered_map<std::string, int> _Uniforms;
 		uint32_t _BufferStride = 0;

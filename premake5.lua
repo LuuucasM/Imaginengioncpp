@@ -25,6 +25,7 @@ group "Dependencies"
 	include "Imaginengion/vendor/Glad"
 	include "Imaginengion/vendor/imgui"
 	include "Imaginengion/vendor/yaml-cpp"
+	include "Imaginengion/vendor/SPIRV-Cross"
 	
 group ""
 	include "Imaginengion"
