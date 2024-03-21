@@ -12,13 +12,16 @@ project "Sandbox"
 		"src/**.h",
 		"src/**.cpp"
 	}
-
+	defines
+	{
+		"_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING"
+	}
 	includedirs
 	{
 		"%{wks.location}/Imaginengion/vendor/spdlog/include",
 		"%{wks.location}/Imaginengion/src",
 		"%{wks.location}/Imaginengion/vendor",
-		"%{IncludeDir.glm}",
+		"%{IncludeDir.glm}"
 	}
 
 	links

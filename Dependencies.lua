@@ -12,7 +12,7 @@ IncludeDir["ImGui"] = "%{wks.location}/Imaginengion/vendor/imgui"
 IncludeDir["ImGuizmo"] = "%{wks.location}/Imaginengion/vendor/ImGuizmo"
 IncludeDir["glm"] = "%{wks.location}/Imaginengion/vendor/glm"
 IncludeDir["shaderc"] = "%{wks.location}/Imaginengion/vendor/shaderc/include"
-IncludeDir["SPIRV_Cross"] = "%{wks.location}/Imaginengion/vendor/SPIRV-Cross"
+IncludeDir["SPIRV_Cross"] = "%{wks.location}/Imaginengion/vendor/VulkanSDK/Include/spirv_cross"
 IncludeDir["VulkanSDK"] = "%{VULKAN_SDK}/Include"
 
 LibraryDir = {}

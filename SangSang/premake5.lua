@@ -12,7 +12,10 @@ project "SangSang"
 		"src/**.h",
 		"src/**.cpp"
 	}
-
+	defines
+	{
+		"_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING"
+	}
 	includedirs
 	{
 		"%{wks.location}/Imaginengion/vendor/spdlog/include",
@@ -26,6 +29,7 @@ project "SangSang"
 	{
 		"Imaginengion"
 	}
+
 
 	filter "system:windows"
 		systemversion "latest"

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
-#include <spirv_cross/spirv_cross.hpp>
+
 #include <string>
 
 namespace IM {
@@ -55,55 +55,6 @@ namespace IM {
 		//{"int", ShaderDataType::Int4},
 		{"bool", ShaderDataType::Int}
 	};
-
-	static ShaderDataType SpirTypeToType(spirv_cross::SPIRType type) {
-		if (type.vecsize == 1 && type.columns == 1) {
-			if (type.basetype == spirv_cross::SPIRType::Float) {
-				return ShaderDataType::Float;
-			}
-			else if (type.basetype == spirv_cross::SPIRType::Int) {
-				return ShaderDataType::Int;
-			}
-			else if (type.basetype == spirv_cross::SPIRType::UInt) {
-				return ShaderDataType::UInt;
-			}
-			else if (type.basetype == spirv_cross::SPIRType::Boolean) {
-				return ShaderDataType::Int;
-			}
-		}
-		if (type.vecsize == 2 && type.columns == 1) {
-			if (type.basetype == spirv_cross::SPIRType::Float) {
-				return ShaderDataType::Float2;
-			}
-			if (type.basetype == spirv_cross::SPIRType::Int) {
-				return ShaderDataType::Int2;
-			}
-		}
-		if (type.vecsize == 3 && type.columns == 1) {
-			if (type.basetype == spirv_cross::SPIRType::Float) {
-				return ShaderDataType::Float3;
-			}
-			if (type.basetype == spirv_cross::SPIRType::Int) {
-				return ShaderDataType::Int3;
-			}
-		}
-		if (type.vecsize == 4 && type.columns == 1) {
-			if (type.basetype == spirv_cross::SPIRType::Float) {
-				return ShaderDataType::Float4;
-			}
-			if (type.basetype == spirv_cross::SPIRType::Int) {
-				return ShaderDataType::Int4;
-			}
-		}
-		if (type.vecsize == 3 && type.columns == 3) {
-			return ShaderDataType::Mat3;
-		}
-		if (type.vecsize == 4 && type.columns == 4) {
-			return ShaderDataType::Mat4;
-		}
-		IMAGINE_CORE_ASSERT(0, "Unknown spirv_cross::SPIRType in SpirTypeToType");
-		return ShaderDataType::None;
-	}
 
 	struct BufferElement {
 		std::string Name;

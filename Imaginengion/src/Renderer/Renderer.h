@@ -51,6 +51,7 @@ namespace IM {
 			static void BeginScene(const C_Camera camera, const C_Transform transform);
 			static void BeginScene(EditorCamera& camera);
 			static void EndScene();
+
 			static void FlushScene();
 
 			static void DrawRect(const glm::vec2& position, const glm::vec2& scale, const glm::vec4& color);
@@ -86,6 +87,8 @@ namespace IM {
 			static void ResetStats();
 
 		private:
+
+			static void StartBatch();
 			static void FlushAndReset();
 
 			static void Init();

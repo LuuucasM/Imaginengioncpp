@@ -1,6 +1,7 @@
 #include "impch.h"
 
 #include "Renderer.h"
+#include "UniformBuffer.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -82,6 +83,12 @@ namespace IM {
 		glm::vec4 RectVertexPositions[4];
 
 		Renderer::R2D::Statistics Stats;
+
+		struct CameraData {
+			glm::mat4 ViewProjection;
+		};
+		CameraData CameraBuffer;
+		RefPtr<UniformBuffer> CameraUniformBuffer;
 	};
 
 	static Renderer2DData _Data;
@@ -144,6 +151,8 @@ namespace IM {
 		_Data.RectVertexPositions[1] = { 0.5f, -0.5f, 0.0f, 1.0f };
 		_Data.RectVertexPositions[2] = { 0.5f, 0.5f, 0.0f, 1.0f };
 		_Data.RectVertexPositions[3] = { -0.5f, 0.5f, 0.0f, 1.0f };
+
+		_Data.CameraUniformBuffer = UniformBuffer::Create(sizeof(Renderer2DData::CameraData), 0);
 	}
 
 	void Renderer::R2D::Shutdown() {
@@ -167,30 +176,20 @@ namespace IM {
 	void Renderer::R2D::BeginScene(const C_Camera camera, C_Transform transform)
 	{
 		IMAGINE_PROFILE_FUNCTION();
-		glm::mat4 viewProj = camera.Projection * glm::inverse(transform.GetTransform());
 
-		_Data._TextureShader->Bind();
-		_Data._TextureShader->SetValue("u_ViewProjection", viewProj);
+		_Data.CameraBuffer.ViewProjection = camera.Projection * glm::inverse(transform.GetTransform());
+		_Data.CameraUniformBuffer->SetData(&_Data.CameraBuffer, sizeof(Renderer2DData::CameraData));
 
-		_Data.RectIndexCount = 0;
-
-		_Data.RectVertexBufferPtr = _Data.RectVertexBufferBase;
-
-		_Data.TextureSlotIndex = 1;
+		StartBatch();
 	}
 	void Renderer::R2D::BeginScene(EditorCamera& camera)
 	{
 		IMAGINE_PROFILE_FUNCTION();
-		glm::mat4 viewProj = camera.GetViewProjection();
 
-		_Data._TextureShader->Bind();
-		_Data._TextureShader->SetValue("u_ViewProjection", viewProj);
+		_Data.CameraBuffer.ViewProjection = camera.GetViewProjection();
+		_Data.CameraUniformBuffer->SetData(&_Data.CameraBuffer, sizeof(Renderer2DData::CameraData));
 
-		_Data.RectIndexCount = 0;
-
-		_Data.RectVertexBufferPtr = _Data.RectVertexBufferBase;
-
-		_Data.TextureSlotIndex = 1;
+		StartBatch();
 	}
 	void Renderer::R2D::EndScene()
 	{
@@ -202,23 +201,29 @@ namespace IM {
 
 		FlushScene();
 	}
+
+	void Renderer::R2D::StartBatch() {
+		_Data.RectIndexCount = 0;
+
+		_Data.RectVertexBufferPtr = _Data.RectVertexBufferBase;
+
+		_Data.TextureSlotIndex = 1;
+	}
 	void Renderer::R2D::FlushScene()
 	{
 		//Bind Textures;
 		for (uint32_t i = 0; i < _Data.TextureSlotIndex; i++){
 			_Data.TextureSlots[i]->Bind(i);
 		}
+
+		_Data._TextureShader->Bind();
 		RenderCommand::DrawIndexed(_Data._VertexArray, _Data.RectIndexCount);
 		++_Data.Stats.DrawCalls;
 	}
 
 	void Renderer::R2D::FlushAndReset() {
 		EndScene();
-		_Data.RectIndexCount = 0;
-
-		_Data.RectVertexBufferPtr = _Data.RectVertexBufferBase;
-
-		_Data.TextureSlotIndex = 1;
+		StartBatch();
 	}
 	void Renderer::R2D::DrawRect(const glm::vec2& position, const glm::vec2& scale, const glm::vec4& color)
 	{
