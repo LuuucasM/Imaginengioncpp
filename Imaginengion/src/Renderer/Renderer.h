@@ -89,7 +89,7 @@ namespace IM {
 		private:
 
 			static void StartBatch();
-			static void FlushAndReset();
+			static void NextBatch();
 
 			static void Init();
 			static void Shutdown();

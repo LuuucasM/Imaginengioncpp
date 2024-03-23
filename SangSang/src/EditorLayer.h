@@ -2,6 +2,7 @@
 
 #include "Imagine.h"
 #include "Panels/SceneHierarchyPanel.h"
+#include "Panels/ContentBrowserPanel.h"
 #include "Panels/PropertiesPanel.h"
 #include "Renderer/EditorCamera.h"
 
@@ -51,8 +52,10 @@ namespace IM {
 
 		int _GizmoType = -1;
 
+		//Panels
 		RefPtr<SceneHierarchyPanel> _SceneHierarchyPanel;
 		RefPtr<PropertiesPanel> _PropertiesPanel;
+		RefPtr<ContentBrowserPanel> _ContentBrowserPanel;
 
 		float _FPS = 0.0f;
 	};

@@ -164,11 +164,7 @@ namespace IM {
 		_Data._TextureShader->Bind();
 		_Data._TextureShader->SetValue("u_ViewProjection", camera.GetViewProjectionMatrix());
 
-		_Data.RectIndexCount = 0;
-
-		_Data.RectVertexBufferPtr = _Data.RectVertexBufferBase;
-
-		_Data.TextureSlotIndex = 1;
+		StartBatch();
 
 	}
 	void Renderer::R2D::BeginScene(const C_Camera camera, C_Transform transform)
@@ -207,8 +203,20 @@ namespace IM {
 
 		_Data.TextureSlotIndex = 1;
 	}
+	void Renderer::R2D::NextBatch()
+	{
+		FlushScene();
+		StartBatch();
+	}
 	void Renderer::R2D::FlushScene()
 	{
+		if (_Data.RectIndexCount == 0) {
+			return;
+		}
+
+		uint32_t dataSize = (uint32_t)((uint8_t*)_Data.RectVertexBufferPtr - (uint8_t*)_Data.RectVertexBufferBase);
+		_Data._VertexBuffer->SetData(_Data.RectVertexBufferBase, dataSize);
+
 		//Bind Textures;
 		for (uint32_t i = 0; i < _Data.TextureSlotIndex; i++){
 			_Data.TextureSlots[i]->Bind(i);
@@ -219,10 +227,6 @@ namespace IM {
 		++_Data.Stats.DrawCalls;
 	}
 
-	void Renderer::R2D::FlushAndReset() {
-		EndScene();
-		StartBatch();
-	}
 	void Renderer::R2D::DrawRect(const glm::vec2& position, const glm::vec2& scale, const glm::vec4& color)
 	{
 		DrawRect({ position.x, position.y, 0.0f }, scale, color);
@@ -233,7 +237,7 @@ namespace IM {
 		IMAGINE_PROFILE_FUNCTION();
 
 		if (_Data.RectIndexCount + 6 > Renderer2DData::MaxIndices) {
-			FlushAndReset();
+			NextBatch();
 		}
 
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
@@ -254,7 +258,7 @@ namespace IM {
 		constexpr glm::vec4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 		if (_Data.RectIndexCount + 6 > Renderer2DData::MaxIndices) {
-			FlushAndReset();
+			NextBatch();
 		}
 
 		float textureIndex = 0.0f;
@@ -292,7 +296,7 @@ namespace IM {
 		const RefPtr<Texture2D> texture = subtexture->GetTexture();
 
 		if (_Data.RectIndexCount + 6 > Renderer2DData::MaxIndices) {
-			FlushAndReset();
+			NextBatch();
 		}
 
 		float textureIndex = 0.0f;
@@ -350,7 +354,7 @@ namespace IM {
 		IMAGINE_PROFILE_FUNCTION();
 
 		if (_Data.RectIndexCount + 6 > Renderer2DData::MaxIndices) {
-			FlushAndReset();
+			NextBatch();
 		}
 
 		_Data.RectVertexBufferPtr->Position = transform * _Data.RectVertexPositions[0];
@@ -398,7 +402,7 @@ namespace IM {
 		constexpr glm::vec4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 		if (_Data.RectIndexCount + 6 > Renderer2DData::MaxIndices) {
-			FlushAndReset();
+			NextBatch();
 		}
 
 		float textureIndex = 0.0f;
@@ -461,7 +465,7 @@ namespace IM {
 		IMAGINE_PROFILE_FUNCTION();
 
 		if (_Data.RectIndexCount + 6 > Renderer2DData::MaxIndices) {
-			FlushAndReset();
+			NextBatch();
 		}
 
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
@@ -480,7 +484,7 @@ namespace IM {
 		IMAGINE_PROFILE_FUNCTION();
 
 		if (_Data.RectIndexCount + 6 > Renderer2DData::MaxIndices) {
-			FlushAndReset();
+			NextBatch();
 		}
 
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
@@ -500,7 +504,7 @@ namespace IM {
 		IMAGINE_PROFILE_FUNCTION();
 
 		if (_Data.RectIndexCount + 6 > Renderer2DData::MaxIndices) {
-			FlushAndReset();
+			NextBatch();
 		}
 
 		constexpr glm::vec4 color = { 1.0f, 1.0f, 1.0f, 1.0f };

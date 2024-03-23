@@ -230,7 +230,7 @@ namespace IM {
 
 		std::filesystem::path cacheDirectory = GetCacheDirectory();
 
-		auto shaderData = _VulkanSPIRV;
+		auto& shaderData = _VulkanSPIRV;
 		shaderData.clear();
 		for (auto&& [stage, source] : shaderSources) {
 			std::filesystem::path shaderFilePath = _Filepath;

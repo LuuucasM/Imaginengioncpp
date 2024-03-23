@@ -67,6 +67,7 @@ namespace IM {
 
         _SceneHierarchyPanel = CreateRefPtr<SceneHierarchyPanel>(_ActiveScene);
         _PropertiesPanel = CreateRefPtr<PropertiesPanel>(_SceneHierarchyPanel);
+        _ContentBrowserPanel = CreateRefPtr<ContentBrowserPanel>();
     }
 
     void EditorLayer::OnDetach()
@@ -198,6 +199,7 @@ namespace IM {
 
             _SceneHierarchyPanel->OnImGuiRender();
             _PropertiesPanel->OnImGuiRender();
+            _ContentBrowserPanel->OnImGuiRender();
 
             ImGui::Begin("Renderer2D Stats");
 
