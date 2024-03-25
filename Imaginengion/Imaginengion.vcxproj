@@ -186,7 +186,6 @@
     <ClInclude Include="src\Math\Math.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLShader.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLTexture2D.h" />
-    <ClInclude Include="src\Platform\OpenGL\OpenGLVertexBuffer.h" />
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h" />
     <ClInclude Include="src\Profiler\PerfProfiler.h" />
     <ClInclude Include="src\Renderer\EditorCamera.h" />
@@ -661,7 +660,6 @@
     <ClCompile Include="src\Renderer\ShaderLibrary.cpp" />
     <ClCompile Include="src\Renderer\SubTexture2D.cpp" />
     <ClCompile Include="src\Renderer\Texture.cpp" />
-    <ClCompile Include="src\Renderer\VertexBuffer.cpp" />
     <ClCompile Include="src\Scene\Scene.cpp" />
     <ClCompile Include="src\Scene\SceneSerializer.cpp" />
     <ClCompile Include="src\impch.cpp">

@@ -19,19 +19,18 @@
 #include "Math/Math.h"
 
 namespace IM {
+
+    //TODO: when to have a projects object which contains the main working folder relative to the project, then change this
+    static std::filesystem::path _AssetDirectory = "assets";
+
     EditorLayer::EditorLayer()
-        : Layer("MyApp2D"), _CameraController(1280.0f / 720.0f) {
+        : Layer("MyApp2D"){
     }
 
     void EditorLayer::OnAttach()
     {
 
         IMAGINE_PROFILE_FUNCTION();
-
-        _Texture = Texture2D::Create("assets/textures/Checkerboard.png");
-        _TextureZealot = Texture2D::Create("assets/textures/zealot.png");
-
-        _CameraController.SetZoomLevel(5.0f);
 
         FrameBufferSpecification fbspec;
         fbspec._Attachments = { FrameBufferTextureFormat::RGBA8, FrameBufferTextureFormat::RED_INTEGER, FrameBufferTextureFormat::Depth };
@@ -87,13 +86,11 @@ namespace IM {
             _ViewportSize.x > 0.0f && _ViewportSize.y > 0.0f &&
             (spec.Width != _ViewportSize.x || spec.Height != _ViewportSize.y)) {
             _FrameBuffer->Resize((size_t)_ViewportSize.x, (size_t)_ViewportSize.y);
-            _CameraController.OnResize((size_t)_ViewportSize.x, (size_t)_ViewportSize.y);
             _EditorCamera.SetViewportSize(_ViewportSize.x, _ViewportSize.y);
             _ActiveScene->OnViewportResize((size_t)_ViewportSize.x, (size_t)_ViewportSize.y);
         }
 
         if (_bViewportFocus) {
-            _CameraController.OnUpdate(dt);
             _EditorCamera.OnUpdate(dt);
         }
 
@@ -231,6 +228,14 @@ namespace IM {
             uint32_t textureID = _FrameBuffer->GetColorAttachmentID();
             ImGui::Image((void *)textureID, ImVec2{ _ViewportSize.x, _ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 
+            if (ImGui::BeginDragDropTarget()) {
+                if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM")) {
+                    const char* path = (const char*)payload->Data;
+                    OpenScene(_AssetDirectory / path);
+                }
+                ImGui::EndDragDropTarget();
+            }
+
             //ImGuizmo stuff
             Entity selectedEntity = _SceneHierarchyPanel->GetSelectedEntity();
             if (selectedEntity && _GizmoType != -1) {
@@ -277,7 +282,6 @@ namespace IM {
 
     void EditorLayer::OnEvent(Event& e)
     {
-        _CameraController.OnEvent(e);
         _EditorCamera.OnEvent(e);
 
         EventDispatcher dispatcher(e);
@@ -345,14 +349,17 @@ namespace IM {
     {
         std::string filepath = FileDialogs::OpenFile("Imagine Scene (*.imsc)\0*.imsc\0");
         if (!filepath.empty()) {
-
-            _ActiveScene = CreateRefPtr<Scene>();
-            SceneSerializer serializer(_ActiveScene);
-            serializer.DeSerializeText(filepath);
-
-            _ActiveScene->OnViewportResize((size_t)_ViewportSize.x, (size_t)_ViewportSize.y);
-            _SceneHierarchyPanel->SetContext(_ActiveScene);
+            OpenScene(filepath);
         }
+    }
+    void EditorLayer::OpenScene(const std::filesystem::path& path)
+    {
+        _ActiveScene = CreateRefPtr<Scene>();
+        SceneSerializer serializer(_ActiveScene);
+        serializer.DeSerializeText(path.string());
+
+        _ActiveScene->OnViewportResize((size_t)_ViewportSize.x, (size_t)_ViewportSize.y);
+        _SceneHierarchyPanel->SetContext(_ActiveScene);
     }
     void EditorLayer::SaveAsScene()
     {

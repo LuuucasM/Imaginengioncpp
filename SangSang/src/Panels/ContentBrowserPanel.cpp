@@ -3,7 +3,6 @@
 
 #include <Imgui/imgui.h>
 
-
 namespace IM {
 
 
@@ -13,33 +12,76 @@ namespace IM {
 	ContentBrowserPanel::ContentBrowserPanel()
 	{
 		_CurrentDirectory = _AssetDirectory;
+
+		_FolderIcon = Texture2D::Create("Resources/Icons/ContentBrowser/FolderIcon.png");
+		_FileIcon = Texture2D::Create("Resources/Icons/ContentBrowser/FileIcon.png");
+		_BackArrow = Texture2D::Create("Resources/Icons/ContentBrowser/BackArrow.png");
 	}
 
 	void ContentBrowserPanel::OnImGuiRender()
 	{
 		ImGui::Begin("Content Browser");
 
-		if (_CurrentDirectory != _AssetDirectory) {
-			if (ImGui::Button("<-")) {
-				_CurrentDirectory = _CurrentDirectory.parent_path();
-			}
+		constexpr float padding = 16.0f;
+		constexpr float thumbnailSize = 110.0f;
+		float cellSize = thumbnailSize + padding;
+
+		float panelWidth = ImGui::GetContentRegionAvail().x;
+		int columnCount = (int)(panelWidth / cellSize);
+		if (columnCount < 1) {
+			columnCount = 1;
 		}
 
+		ImGui::Columns(columnCount, 0, false);
+
+
+
+		RefPtr<Texture2D> icon;
+		if (_CurrentDirectory != _AssetDirectory) {
+			icon = _BackArrow;
+			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+			ImGui::ImageButton((ImTextureID)icon->GetID(), { thumbnailSize, thumbnailSize }, { 0, 1 }, { 1, 0 });
+			ImGui::PopStyleColor();
+
+			if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
+				_CurrentDirectory = _CurrentDirectory.parent_path();
+			}
+			ImGui::TextWrapped("Back");
+			ImGui::NextColumn();
+		}
+
+		int i = 0;
 		for (auto& directoryEntry : std::filesystem::directory_iterator(_CurrentDirectory)) {
 
-			const auto& path = directoryEntry.path();
+			auto& path = directoryEntry.path();
+			std::string filenameString = path.filename().string();
 
-			if (directoryEntry.is_directory()) {
-				if (ImGui::Button(path.filename().string().c_str())) {
+			ImGui::PushID(filenameString.c_str());
+			icon = directoryEntry.is_directory() ? _FolderIcon : _FileIcon;
+			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+			ImGui::ImageButton((ImTextureID)icon->GetID(), { thumbnailSize, thumbnailSize }, { 0, 1 }, { 1, 0 });
+			if (ImGui::BeginDragDropSource()) {
+				std::string relativePathString = std::filesystem::relative(path, _AssetDirectory).string();
+				auto itemPath = relativePathString.c_str();
+				ImGui::SetDragDropPayload("CONTENT_BROWSER_ITEM", itemPath, strlen(itemPath)+1);
+				ImGui::EndDragDropSource();
+			}
+
+			ImGui::PopStyleColor();
+
+			if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
+				if (directoryEntry.is_directory()) {
 					_CurrentDirectory /= path.filename();
 				}
 			}
-			else {
-				ImGui::Text("%s", path.filename().string().c_str());
-			}
+			ImGui::TextWrapped(filenameString.c_str());
+
+			ImGui::NextColumn();
 			
+			ImGui::PopID();
 		}
 
+		ImGui::Columns(1);
 
 		ImGui::End();
 	}

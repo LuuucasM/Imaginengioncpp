@@ -650,7 +650,12 @@ namespace IM {
 
 	void Renderer::R2D::DrawSprite(const glm::mat4& transform, const C_SpriteRenderer& src, uint32_t entityID)
 	{
-		DrawRect(transform, src.Color, entityID);
+		if (src.Texture) {
+			DrawRect(transform, src.Texture, src.TilingFactor, src.Color, entityID);
+		}
+		else {
+			DrawRect(transform, src.Color, entityID);
+		}
 	}
 
 	Renderer::R2D::Statistics Renderer::R2D::GetStats() {

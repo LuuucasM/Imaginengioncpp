@@ -4,10 +4,14 @@
 
 #include <GLFW/glfw3.h>
 
-const int VSYNC_ENABLED = 1;
-const int VSYNC_DISABLED = 0;
+
 
 namespace IM {
+
+	namespace {
+		constexpr int VSYNC_ENABLED = 1;
+		constexpr int VSYNC_DISABLED = 0;
+	}
 
 	//class to hold a windows specific window
 	class WindowsWindow : public Window

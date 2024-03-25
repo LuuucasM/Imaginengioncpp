@@ -1,6 +1,7 @@
 #include "impch.h"
 #include "Utils/PlatformUtils.h"
 
+#include <sstream>
 #include <commdlg.h>
 #include <GLFW/glfw3.h>
 #define GLFW_EXPOSE_NATIVE_WIN32
@@ -35,6 +36,9 @@ namespace IM {
 		ofn.nMaxFile = sizeof(szFile);
 		ofn.lpstrFilter = filter;
 		ofn.nFilterIndex = 1;
+
+		ofn.lpstrDefExt = std::strchr(filter, '\0') + 1;
+
 		ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
 		if (GetSaveFileNameA(&ofn) == TRUE) {
 			return ofn.lpstrFile;

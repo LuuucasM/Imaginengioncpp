@@ -80,8 +80,8 @@ namespace IM {
 				uint32_t DrawCalls = 0;
 				uint32_t RectCount = 0;
 
-				uint32_t GetTotalVertexCount() { return RectCount * 4; }
-				uint32_t GetTotalIndexCount() { return RectCount * 6; }
+				uint32_t GetTotalVertexCount() const { return RectCount * 4; }
+				uint32_t GetTotalIndexCount() const { return RectCount * 6; }
 			};
 			static Statistics GetStats();
 			static void ResetStats();

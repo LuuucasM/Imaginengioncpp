@@ -5,12 +5,14 @@
 namespace IM {
 	class VertexBuffer {
 	public:
-		virtual ~VertexBuffer() = default;
+		VertexBuffer(size_t size);
+		VertexBuffer(float* verticies, size_t size);
+		~VertexBuffer();
 
-		//virtual void SetData() = 0;
+		void Bind() const;
+		void Unbind() const;
 
-		virtual void Bind() const = 0;
-		virtual void Unbind() const = 0;
+		void SetData(const void* data, size_t size);
 
 		void SetLayout(const std::vector<BufferElement>& layout) {
 			_Layout = layout;
@@ -27,10 +29,12 @@ namespace IM {
 			return _Stride;
 		}
 
-		virtual void SetData(const void* data, size_t size) = 0;
-
-		static RefPtr<VertexBuffer> Create(size_t size);
-		static RefPtr<VertexBuffer> Create(float *verticies, size_t size);
+		static RefPtr<VertexBuffer> Create(size_t size) {
+			return CreateRefPtr<VertexBuffer>(size);
+		}
+		static RefPtr<VertexBuffer> Create(float* verticies, size_t size) {
+			return CreateRefPtr<VertexBuffer>(verticies, size);
+		}
 		
 	protected:
 		uint32_t _BufferID;

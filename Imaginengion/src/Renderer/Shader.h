@@ -22,6 +22,15 @@ namespace IM {
 		Bool
 	};
 
+	enum class FrameBufferColorAttachmentFormat {
+		None = 0,
+		RGBA8 = 1,
+		RGBA16F = 2,
+		RGBA32F = 3,
+		RG32F = 4,
+		RED_INTEGER = 5,
+	};
+
 	static uint32_t ShaderDataTypeSize(ShaderDataType type) {
 		switch (type) {
 		case ShaderDataType::Float:   return 4;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "SceneHierarchyPanel.h"
+#include "Renderer/Texture.h"
 
 namespace IM {
 	class PropertiesPanel
@@ -17,5 +18,6 @@ namespace IM {
 		void DrawComponents(Entity entity);
 	private:
 		WeakPtr<SceneHierarchyPanel> _SceneHierarchyPanel;
+		RefPtr<Texture2D> _TextureIcon;
 	};
 }

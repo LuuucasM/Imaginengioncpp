@@ -192,9 +192,6 @@
     <ClInclude Include="src\Platform\OpenGL\OpenGLTexture2D.h">
       <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="src\Platform\OpenGL\OpenGLVertexBuffer.h">
-      <Filter>src\Platform\OpenGL</Filter>
-    </ClInclude>
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h">
       <Filter>src\Platform\Windows</Filter>
     </ClInclude>
@@ -1611,9 +1608,6 @@
       <Filter>src\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Renderer\Texture.cpp">
-      <Filter>src\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Renderer\VertexBuffer.cpp">
       <Filter>src\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Scene\Scene.cpp">

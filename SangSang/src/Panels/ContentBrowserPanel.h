@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Renderer/Texture.h"
+
 #include <filesystem>
 
 namespace IM {
@@ -11,5 +13,9 @@ namespace IM {
 		void OnImGuiRender();
 	private:
 		std::filesystem::path _CurrentDirectory;
+
+		RefPtr<Texture2D> _FolderIcon;
+		RefPtr<Texture2D> _FileIcon;
+		RefPtr<Texture2D> _BackArrow;
 	};
 }
