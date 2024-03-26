@@ -22,8 +22,8 @@ namespace IM {
 	{
 		ImGui::Begin("Content Browser");
 
-		constexpr float padding = 16.0f;
-		constexpr float thumbnailSize = 110.0f;
+		constexpr float padding = 8.0f;
+		constexpr float thumbnailSize = 70.0f;
 		float cellSize = thumbnailSize + padding;
 
 		float panelWidth = ImGui::GetContentRegionAvail().x;

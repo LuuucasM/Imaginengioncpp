@@ -420,7 +420,7 @@ namespace IM {
 		}
 
 		_Data.RectVertexBufferPtr->Position = transform * _Data.RectVertexPositions[0];
-		_Data.RectVertexBufferPtr->Color = color;
+		_Data.RectVertexBufferPtr->Color = tintColor;
 		_Data.RectVertexBufferPtr->TexCoord = { 0.0f, 0.0f };
 		_Data.RectVertexBufferPtr->TexIndex = textureIndex;
 		_Data.RectVertexBufferPtr->TilingFactor = tilingFactor;
@@ -428,7 +428,7 @@ namespace IM {
 		_Data.RectVertexBufferPtr++;
 
 		_Data.RectVertexBufferPtr->Position = transform * _Data.RectVertexPositions[1];
-		_Data.RectVertexBufferPtr->Color = color;
+		_Data.RectVertexBufferPtr->Color = tintColor;
 		_Data.RectVertexBufferPtr->TexCoord = { 1.0f, 0.0f };
 		_Data.RectVertexBufferPtr->TexIndex = textureIndex;
 		_Data.RectVertexBufferPtr->TilingFactor = tilingFactor;
@@ -436,7 +436,7 @@ namespace IM {
 		_Data.RectVertexBufferPtr++;
 
 		_Data.RectVertexBufferPtr->Position = transform * _Data.RectVertexPositions[2];
-		_Data.RectVertexBufferPtr->Color = color;
+		_Data.RectVertexBufferPtr->Color = tintColor;
 		_Data.RectVertexBufferPtr->TexCoord = { 1.0f, 1.0f };
 		_Data.RectVertexBufferPtr->TexIndex = textureIndex;
 		_Data.RectVertexBufferPtr->TilingFactor = tilingFactor;
@@ -444,7 +444,7 @@ namespace IM {
 		_Data.RectVertexBufferPtr++;
 
 		_Data.RectVertexBufferPtr->Position = transform * _Data.RectVertexPositions[3];
-		_Data.RectVertexBufferPtr->Color = color;
+		_Data.RectVertexBufferPtr->Color = tintColor;
 		_Data.RectVertexBufferPtr->TexCoord = { 0.0f, 1.0f };
 		_Data.RectVertexBufferPtr->TexIndex = textureIndex;
 		_Data.RectVertexBufferPtr->TilingFactor = tilingFactor;

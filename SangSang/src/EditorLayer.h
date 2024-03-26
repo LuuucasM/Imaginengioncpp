@@ -1,9 +1,11 @@
 #pragma once
 
 #include "Imagine.h"
+#include "Panels/Render2DStatsPanel.h"
 #include "Panels/SceneHierarchyPanel.h"
 #include "Panels/ContentBrowserPanel.h"
 #include "Panels/PropertiesPanel.h"
+#include "Panels/ToolbarPanel.h"
 #include "Renderer/EditorCamera.h"
 
 namespace IM {
@@ -43,10 +45,10 @@ namespace IM {
 		int _GizmoType = -1;
 
 		//Panels
+		RefPtr<Render2DStatsPanel> _Render2DStatsPanel;
 		RefPtr<SceneHierarchyPanel> _SceneHierarchyPanel;
 		RefPtr<PropertiesPanel> _PropertiesPanel;
 		RefPtr<ContentBrowserPanel> _ContentBrowserPanel;
-
-		float _FPS = 0.0f;
+		RefPtr<ToolbarPanel> _ToolbarPanel;
 	};
 }

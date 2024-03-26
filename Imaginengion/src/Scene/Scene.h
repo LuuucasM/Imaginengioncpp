@@ -26,6 +26,8 @@ namespace IM {
 		void SetName(std::string& name) { _Name = name; }
 
 		Entity GetPrimaryCameraEntity();
+
+		float GetFPS() { return _FPS; }
 	private:
 		template<typename T>
 		void OnComponentAdded(Entity entity, T& component);
@@ -33,5 +35,7 @@ namespace IM {
 		size_t _ViewportWidth = 0, _ViewportHeight = 0;
 		ECSManager _ECSManager;
 		std::string _Name = "Scene Name here!";
+
+		float _FPS = 0.0f;
 	};
 }

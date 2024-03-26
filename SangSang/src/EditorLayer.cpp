@@ -64,9 +64,11 @@ namespace IM {
             }
         };
 
+        _Render2DStatsPanel = CreateRefPtr<Render2DStatsPanel>(_ActiveScene);
         _SceneHierarchyPanel = CreateRefPtr<SceneHierarchyPanel>(_ActiveScene);
         _PropertiesPanel = CreateRefPtr<PropertiesPanel>(_SceneHierarchyPanel);
         _ContentBrowserPanel = CreateRefPtr<ContentBrowserPanel>();
+        _ToolbarPanel = CreateRefPtr<ToolbarPanel>();
     }
 
     void EditorLayer::OnDetach()
@@ -80,7 +82,7 @@ namespace IM {
     void EditorLayer::OnUpdate(float dt)
     {
         IMAGINE_PROFILE_FUNCTION();
-        _FPS = 1.0f / dt;
+        
         //resize viewport if needed
         if (IM::FrameBufferSpecification spec = _FrameBuffer->GetSpecification();
             _ViewportSize.x > 0.0f && _ViewportSize.y > 0.0f &&
@@ -90,12 +92,6 @@ namespace IM {
             _ActiveScene->OnViewportResize((size_t)_ViewportSize.x, (size_t)_ViewportSize.y);
         }
 
-        if (_bViewportFocus) {
-            _EditorCamera.OnUpdate(dt);
-        }
-
-        
-
         Renderer::R2D::ResetStats();
         _FrameBuffer->Bind();
         Renderer::SetClearColor({ 0.31f, 0.31f, 0.31f, 1.0f });
@@ -103,7 +99,15 @@ namespace IM {
 
         _FrameBuffer->ClearColorAttachment(1, 0);
 
-        _ActiveScene->OnUpdateEditor(dt, _EditorCamera);
+        switch (_ToolbarPanel->GetSceneState()) {
+        case SceneState::Stop:
+            _EditorCamera.OnUpdate(dt);
+            _ActiveScene->OnUpdateEditor(dt, _EditorCamera);
+            break;
+        case SceneState::Play:
+            _ActiveScene->OnUpdateRuntime(dt);
+            break;
+        }
         
         auto [mx, my] = ImGui::GetMousePos();
         mx -= _ViewportBounds[0].x;
@@ -194,20 +198,13 @@ namespace IM {
                 ImGui::EndMenuBar();
             }
 
+            _Render2DStatsPanel->OnImGuiRender();
             _SceneHierarchyPanel->OnImGuiRender();
             _PropertiesPanel->OnImGuiRender();
             _ContentBrowserPanel->OnImGuiRender();
+            _ToolbarPanel->OnImGuiRender();
 
-            ImGui::Begin("Renderer2D Stats");
 
-            auto stats = Renderer::R2D::GetStats();
-            ImGui::Text("Renderer2D Stats: ");
-            ImGui::Text("DrawCalls: %d", stats.DrawCalls);
-            ImGui::Text("Rect Count: %d", stats.RectCount);
-            ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
-            ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
-            ImGui::Text("FPS: %f", _FPS);
-            ImGui::End();
 
             ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
             ImGui::Begin("Viewport");
@@ -344,6 +341,7 @@ namespace IM {
         _ActiveScene = CreateRefPtr<Scene>();
         _ActiveScene->OnViewportResize((size_t)_ViewportSize.x, (size_t)_ViewportSize.y);
         _SceneHierarchyPanel->SetContext(_ActiveScene);
+        _Render2DStatsPanel->SetContext(_ActiveScene);
     }
     void EditorLayer::OpenScene()
     {
@@ -360,6 +358,7 @@ namespace IM {
 
         _ActiveScene->OnViewportResize((size_t)_ViewportSize.x, (size_t)_ViewportSize.y);
         _SceneHierarchyPanel->SetContext(_ActiveScene);
+        _Render2DStatsPanel->SetContext(_ActiveScene);
     }
     void EditorLayer::SaveAsScene()
     {
@@ -371,4 +370,5 @@ namespace IM {
             serializer.SerializeText(filepath);
         }
     }
+
 }

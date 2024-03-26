@@ -31,7 +31,7 @@ namespace IM {
 	}
 	void Scene::OnUpdateRuntime(float dt)
 	{
-
+		_FPS = 1.0f / dt;
 		//update scripts on update function
 		auto& group = _ECSManager.GetGroup<C_NativeScript>();
 		for (auto entity : group) {
@@ -71,6 +71,7 @@ namespace IM {
 	}
 	void Scene::OnUpdateEditor(float dt, EditorCamera& camera)
 	{
+		_FPS = 1.0f / dt;
 		Renderer::R2D::BeginScene(camera);
 		auto& group = _ECSManager.GetGroup<C_Transform, C_SpriteRenderer>();
 		for (auto entity : group) {
