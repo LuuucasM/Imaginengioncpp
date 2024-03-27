@@ -204,8 +204,6 @@ namespace IM {
             _ContentBrowserPanel->OnImGuiRender();
             _ToolbarPanel->OnImGuiRender();
 
-
-
             ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
             ImGui::Begin("Viewport");
             auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
@@ -217,13 +215,13 @@ namespace IM {
             _bViewportFocus = ImGui::IsWindowFocused();
             _bViewportHovered = ImGui::IsWindowHovered();
             Application::Get().GetImGuiLayer()->SetBlockEvents(!_bViewportFocus && !_bViewportHovered);
-            
+
 
             ImVec2 viewportSize = ImGui::GetContentRegionAvail();
             _ViewportSize = { viewportSize.x, viewportSize.y };
 
             uint32_t textureID = _FrameBuffer->GetColorAttachmentID();
-            ImGui::Image((void *)textureID, ImVec2{ _ViewportSize.x, _ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+            ImGui::Image((void*)textureID, ImVec2{ _ViewportSize.x, _ViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 
             if (ImGui::BeginDragDropTarget()) {
                 if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM")) {

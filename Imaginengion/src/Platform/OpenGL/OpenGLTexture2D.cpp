@@ -1,13 +1,18 @@
 #include "impch.h"
-#include "OpenGLTexture2D.h"
+#ifdef IMAGINE_OPENGL
+#include "Renderer/Texture.h"
 
 #include <stb_image.h>
 
 #include <glad/glad.h>
 
 namespace IM {
-	OpenGLTexture2D::OpenGLTexture2D(const std::string& path) {
 
+	namespace {
+		GLenum _InternalFormat, _DataFormat;
+	}
+	
+	Texture2D::Texture2D(const std::string& path) {
 		IMAGINE_PROFILE_FUNCTION();
 
 		int width, height, channels;
@@ -16,7 +21,7 @@ namespace IM {
 		{
 			IMAGINE_PROFILE_SCOPE("stbi_load - OpenGLTexture2D::OpenGLTexture2D(const std::string&)");
 			data = stbi_load(path.c_str(), &width, &height, &channels, 0);
-			
+
 		}
 		IMAGINE_CORE_ASSERT(data, "Failed to load image in OpenGLTexture2D constructor!");
 		_Width = width;
@@ -50,9 +55,10 @@ namespace IM {
 
 		glTextureSubImage2D(_TextureID, 0, 0, 0, _Width, _Height, dataFormat, GL_UNSIGNED_BYTE, data);
 
-		stbi_image_free(data); 
+		stbi_image_free(data);
 	}
-	OpenGLTexture2D::OpenGLTexture2D(uint32_t width, uint32_t height)
+
+	Texture2D::Texture2D(uint32_t width, uint32_t height) 
 		: _Width(width), _Height(height){
 
 		IMAGINE_PROFILE_FUNCTION();
@@ -69,26 +75,27 @@ namespace IM {
 		glTextureParameteri(_TextureID, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTextureParameteri(_TextureID, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	}
-	OpenGLTexture2D::~OpenGLTexture2D() {
-
+	
+	Texture2D::~Texture2D() {
 		IMAGINE_PROFILE_FUNCTION();
 
 		glDeleteTextures(1, &_TextureID);
 	}
-	void OpenGLTexture2D::SetData(void* data, uint32_t size)
-	{
+	
+	void Texture2D::SetData(void* data, uint32_t size) {
 		IMAGINE_PROFILE_FUNCTION();
 
 		glTextureSubImage2D(_TextureID, 0, 0, 0, _Width, _Height, _DataFormat, GL_UNSIGNED_BYTE, data);
 	}
-	void OpenGLTexture2D::Bind(uint32_t slot) const {
-
+	
+	void Texture2D::Bind(uint32_t slot) const {
 		IMAGINE_PROFILE_FUNCTION();
 
 		glBindTextureUnit(slot, _TextureID);
 	}
-	void OpenGLTexture2D::Unbind(uint32_t slot) const
-	{
+	
+	void Texture2D::Unbind(uint32_t slot) const {
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 }
+#endif
