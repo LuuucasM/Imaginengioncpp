@@ -14,6 +14,7 @@ IncludeDir["glm"] = "%{wks.location}/Imaginengion/vendor/glm"
 IncludeDir["shaderc"] = "%{wks.location}/Imaginengion/vendor/shaderc/include"
 IncludeDir["SPIRV_Cross"] = "%{wks.location}/Imaginengion/vendor/SPIRV-Cross"
 IncludeDir["VulkanSDK"] = "%{wks.location}/Imaginengion/vendor/VulkanSDK/Include"
+IncludeDir["Box2D"] = "%{wks.location}/Imaginengion/vendor/Box2D/include"
 
 LibraryDir = {}
 

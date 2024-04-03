@@ -2,6 +2,7 @@
 #include "Scene.h"
 
 #include "ECS/Components.h"
+#include "ECS/Components/ScriptClass.h"
 #include "ECS/Systems.h"
 #include "Renderer/Renderer.h"
 
@@ -9,7 +10,26 @@
 
 #include "ECS/Entity.h"
 
+#include "box2d/b2_world.h"
+#include "box2d/b2_body.h"
+#include "box2d/b2_fixture.h"
+#include "box2d/b2_polygon_shape.h"
+
+
 namespace IM {
+
+	namespace {
+		b2BodyType RigidBody2DTypeToBox2DType(C_RigidBody2D::BodyType bodyType) {
+			switch (bodyType) {
+				case C_RigidBody2D::BodyType::Static: return b2_staticBody;
+				case C_RigidBody2D::BodyType::Dynamic: return b2_dynamicBody;
+				case C_RigidBody2D::BodyType::Kinematic: return b2_kinematicBody;
+			}
+			IMAGINE_CORE_ASSERT(0, "Unknown Body Type in RigidBody2DTypeToBox2D!");
+			return b2_staticBody;
+		}
+	}
+
 	Scene::Scene()
 	{
 		_ECSManager.RegisterComponent<C_Transform>();
@@ -20,21 +40,63 @@ namespace IM {
 	}
 	Entity Scene::CreateEntity(const std::string& name)
 	{
+		return CreateEntityWithUUID(UUID(), name);
+	}
+	Entity Scene::CreateEntityWithUUID(UUID uuid, const std::string& name)
+	{
 		Entity e = { _ECSManager.CreateEntity(), this };
-		e.AddComponent<C_Transform>();
+		e.AddComponent<C_ID>(uuid);
 		e.AddComponent<C_Name>(name);
+		e.AddComponent<C_Transform>();
 		return e;
 	}
 	void Scene::DestroyEntity(Entity entity)
 	{
 		_ECSManager.DestroyEntity(entity);
 	}
+	void Scene::OnRuntimeStart()
+	{
+		_PhysicsWorld = CreateScopePtr<b2World>(b2Vec2{ 0.0f, -9.81f });
+		auto& group = _ECSManager.GetGroup<C_RigidBody2D>();
+		for (auto e : group) {
+			Entity entity = { e, this };
+			auto& transform = entity.GetComponent<C_Transform>();
+			auto& rb2d = entity.GetComponent<C_RigidBody2D>();
+
+			b2BodyDef bodyDef;
+			bodyDef.type = RigidBody2DTypeToBox2DType(rb2d._Type);
+			bodyDef.position.Set(transform.Translation.x, transform.Translation.y);
+			bodyDef.angle = transform.Rotation.z;
+			b2Body *body = _PhysicsWorld->CreateBody(&bodyDef);
+			body->SetFixedRotation(rb2d._bFixedRotation);
+			rb2d.RuntimeBody = body;
+
+			if (entity.HasComponent<C_Collider2D>()) {
+				auto& bc2d = entity.GetComponent<C_Collider2D>();
+
+				b2PolygonShape polygonShape;
+				polygonShape.SetAsBox(bc2d._Size.x * transform.Scale.x, bc2d._Size.y * transform.Scale.y);
+
+				b2FixtureDef fixtureDef;
+				fixtureDef.shape = &polygonShape;
+				fixtureDef.density = bc2d._Density;
+				fixtureDef.friction = bc2d._Friction;
+				fixtureDef.restitution = bc2d._Restitution;
+				fixtureDef.restitutionThreshold = bc2d._RestitutionThreshold;
+				body->CreateFixture(&fixtureDef);
+			}
+		}
+	}
+	void Scene::OnRuntimeStop()
+	{
+		_PhysicsWorld.reset();
+	}
 	void Scene::OnUpdateRuntime(float dt)
 	{
 		_FPS = 1.0f / dt;
 		//update scripts on update function
-		auto& group = _ECSManager.GetGroup<C_NativeScript>();
-		for (auto entity : group) {
+		auto& scripts = _ECSManager.GetGroup<C_NativeScript>();
+		for (auto entity : scripts) {
 			auto& script = _ECSManager.GetComponent<C_NativeScript>(entity);
 			if (!script.Instance) {
 				script.Instance = script.CreateScript();
@@ -44,6 +106,22 @@ namespace IM {
 			script.Instance->OnUpdate(dt);
 		}
 
+		const int32_t velocityIterations = 6;
+		const int32_t positionIterations = 2;
+		_PhysicsWorld->Step(dt, velocityIterations, positionIterations);
+
+		auto& rigidbodys = _ECSManager.GetGroup<C_RigidBody2D>();
+		for (auto e : rigidbodys) {
+			Entity entity = { e, this };
+			auto& transform = entity.GetComponent<C_Transform>();
+			auto& rb2d = entity.GetComponent<C_RigidBody2D>();
+
+			b2Body* body = static_cast<b2Body*>(rb2d.RuntimeBody);
+			const auto& position = body->GetPosition();
+			transform.Translation.x = position.x;
+			transform.Translation.y = position.y;
+			transform.Rotation.z = body->GetAngle();
+		}
 
 		//CHECKING TO SEE IF WE HAVE DEFINED A PRIMARY CAMERA
 		//need to change this so that scene just directly holds a pointer to the primary camera instead of looping through cameras every time
@@ -114,6 +192,11 @@ namespace IM {
 	}
 
 	template<>
+	void Scene::OnComponentAdded<C_ID>(Entity entity, C_ID& component) {
+
+	}
+
+	template<>
 	void Scene::OnComponentAdded<C_Transform>(Entity entity, C_Transform& component) {
 		
 	}
@@ -133,6 +216,14 @@ namespace IM {
 	}
 	template<>
 	void Scene::OnComponentAdded<C_NativeScript>(Entity entity, C_NativeScript& component) {
+
+	}
+	template<>
+	void Scene::OnComponentAdded<C_RigidBody2D>(Entity entity, C_RigidBody2D& component) {
+
+	}
+	template<>
+	void Scene::OnComponentAdded<C_Collider2D>(Entity entity, C_Collider2D& component) {
 
 	}
 }

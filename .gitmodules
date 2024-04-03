@@ -20,3 +20,6 @@
 [submodule "Imaginengion/vendor/SPIRV-Cross"]
 	path = Imaginengion/vendor/SPIRV-Cross
 	url = https://github.com/LuuucasM/SPIRV-Cross.git
+[submodule "Imaginengion/vendor/Box2D"]
+	path = Imaginengion/vendor/Box2D
+	url = https://github.com/LuuucasM/box2d.git

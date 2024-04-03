@@ -86,6 +86,12 @@ namespace YAML {
 
 namespace IM {
 
+	YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec2& v) {
+		out << YAML::Flow;
+		out << YAML::BeginSeq << v.x << v.y << YAML::EndSeq;
+		return out;
+	}
+
 	YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec3& v) {
 		out << YAML::Flow;
 		out << YAML::BeginSeq << v.x << v.y << v.z << YAML::EndSeq;
@@ -98,6 +104,25 @@ namespace IM {
 		return out;
 	}
 
+	namespace {
+		std::string RigidBody2DBodyTypeToString(C_RigidBody2D::BodyType bodyType) {
+			switch (bodyType) {
+				case C_RigidBody2D::BodyType::Static: return "Static";
+				case C_RigidBody2D::BodyType::Dynamic: return "Dynamic";
+				case C_RigidBody2D::BodyType::Kinematic: return "Kinematic";
+			}
+			IMAGINE_CORE_ASSERT(0, "Unknown bodyType in RigidBody2DBodyTypeToString!");
+			return {};
+		}
+		C_RigidBody2D::BodyType RigidBody2DBodyTypeFromString(const std::string& bodyTypeString) {
+			if (bodyTypeString == "Static") return C_RigidBody2D::BodyType::Static;
+			if (bodyTypeString == "Dynamic") return C_RigidBody2D::BodyType::Dynamic;
+			if (bodyTypeString == "Kinematic") return C_RigidBody2D::BodyType::Kinematic;
+			IMAGINE_CORE_ASSERT(0, "Unknown bodyTypeString in RigidBody2DBodyTypeFromString!");
+			return C_RigidBody2D::BodyType::Static;
+		}
+	}
+
 	SceneSerializer::SceneSerializer(const RefPtr<Scene>& scene)
 		: _Scene(scene){
 
@@ -105,7 +130,7 @@ namespace IM {
 
 	static void SerializeEntity(YAML::Emitter& out, Entity& entity) {
 		out << YAML::BeginMap;
-		out << YAML::Key << "Entity" << YAML::Value << "12345";
+		out << YAML::Key << "Entity" << YAML::Value << entity.GetUUID();
 
 		if (entity.HasComponent<C_Name>()) {
 			out << YAML::Key << "Name Component";
@@ -153,6 +178,28 @@ namespace IM {
 			out << YAML::BeginMap;
 			auto& spriteRenderer = entity.GetComponent<C_SpriteRenderer>();
 			out << YAML::Key << "Color" << YAML::Value << spriteRenderer.Color;
+			out << YAML::EndMap;
+		}
+		if (entity.HasComponent<C_RigidBody2D>()) {
+			out << YAML::Key << "Rigid Body 2D";
+
+			out << YAML::BeginMap;
+			auto& rigidBody = entity.GetComponent<C_RigidBody2D>();
+			out << YAML::Key << "BodyType" << YAML::Value << RigidBody2DBodyTypeToString(rigidBody._Type);
+			out << YAML::Key << "FixedRotation" << YAML::Value << rigidBody._bFixedRotation;
+			out << YAML::EndMap;
+		}
+		if (entity.HasComponent<C_Collider2D>()) {
+			out << YAML::Key << "Collider 2D";
+
+			out << YAML::BeginMap;
+			auto& collider = entity.GetComponent<C_Collider2D>();
+			out << YAML::Key << "Offset" << YAML::Value << collider._Offset;
+			out << YAML::Key << "Size" << YAML::Value << collider._Size;
+			out << YAML::Key << "Density" << YAML::Value << collider._Density;
+			out << YAML::Key << "Friction" << YAML::Value << collider._Friction;
+			out << YAML::Key << "Restitution" << YAML::Value << collider._Restitution;
+			out << YAML::Key << "RestitutionThreshold" << YAML::Value << collider._RestitutionThreshold;
 			out << YAML::EndMap;
 		}
 
@@ -209,7 +256,7 @@ namespace IM {
 
 				IMAGINE_CORE_TRACE("Deserialized entity with ID = {}, name = {}", uuid, name);
 
-				Entity deserent = _Scene->CreateEntity(name);
+				Entity deserent = _Scene->CreateEntityWithUUID(uuid, name);
 				
 				auto transformComponent = entity["Transform Component"];
 				if (transformComponent) {
@@ -240,6 +287,24 @@ namespace IM {
 				if (spriteRendererComponent) {
 					auto& src = deserent.AddComponent<C_SpriteRenderer>();
 					src.Color = spriteRendererComponent["Color"].as<glm::vec4>();
+				}
+
+				auto rigidBody = entity["Rigid Body 2D"];
+				if (rigidBody) {
+					auto& src = deserent.AddComponent<C_RigidBody2D>();
+					src._Type = RigidBody2DBodyTypeFromString(rigidBody["BodyType"].as<std::string>());
+					src._bFixedRotation = rigidBody["FixedRotation"].as<bool>();
+				}
+
+				auto collider = entity["Collider 2D"];
+				if (collider) {
+					auto& src = deserent.AddComponent<C_Collider2D>();
+					src._Offset = collider["Offset"].as<glm::vec2>();
+					src._Size = collider["Size"].as<glm::vec2>();
+					src._Density = collider["Density"].as<float>();
+					src._Friction = collider["Friction"].as<float>();
+					src._Restitution = collider["Restitution"].as<float>();
+					src._RestitutionThreshold = collider["RestitutionThreshold"].as<float>();
 				}
 			}
 		}

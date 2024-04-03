@@ -1,6 +1,6 @@
 Scene: TestScene
 Entities:
-  - Entity: 12345
+  - Entity: 3175885213147411721
     Name Component:
       Name: Square
     Transform Component:
@@ -9,7 +9,7 @@ Entities:
       Scale: [1, 1, 1]
     Sprite Renderer Component:
       Color: [0.800000012, 0.300000012, 0.300000012, 1]
-  - Entity: 12345
+  - Entity: 961628269161488572
     Name Component:
       Name: BlueSquare
     Transform Component:
@@ -18,7 +18,7 @@ Entities:
       Scale: [1, 1, 1]
     Sprite Renderer Component:
       Color: [0.300000012, 0.300000012, 0.800000012, 1]
-  - Entity: 12345
+  - Entity: 12130816646207769188
     Name Component:
       Name: Camera1
     Transform Component:
@@ -36,7 +36,7 @@ Entities:
         OrthographicFar: 1
       Primary: true
       FixedAspectRatio: false
-  - Entity: 12345
+  - Entity: 582884579204825685
     Name Component:
       Name: Camera2
     Transform Component:

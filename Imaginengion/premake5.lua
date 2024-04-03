@@ -42,11 +42,13 @@ project "Imaginengion"
 		"%{IncludeDir.yaml_cpp}",
 		"%{IncludeDir.ImGuizmo}",
 		"%{IncludeDir.VulkanSDK}",
-		"%{IncludeDir.SPIRV_Cross}"
+		"%{IncludeDir.SPIRV_Cross}",
+		"%{IncludeDir.Box2D}"
 	}
 
 	links
 	{
+		"Box2D",
 		"GLFW",
 		"Glad",
 		"ImGui",

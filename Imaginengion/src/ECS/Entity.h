@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Scene/Scene.h"
-#include "ECSManager.h"
+#include "Core/UUID.h"
+#include "ECS/Components.h"
 
 #include <iostream>
 
@@ -39,6 +40,10 @@ namespace IM {
 		template<typename C_Type>
 		bool HasComponent() { 
 			return _Scene->_ECSManager.HasComponent<C_Type>(_EntityID); 
+		}
+
+		UUID GetUUID() {
+			return GetComponent<C_ID>()._ID;
 		}
 
 		operator bool() const { return _EntityID != 0; }

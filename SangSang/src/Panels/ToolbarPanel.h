@@ -1,5 +1,7 @@
 #pragma once
 
+
+#include "Scene/Scene.h"
 #include "Renderer/Texture.h"
 
 namespace IM {
@@ -13,8 +15,10 @@ namespace IM {
 	{
 	public:
 		ToolbarPanel();
+		ToolbarPanel(const WeakPtr<Scene>& scene);
 		~ToolbarPanel() = default;
-		//ToolbarPanel();
+		
+		void SetContext(const WeakPtr<Scene>& scene);
 
 		void OnImGuiRender();
 
@@ -23,5 +27,7 @@ namespace IM {
 		SceneState _SceneState = SceneState::Stop;
 		RefPtr<Texture2D> _PlayIcon;
 		RefPtr<Texture2D> _StopIcon;
+
+		WeakPtr<Scene> _Context;
 	};
 }

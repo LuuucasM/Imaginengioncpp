@@ -1,7 +1,10 @@
 #pragma once
 
 #include "ECS/ECSManager.h"
+#include "Core/UUID.h"
 #include "Renderer/EditorCamera.h"
+
+class b2World;
 
 namespace IM {
 	
@@ -15,8 +18,12 @@ namespace IM {
 		Scene();
 		~Scene();
 
-		Entity CreateEntity(const std::string& name = "Entity");
+		Entity CreateEntity(const std::string& name = "Unnamed Entity");
+		Entity CreateEntityWithUUID(UUID uuid, const std::string& name = "Unnamed Entity");
 		void DestroyEntity(Entity entity);
+
+		void OnRuntimeStart();
+		void OnRuntimeStop();
 
 		void OnUpdateRuntime(float dt);
 		void OnUpdateEditor(float dt, EditorCamera& camera);
@@ -35,6 +42,8 @@ namespace IM {
 		size_t _ViewportWidth = 0, _ViewportHeight = 0;
 		ECSManager _ECSManager;
 		std::string _Name = "Scene Name here!";
+
+		ScopePtr<b2World> _PhysicsWorld;
 
 		float _FPS = 0.0f;
 	};

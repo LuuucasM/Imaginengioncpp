@@ -129,19 +129,22 @@
     <ClInclude Include="src\ECS\Components\C_Camera.h">
       <Filter>src\ECS\Components</Filter>
     </ClInclude>
+    <ClInclude Include="src\ECS\Components\C_Collider2D.h">
+      <Filter>src\ECS\Components</Filter>
+    </ClInclude>
     <ClInclude Include="src\ECS\Components\C_Name.h">
       <Filter>src\ECS\Components</Filter>
     </ClInclude>
     <ClInclude Include="src\ECS\Components\C_NativeScript.h">
       <Filter>src\ECS\Components</Filter>
     </ClInclude>
+    <ClInclude Include="src\ECS\Components\C_RigidBody2D.h">
+      <Filter>src\ECS\Components</Filter>
+    </ClInclude>
     <ClInclude Include="src\ECS\Components\C_SpriteRenderer.h">
       <Filter>src\ECS\Components</Filter>
     </ClInclude>
     <ClInclude Include="src\ECS\Components\C_Transform.h">
-      <Filter>src\ECS\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ECS\Components\Component.h">
       <Filter>src\ECS\Components</Filter>
     </ClInclude>
     <ClInclude Include="src\ECS\Components\ScriptClass.h">
@@ -1512,6 +1515,8 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
+    <ClInclude Include="src\Core\UUID.h" />
+    <ClInclude Include="src\ECS\Components\C_ID.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Application.cpp">
@@ -1619,5 +1624,6 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
+    <ClCompile Include="src\Core\UUID.cpp" />
   </ItemGroup>
 </Project>

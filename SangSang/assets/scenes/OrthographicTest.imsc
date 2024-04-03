@@ -1,6 +1,6 @@
 Scene: OrthographicTest
 Entities:
-  - Entity: 12345
+  - Entity: 17445309458851505588
     Name Component:
       Name: Red Square
     Transform Component:
@@ -9,7 +9,7 @@ Entities:
       Scale: [1, 1, 1]
     Sprite Renderer Component:
       Color: [0.843881845, 0.284854621, 0.284854621, 1]
-  - Entity: 12345
+  - Entity: 9415279541548461680
     Name Component:
       Name: Blue Square
     Transform Component:

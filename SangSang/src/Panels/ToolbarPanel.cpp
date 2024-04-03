@@ -10,6 +10,16 @@ namespace IM {
 		_PlayIcon = Texture2D::Create("Resources/Icons/PlayIcon.png");
 		_StopIcon = Texture2D::Create("Resources/Icons/StopIcon.png");
 	}
+	ToolbarPanel::ToolbarPanel(const WeakPtr<Scene>& scene)
+	{
+		SetContext(scene);
+		_PlayIcon = Texture2D::Create("Resources/Icons/PlayIcon.png");
+		_StopIcon = Texture2D::Create("Resources/Icons/StopIcon.png");
+	}
+	void ToolbarPanel::SetContext(const WeakPtr<Scene>& scene)
+	{
+		_Context = scene;
+	}
 	void ToolbarPanel::OnImGuiRender() {
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 2));
@@ -28,9 +38,11 @@ namespace IM {
 		ImGui::SameLine((ImGui::GetWindowContentRegionMax().x * 0.5f) - (size * 0.5f));
 		if (ImGui::ImageButton((ImTextureID)icon->GetID(), ImVec2(size, size), ImVec2(0,0), ImVec2(1,1), 0)) {
 			if (_SceneState == SceneState::Stop) {
+				_Context.lock()->OnRuntimeStart();
 				_SceneState = SceneState::Play;
 			}
 			else if (_SceneState == SceneState::Play) {
+				_Context.lock()->OnRuntimeStop();
 				_SceneState = SceneState::Stop;
 			}
 			

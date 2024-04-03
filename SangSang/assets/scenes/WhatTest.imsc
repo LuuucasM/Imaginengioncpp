@@ -1,6 +1,6 @@
 Scene: WhatTest
 Entities:
-  - Entity: 12345
+  - Entity: 12793994048856800182
     Name Component:
       Name: What
     Transform Component:
@@ -9,7 +9,7 @@ Entities:
       Scale: [1, 1, 1]
     Sprite Renderer Component:
       Color: [0.863109648, 1, 0.0168776512, 1]
-  - Entity: 12345
+  - Entity: 2931690076133928799
     Name Component:
       Name: WhatCam
     Transform Component:

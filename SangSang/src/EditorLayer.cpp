@@ -68,7 +68,7 @@ namespace IM {
         _SceneHierarchyPanel = CreateRefPtr<SceneHierarchyPanel>(_ActiveScene);
         _PropertiesPanel = CreateRefPtr<PropertiesPanel>(_SceneHierarchyPanel);
         _ContentBrowserPanel = CreateRefPtr<ContentBrowserPanel>();
-        _ToolbarPanel = CreateRefPtr<ToolbarPanel>();
+        _ToolbarPanel = CreateRefPtr<ToolbarPanel>(_ActiveScene);
     }
 
     void EditorLayer::OnDetach()
@@ -100,13 +100,13 @@ namespace IM {
         _FrameBuffer->ClearColorAttachment(1, 0);
 
         switch (_ToolbarPanel->GetSceneState()) {
-        case SceneState::Stop:
-            _EditorCamera.OnUpdate(dt);
-            _ActiveScene->OnUpdateEditor(dt, _EditorCamera);
-            break;
-        case SceneState::Play:
-            _ActiveScene->OnUpdateRuntime(dt);
-            break;
+            case SceneState::Stop:
+                _EditorCamera.OnUpdate(dt);
+                _ActiveScene->OnUpdateEditor(dt, _EditorCamera);
+                break;
+            case SceneState::Play:
+                _ActiveScene->OnUpdateRuntime(dt);
+                break;
         }
         
         auto [mx, my] = ImGui::GetMousePos();
@@ -340,6 +340,7 @@ namespace IM {
         _ActiveScene->OnViewportResize((size_t)_ViewportSize.x, (size_t)_ViewportSize.y);
         _SceneHierarchyPanel->SetContext(_ActiveScene);
         _Render2DStatsPanel->SetContext(_ActiveScene);
+        _ToolbarPanel->SetContext(_ActiveScene);
     }
     void EditorLayer::OpenScene()
     {
@@ -350,6 +351,9 @@ namespace IM {
     }
     void EditorLayer::OpenScene(const std::filesystem::path& path)
     {
+        if (_ToolbarPanel->GetSceneState() != SceneState::Stop) {
+            _ActiveScene->OnRuntimeStop();
+        }
         _ActiveScene = CreateRefPtr<Scene>();
         SceneSerializer serializer(_ActiveScene);
         serializer.DeSerializeText(path.string());
@@ -357,6 +361,7 @@ namespace IM {
         _ActiveScene->OnViewportResize((size_t)_ViewportSize.x, (size_t)_ViewportSize.y);
         _SceneHierarchyPanel->SetContext(_ActiveScene);
         _Render2DStatsPanel->SetContext(_ActiveScene);
+        _ToolbarPanel->SetContext(_ActiveScene);
     }
     void EditorLayer::SaveAsScene()
     {
