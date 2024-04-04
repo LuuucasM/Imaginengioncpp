@@ -187,9 +187,14 @@ namespace IM {
 					ImGui::CloseCurrentPopup();
 				}
 			}
-			if (!_SceneHierarchyPanel.lock()->_SelectionContext.HasComponent<C_SpriteRenderer>()) {
+			if (!_SceneHierarchyPanel.lock()->_SelectionContext.HasComponent<C_SpriteRenderer>()
+				&& !_SceneHierarchyPanel.lock()->_SelectionContext.HasComponent<C_CircleRenderer>()) {
 				if (ImGui::MenuItem("Sprite Renderer")) {
 					_SceneHierarchyPanel.lock()->_SelectionContext.AddComponent<C_SpriteRenderer>();
+					ImGui::CloseCurrentPopup();
+				}
+				if (ImGui::MenuItem("Circle Renderer")) {
+					_SceneHierarchyPanel.lock()->_SelectionContext.AddComponent<C_CircleRenderer>();
 					ImGui::CloseCurrentPopup();
 				}
 			}
@@ -310,6 +315,14 @@ namespace IM {
 				}
 
 				ImGui::DragFloat("Tiling Factor", &component.TilingFactor, 0.1f, 0.0f, 100.0f);
+			});
+
+		DrawComponent<C_CircleRenderer>("Circle Renderer", entity,
+			[&](auto& component) {
+				ImGui::ColorEdit4("Color", glm::value_ptr(component.Color));
+				ImGui::DragFloat("Radius", &component.Radius, 0.1f, 0.0f);
+				ImGui::DragFloat("Thickness", &component.Thickness, 0.05f, 0.0f, 1.0f);
+				ImGui::DragFloat("Fade", &component.Fade, 0.005f, 0.0f, 1.0f);
 			});
 
 		DrawComponent<C_RigidBody2D>("RigidBody 2D", entity,

@@ -82,6 +82,7 @@ namespace IM {
 		Entity newEntity = CreateEntity(oldEntity.GetName());
 		CopyComponentIfExists<C_Transform>(newEntity, oldEntity);
 		CopyComponentIfExists<C_SpriteRenderer>(newEntity, oldEntity);
+		CopyComponentIfExists<C_CircleRenderer>(newEntity, oldEntity);
 		CopyComponentIfExists<C_Camera>(newEntity, oldEntity);
 		CopyComponentIfExists<C_NativeScript>(newEntity, oldEntity);
 		CopyComponentIfExists<C_RigidBody2D>(newEntity, oldEntity);
@@ -242,6 +243,10 @@ namespace IM {
 	}
 	template<>
 	void Scene::OnComponentAdded<C_SpriteRenderer>(Entity entity, C_SpriteRenderer& component) {
+
+	}
+	template<>
+	void Scene::OnComponentAdded<C_CircleRenderer>(Entity entity, C_CircleRenderer& component) {
 
 	}
 	template<>

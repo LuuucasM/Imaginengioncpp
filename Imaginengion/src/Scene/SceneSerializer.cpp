@@ -180,6 +180,17 @@ namespace IM {
 			out << YAML::Key << "Color" << YAML::Value << spriteRenderer.Color;
 			out << YAML::EndMap;
 		}
+		if (entity.HasComponent<C_CircleRenderer>()) {
+			out << YAML::Key << "Circle Renderer Component";
+
+			out << YAML::BeginMap;
+			auto& circleRenderer = entity.GetComponent<C_CircleRenderer>();
+			out << YAML::Key << "Color" << YAML::Value << circleRenderer.Color;
+			out << YAML::Key << "Radius" << YAML::Value << circleRenderer.Radius;
+			out << YAML::Key << "Thickness" << YAML::Value << circleRenderer.Thickness;
+			out << YAML::Key << "Fade" << YAML::Value << circleRenderer.Fade;
+			out << YAML::EndMap;
+		}
 		if (entity.HasComponent<C_RigidBody2D>()) {
 			out << YAML::Key << "Rigid Body 2D";
 
@@ -257,11 +268,11 @@ namespace IM {
 
 				IMAGINE_CORE_TRACE("Deserialized entity with ID = {}, name = {}", uuid, name);
 
-				Entity deserent = _Scene->CreateEntityWithUUID(uuid, name);
+				Entity e = _Scene->CreateEntityWithUUID(uuid, name);
 				
 				auto transformComponent = entity["Transform Component"];
 				if (transformComponent) {
-					auto& transform = deserent.GetComponent<C_Transform>();
+					auto& transform = e.GetComponent<C_Transform>();
 					transform.Translation = transformComponent["Translation"].as<glm::vec3>();
 					transform.Rotation = transformComponent["Rotation"].as<glm::vec3>();
 					transform.Scale = transformComponent["Scale"].as<glm::vec3>();
@@ -269,7 +280,7 @@ namespace IM {
 
 				auto cameraComponent = entity["Camera Component"];
 				if (cameraComponent) {
-					auto& cc = deserent.AddComponent<C_Camera>();
+					auto& cc = e.AddComponent<C_Camera>();
 					auto cameraProps = cameraComponent["Camera"];
 					cc._ProjectionType = (IM::C_Camera::ProjectionType)cameraProps["ProjectionType"].as<int>();
 
@@ -286,20 +297,29 @@ namespace IM {
 
 				auto spriteRendererComponent = entity["Sprite Renderer Component"];
 				if (spriteRendererComponent) {
-					auto& src = deserent.AddComponent<C_SpriteRenderer>();
+					auto& src = e.AddComponent<C_SpriteRenderer>();
 					src.Color = spriteRendererComponent["Color"].as<glm::vec4>();
+				}
+
+				auto circleRendererComponent = entity["Circle Renderer Component"];
+				if (circleRendererComponent) {
+					auto& src = e.AddComponent<C_CircleRenderer>();
+					src.Color = circleRendererComponent["Color"].as<glm::vec4>();
+					src.Radius = circleRendererComponent["Radius"].as<float>();
+					src.Thickness = circleRendererComponent["Thickness"].as<float>();
+					src.Fade = circleRendererComponent["Fade"].as<float>();
 				}
 
 				auto rigidBody = entity["Rigid Body 2D"];
 				if (rigidBody) {
-					auto& src = deserent.AddComponent<C_RigidBody2D>();
+					auto& src = e.AddComponent<C_RigidBody2D>();
 					src._Type = RigidBody2DBodyTypeFromString(rigidBody["BodyType"].as<std::string>());
 					src._bFixedRotation = rigidBody["FixedRotation"].as<bool>();
 				}
 
 				auto collider = entity["Collider 2D"];
 				if (collider) {
-					auto& src = deserent.AddComponent<C_Collider2D>();
+					auto& src = e.AddComponent<C_Collider2D>();
 					src._Offset = collider["Offset"].as<glm::vec2>();
 					src._Size = collider["Size"].as<glm::vec2>();
 					src._Density = collider["Density"].as<float>();

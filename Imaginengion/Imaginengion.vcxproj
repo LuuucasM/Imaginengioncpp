@@ -166,6 +166,7 @@
     <ClInclude Include="src\ECS\ComponentManager.h" />
     <ClInclude Include="src\ECS\Components.h" />
     <ClInclude Include="src\ECS\Components\C_Camera.h" />
+    <ClInclude Include="src\ECS\Components\C_CircleRenderer.h" />
     <ClInclude Include="src\ECS\Components\C_Collider2D.h" />
     <ClInclude Include="src\ECS\Components\C_ID.h" />
     <ClInclude Include="src\ECS\Components\C_Name.h" />

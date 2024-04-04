@@ -8,3 +8,4 @@
 #include "Components/C_RigidBody2D.h"
 #include "Components/C_Collider2D.h"
 #include "Components/C_ID.h"
+#include "Components/C_CircleRenderer.h"
