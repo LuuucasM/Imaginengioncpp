@@ -241,6 +241,7 @@ namespace IM {
 			return false;
 		}
 		std::string sceneName = data["Scene"].as<std::string>();
+		_Scene->SetName(sceneName);
 		IMAGINE_CORE_TRACE("Deserializing scene '{}'", sceneName);
 
 		auto entities = data["Entities"];

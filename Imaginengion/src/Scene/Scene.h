@@ -18,9 +18,12 @@ namespace IM {
 		Scene();
 		~Scene();
 
+		static RefPtr<Scene> Copy(RefPtr<Scene> other);
+
 		Entity CreateEntity(const std::string& name = "Unnamed Entity");
 		Entity CreateEntityWithUUID(UUID uuid, const std::string& name = "Unnamed Entity");
 		void DestroyEntity(Entity entity);
+		Entity DuplicateEntity(Entity oldEntity);
 
 		void OnRuntimeStart();
 		void OnRuntimeStop();

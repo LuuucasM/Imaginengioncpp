@@ -26,6 +26,9 @@ namespace IM {
 		Application(const std::string& name = "Imaginengion");
 		virtual ~Application();
 
+
+		/*
+		*/
 		void OnEvent(Event& e);
 		/*
 		*Helper function to get the window object for the application

@@ -29,7 +29,6 @@ namespace IM {
 		std::unordered_set<uint32_t>& GetAllEntityID() {
 			return _EntityManager->GetAllEntityID();
 		}
-
 		//-------------Components--------------
 		template<typename C_Type>
 		void RegisterComponent() {
@@ -38,6 +37,10 @@ namespace IM {
 		template<typename C_Type, typename... Args>
 		C_Type& AddComponent(uint32_t entity, Args &&...args) {
 			return _ComponentManager->AddComponent<C_Type>(entity, std::forward<Args>(args)...);
+		}
+		template<typename C_Type>
+		C_Type& AddComponent(uint32_t entity, C_Type component) {
+			return _ComponentManager->AddComponent(entity, component);
 		}
 		template<typename C_Type>
 		void RemoveComponent(uint32_t entity) {

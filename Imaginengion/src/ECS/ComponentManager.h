@@ -37,6 +37,18 @@ namespace IM {
 		}
 
 		template<typename C_Type>
+		C_Type& AddComponent(uint32_t entity, C_Type component) {
+			auto type_hash = typeid(C_Type).hash_code();
+
+			if (!_ComponentArrayList.contains(type_hash)) {
+				RegisterComponent<C_Type>();
+			}
+
+			_EntityToComponentCodes[entity].insert(type_hash);
+			return std::static_pointer_cast<ComponentArray<C_Type>>(_ComponentArrayList[type_hash])->AddComponent(entity, component);
+		}
+
+		template<typename C_Type>
 		void RemoveComponent(uint32_t entity) {
 			_ComponentArrayList[typeid(C_Type).hash_code()]->RemoveComponent(entity);
 			_EntityToComponentCodes[entity].erase(typeid(C_Type).hash_code());

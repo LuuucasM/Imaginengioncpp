@@ -23,6 +23,13 @@ namespace IM {
 		}
 
 		template<typename C_Type>
+		C_Type& AddComponent(C_Type newComponent) {
+			C_Type& component = _Scene->_ECSManager.AddComponent(_EntityID, newComponent);
+			_Scene->OnComponentAdded<C_Type>(*this, component);
+			return component;
+		}
+
+		template<typename C_Type>
 		void RemoveComponent() {
 			_Scene->_ECSManager.RemoveComponent<C_Type>(_EntityID);
 		}
@@ -42,9 +49,9 @@ namespace IM {
 			return _Scene->_ECSManager.HasComponent<C_Type>(_EntityID); 
 		}
 
-		UUID GetUUID() {
-			return GetComponent<C_ID>()._ID;
-		}
+		const UUID GetUUID() { return GetComponent<C_ID>()._ID; }
+
+		const std::string& GetName() { return GetComponent<C_Name>().Name; }
 
 		operator bool() const { return _EntityID != 0; }
 		operator uint32_t()const { return _EntityID; }

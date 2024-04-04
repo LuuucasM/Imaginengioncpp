@@ -1,6 +1,8 @@
 #include "impch.h"
 #include "Scene.h"
 
+#include "SceneSerializer.h"
+
 #include "ECS/Components.h"
 #include "ECS/Components/ScriptClass.h"
 #include "ECS/Systems.h"
@@ -28,6 +30,13 @@ namespace IM {
 			IMAGINE_CORE_ASSERT(0, "Unknown Body Type in RigidBody2DTypeToBox2D!");
 			return b2_staticBody;
 		}
+
+		template<typename C_Type>
+		void CopyComponentIfExists(Entity newEntity, Entity oldEntity) {
+			if (oldEntity.HasComponent<C_Type>()) {
+				newEntity.AddComponent(oldEntity.GetComponent<C_Type>());
+			}
+		}
 	}
 
 	Scene::Scene()
@@ -37,6 +46,20 @@ namespace IM {
 	}
 	Scene::~Scene()
 	{
+	}
+	RefPtr<Scene> Scene::Copy(RefPtr<Scene> other)
+	{
+		SceneSerializer oldSerializer(other);
+		std::filesystem::path tempPath("./tmp.imsc");
+		oldSerializer.SerializeText(tempPath.string());
+
+		RefPtr<Scene> newScene = CreateRefPtr<Scene>();
+		SceneSerializer newSerializer(newScene);
+		newSerializer.DeSerializeText(tempPath.string());
+		std::remove(tempPath.string().c_str());
+
+		newScene->OnViewportResize(other->_ViewportWidth, other->_ViewportHeight);
+		return newScene;
 	}
 	Entity Scene::CreateEntity(const std::string& name)
 	{
@@ -53,6 +76,18 @@ namespace IM {
 	void Scene::DestroyEntity(Entity entity)
 	{
 		_ECSManager.DestroyEntity(entity);
+	}
+	Entity Scene::DuplicateEntity(Entity oldEntity)
+	{
+		Entity newEntity = CreateEntity(oldEntity.GetName());
+		CopyComponentIfExists<C_Transform>(newEntity, oldEntity);
+		CopyComponentIfExists<C_SpriteRenderer>(newEntity, oldEntity);
+		CopyComponentIfExists<C_Camera>(newEntity, oldEntity);
+		CopyComponentIfExists<C_NativeScript>(newEntity, oldEntity);
+		CopyComponentIfExists<C_RigidBody2D>(newEntity, oldEntity);
+		CopyComponentIfExists<C_Collider2D>(newEntity, oldEntity);
+		return newEntity;
+
 	}
 	void Scene::OnRuntimeStart()
 	{
@@ -95,6 +130,7 @@ namespace IM {
 	{
 		_FPS = 1.0f / dt;
 		//update scripts on update function
+		//SCRIPTS SYSTEM
 		auto& scripts = _ECSManager.GetGroup<C_NativeScript>();
 		for (auto entity : scripts) {
 			auto& script = _ECSManager.GetComponent<C_NativeScript>(entity);
@@ -106,6 +142,8 @@ namespace IM {
 			script.Instance->OnUpdate(dt);
 		}
 
+		//update physics
+		//PHYSTICS SYSTEm
 		const int32_t velocityIterations = 6;
 		const int32_t positionIterations = 2;
 		_PhysicsWorld->Step(dt, velocityIterations, positionIterations);
@@ -138,6 +176,7 @@ namespace IM {
 		}
 
 		if (mainCamera) {
+			//RENDER SYSTEM
 			Renderer::R2D::BeginScene(*mainCamera, *cameraTransform);
 			auto& group = _ECSManager.GetGroup<C_Transform, C_SpriteRenderer>();
 			for (auto entity : group) {
@@ -150,6 +189,7 @@ namespace IM {
 	void Scene::OnUpdateEditor(float dt, EditorCamera& camera)
 	{
 		_FPS = 1.0f / dt;
+		//RENDER SYSTEM
 		Renderer::R2D::BeginScene(camera);
 		auto& group = _ECSManager.GetGroup<C_Transform, C_SpriteRenderer>();
 		for (auto entity : group) {

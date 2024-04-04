@@ -3,31 +3,28 @@
 
 #include "Scene/Scene.h"
 #include "Renderer/Texture.h"
+#include "Events/EditorEvents.h"
 
 namespace IM {
-	namespace {
-		enum class SceneState {
-			Stop = 0,
-			Play = 1
-		};
-	}
+
+	enum class SceneState {
+		Stop = 0,
+		Play = 1
+	};
 	class ToolbarPanel
 	{
 	public:
+		using EventCallbackFn = std::function<void(Event&)>;
 		ToolbarPanel();
-		ToolbarPanel(const WeakPtr<Scene>& scene);
+		ToolbarPanel(const EventCallbackFn& callback);
 		~ToolbarPanel() = default;
-		
-		void SetContext(const WeakPtr<Scene>& scene);
 
-		void OnImGuiRender();
+		void OnImGuiRender(const SceneState& state);
 
-		SceneState GetSceneState() const { return _SceneState; }
 	private:
 		SceneState _SceneState = SceneState::Stop;
 		RefPtr<Texture2D> _PlayIcon;
 		RefPtr<Texture2D> _StopIcon;
-
-		WeakPtr<Scene> _Context;
+		EventCallbackFn _EventCallback;
 	};
 }

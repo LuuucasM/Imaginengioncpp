@@ -2,7 +2,6 @@
 #include "ToolbarPanel.h"
 
 
-
 #include <Imgui/imgui.h>
 namespace IM {
 	ToolbarPanel::ToolbarPanel()
@@ -10,17 +9,13 @@ namespace IM {
 		_PlayIcon = Texture2D::Create("Resources/Icons/PlayIcon.png");
 		_StopIcon = Texture2D::Create("Resources/Icons/StopIcon.png");
 	}
-	ToolbarPanel::ToolbarPanel(const WeakPtr<Scene>& scene)
+	ToolbarPanel::ToolbarPanel(const EventCallbackFn& callback)
 	{
-		SetContext(scene);
+		_EventCallback = callback;
 		_PlayIcon = Texture2D::Create("Resources/Icons/PlayIcon.png");
 		_StopIcon = Texture2D::Create("Resources/Icons/StopIcon.png");
 	}
-	void ToolbarPanel::SetContext(const WeakPtr<Scene>& scene)
-	{
-		_Context = scene;
-	}
-	void ToolbarPanel::OnImGuiRender() {
+	void ToolbarPanel::OnImGuiRender(const SceneState& state) {
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 2));
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0, 0));
@@ -34,18 +29,11 @@ namespace IM {
 		ImGui::Begin("##toolbar", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 
 		float size = ImGui::GetWindowHeight() - 4.0f;
-		RefPtr<Texture2D> icon = _SceneState == SceneState::Stop ? _PlayIcon : _StopIcon;
+		RefPtr<Texture2D> icon = state == SceneState::Stop ? _PlayIcon : _StopIcon;
 		ImGui::SameLine((ImGui::GetWindowContentRegionMax().x * 0.5f) - (size * 0.5f));
 		if (ImGui::ImageButton((ImTextureID)icon->GetID(), ImVec2(size, size), ImVec2(0,0), ImVec2(1,1), 0)) {
-			if (_SceneState == SceneState::Stop) {
-				_Context.lock()->OnRuntimeStart();
-				_SceneState = SceneState::Play;
-			}
-			else if (_SceneState == SceneState::Play) {
-				_Context.lock()->OnRuntimeStop();
-				_SceneState = SceneState::Stop;
-			}
-			
+			SceneChangeEvent e;
+			_EventCallback(e);
 		}
 		ImGui::PopStyleVar(2);
 		ImGui::PopStyleColor(3);

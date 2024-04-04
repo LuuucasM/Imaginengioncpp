@@ -26,11 +26,24 @@ namespace IM {
 		void NewScene();
 		void OpenScene();
 		void OpenScene(const std::filesystem::path& path);
-		void SaveAsScene();
+		void SerializeScene(RefPtr<Scene> scene, std::filesystem::path& path);
+		void SaveScene();
+		void SaveSceneAs();
+
+		bool OnSceneChange(SceneChangeEvent& e);
+		void OnScenePlay();
+		void OnSceneStop();
+
+		void  OnDuplicateEntity();
 	private:
 		RefPtr<FrameBuffer> _FrameBuffer;
 
 		RefPtr<Scene> _ActiveScene;
+		RefPtr<Scene> _EditorScene, _RuntimeScene;
+
+		SceneState _SceneState = SceneState::Stop;
+
+		std::filesystem::path _EditorScenePath;
 
 		Entity _HoveredEntity;
 

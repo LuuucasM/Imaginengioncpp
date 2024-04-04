@@ -1517,6 +1517,7 @@
     </ClInclude>
     <ClInclude Include="src\Core\UUID.h" />
     <ClInclude Include="src\ECS\Components\C_ID.h" />
+    <ClInclude Include="src\Events\EditorEvents.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Application.cpp">

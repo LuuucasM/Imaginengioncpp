@@ -38,7 +38,8 @@ namespace IM {
         fbspec.Height = 720;
         _FrameBuffer = FrameBuffer::Create(fbspec);
 
-        _ActiveScene = CreateRefPtr<Scene>();
+        _EditorScene = CreateRefPtr<Scene>();
+        _ActiveScene = _EditorScene;
 
         _EditorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
 
@@ -64,11 +65,11 @@ namespace IM {
             }
         };
 
-        _Render2DStatsPanel = CreateRefPtr<Render2DStatsPanel>(_ActiveScene);
-        _SceneHierarchyPanel = CreateRefPtr<SceneHierarchyPanel>(_ActiveScene);
+        _Render2DStatsPanel = CreateRefPtr<Render2DStatsPanel>(_EditorScene);
+        _SceneHierarchyPanel = CreateRefPtr<SceneHierarchyPanel>(_EditorScene);
         _PropertiesPanel = CreateRefPtr<PropertiesPanel>(_SceneHierarchyPanel);
         _ContentBrowserPanel = CreateRefPtr<ContentBrowserPanel>();
-        _ToolbarPanel = CreateRefPtr<ToolbarPanel>(_ActiveScene);
+        _ToolbarPanel = CreateRefPtr<ToolbarPanel>(IMAGINE_BIND_EVENT(EditorLayer::OnEvent));
     }
 
     void EditorLayer::OnDetach()
@@ -99,7 +100,7 @@ namespace IM {
 
         _FrameBuffer->ClearColorAttachment(1, 0);
 
-        switch (_ToolbarPanel->GetSceneState()) {
+        switch (_SceneState) {
             case SceneState::Stop:
                 _EditorCamera.OnUpdate(dt);
                 _ActiveScene->OnUpdateEditor(dt, _EditorCamera);
@@ -188,8 +189,10 @@ namespace IM {
                         NewScene();
                     if (ImGui::MenuItem("Open...", "Ctrl+O"))
                         OpenScene();
+                    if (ImGui::MenuItem("Save", "Ctrl+S"))
+                        SaveScene();
                     if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
-                        SaveAsScene();
+                        SaveSceneAs();
                     if (ImGui::MenuItem("Exit"))
                         Application::Get().Close();
 
@@ -202,7 +205,7 @@ namespace IM {
             _SceneHierarchyPanel->OnImGuiRender();
             _PropertiesPanel->OnImGuiRender();
             _ContentBrowserPanel->OnImGuiRender();
-            _ToolbarPanel->OnImGuiRender();
+            _ToolbarPanel->OnImGuiRender(_SceneState);
 
             ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
             ImGui::Begin("Viewport");
@@ -282,6 +285,7 @@ namespace IM {
         EventDispatcher dispatcher(e);
         dispatcher.Dispatch<KeyPressedEvent>(IMAGINE_BIND_EVENT(EditorLayer::OnKeyPressed));
         dispatcher.Dispatch<MouseButtonPressedEvent>(IMAGINE_BIND_EVENT(EditorLayer::OnMouseButtonPressed));
+        dispatcher.Dispatch<SceneChangeEvent>(IMAGINE_BIND_EVENT(EditorLayer::OnSceneChange));
     }
     bool EditorLayer::OnKeyPressed(KeyPressedEvent& e)
     {
@@ -294,20 +298,24 @@ namespace IM {
 
         switch (e.GetKeyCode()) {
             case Key::N:
-                if (control) {
+                if (control)
                     NewScene();
-                    break;
-                }
+                break;
             case Key::O:
-                if (control) {
+                if (control)
                     OpenScene();
-                    break;
-                }
+                break;
             case Key::S:
-                if (control && shift) {
-                    SaveAsScene();
-                    break;
-                }                
+                if (control) 
+                    if (shift)
+                        SaveSceneAs();
+                    else 
+                        SaveScene();
+                break;
+            case Key::D:
+                if (control)
+                    OnDuplicateEntity();
+                break;
         }
         switch (e.GetKeyCode()) {
             case Key::Q:
@@ -336,11 +344,15 @@ namespace IM {
     }
     void EditorLayer::NewScene()
     {
-        _ActiveScene = CreateRefPtr<Scene>();
-        _ActiveScene->OnViewportResize((size_t)_ViewportSize.x, (size_t)_ViewportSize.y);
-        _SceneHierarchyPanel->SetContext(_ActiveScene);
-        _Render2DStatsPanel->SetContext(_ActiveScene);
-        _ToolbarPanel->SetContext(_ActiveScene);
+        _EditorScene = CreateRefPtr<Scene>();
+
+        _EditorScene->OnViewportResize((size_t)_ViewportSize.x, (size_t)_ViewportSize.y);
+        _SceneHierarchyPanel->SetContext(_EditorScene);
+        _Render2DStatsPanel->SetContext(_EditorScene);
+
+        _ActiveScene = _EditorScene;
+        _EditorScenePath = std::filesystem::path();
+
     }
     void EditorLayer::OpenScene()
     {
@@ -351,26 +363,86 @@ namespace IM {
     }
     void EditorLayer::OpenScene(const std::filesystem::path& path)
     {
-        if (_ToolbarPanel->GetSceneState() != SceneState::Stop) {
-            _ActiveScene->OnRuntimeStop();
+        if (_SceneState != SceneState::Stop) {
+            OnSceneStop();
         }
-        _ActiveScene = CreateRefPtr<Scene>();
-        SceneSerializer serializer(_ActiveScene);
-        serializer.DeSerializeText(path.string());
 
-        _ActiveScene->OnViewportResize((size_t)_ViewportSize.x, (size_t)_ViewportSize.y);
-        _SceneHierarchyPanel->SetContext(_ActiveScene);
-        _Render2DStatsPanel->SetContext(_ActiveScene);
-        _ToolbarPanel->SetContext(_ActiveScene);
+        RefPtr<Scene> newScene = CreateRefPtr<Scene>();
+        SceneSerializer serializer(newScene);
+        if (serializer.DeSerializeText(path.string())) {
+
+            _EditorScene = newScene;
+
+            _EditorScene->OnViewportResize((size_t)_ViewportSize.x, (size_t)_ViewportSize.y);
+            _SceneHierarchyPanel->SetContext(_EditorScene);
+            _Render2DStatsPanel->SetContext(_EditorScene);
+
+            _ActiveScene = _EditorScene;
+            _EditorScenePath = path;
+        }
     }
-    void EditorLayer::SaveAsScene()
+    void EditorLayer::SerializeScene(RefPtr<Scene> scene, std::filesystem::path& path)
+    {
+        SceneSerializer serializer(scene);
+        serializer.SerializeText(path.string());
+    }
+    void EditorLayer::SaveScene()
+    {
+        if (!_EditorScenePath.empty()) {
+            SerializeScene(_EditorScene, _EditorScenePath);
+        }
+    }
+    void EditorLayer::SaveSceneAs()
     {
         std::string filepath = FileDialogs::SaveFile("Imagine Scene (*.imsc)\0*.imsc\0");
         std::string sceneName(std::filesystem::path(filepath).stem().string());
-        _ActiveScene->SetName(sceneName);
+        _EditorScene->SetName(sceneName);
         if (!filepath.empty()) {
-            SceneSerializer serializer(_ActiveScene);
-            serializer.SerializeText(filepath);
+            SerializeScene(_EditorScene, _EditorScenePath);
+            _EditorScenePath = filepath;
+        }
+    }
+
+    bool EditorLayer::OnSceneChange(SceneChangeEvent& e)
+    {
+        if (_SceneState == SceneState::Stop) {
+            OnScenePlay();
+        }
+        else if (_SceneState == SceneState::Play) {
+            OnSceneStop();
+        }
+        return true;
+    }
+
+    void EditorLayer::OnScenePlay()
+    {
+        _SceneState = SceneState::Play;
+
+        _RuntimeScene = Scene::Copy(_EditorScene);
+        _RuntimeScene->OnRuntimeStart();
+        _SceneHierarchyPanel->SetContext(_RuntimeScene);
+        _Render2DStatsPanel->SetContext(_RuntimeScene);
+        _ActiveScene = _RuntimeScene;
+    }
+
+    void EditorLayer::OnSceneStop()
+    {
+        _SceneState = SceneState::Stop;
+        _ActiveScene->OnRuntimeStop();
+        _SceneHierarchyPanel->SetContext(_EditorScene);
+        _Render2DStatsPanel->SetContext(_EditorScene);
+        _ActiveScene = _EditorScene;
+        _RuntimeScene = nullptr;
+    }
+
+    void EditorLayer::OnDuplicateEntity()
+    {
+        if (_SceneState != SceneState::Stop)
+            return;
+        Entity selectedEntity = _SceneHierarchyPanel->GetSelectedEntity();
+        if (selectedEntity) {
+            std::cout << "i am doing it!!" << std::endl;
+            _EditorScene->DuplicateEntity(selectedEntity);
         }
     }
 

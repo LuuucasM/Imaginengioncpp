@@ -4,7 +4,7 @@ Entities:
     Name Component:
       Name: Red Square
     Transform Component:
-      Translation: [0, 0, 0]
+      Translation: [-0.829999983, 0, 0]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     Sprite Renderer Component:
@@ -18,3 +18,30 @@ Entities:
       Scale: [1, 1, 1]
     Sprite Renderer Component:
       Color: [0.103687063, 0.252806753, 0.945147693, 1]
+  - Entity: 9021618808570181727
+    Name Component:
+      Name: Camera
+    Transform Component:
+      Translation: [0, 0, 4.60581017]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    Camera Component:
+      Camera:
+        ProjectionType: 0
+        PerspectiveFOV: 0.785398185
+        PerspectiveNear: 0.00999999978
+        PerspectiveFar: 1000
+        OrthographicSize: 10
+        OrthographicNear: -1
+        OrthographicFar: 1
+      Primary: true
+      FixedAspectRatio: false
+  - Entity: 5108189386985229669
+    Name Component:
+      Name: Red square dupe
+    Transform Component:
+      Translation: [-2.1099999, 1.42999995, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    Sprite Renderer Component:
+      Color: [0.843881845, 0.284854621, 0.284854621, 1]

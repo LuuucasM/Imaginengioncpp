@@ -12,6 +12,7 @@ namespace IM {
 		ET_WindowClose, ET_WindowResize, ET_WindowFocus, ET_WindowLostFocus, ET_WindowMoved,
 		ET_KeyPressed, ET_KeyReleased, ET_KeyTyped,
 		ET_MouseButtonPressed, ET_MouseButtonReleased, ET_MouseMoved, ET_MouseScrolled,
+		ET_SceneChange
 	};
 
 	enum EventCategory {
@@ -21,6 +22,7 @@ namespace IM {
 		EC_Keyboard = BIT(2),
 		EC_Mouse = BIT(3),
 		EC_MouseButton = BIT(4),
+		EC_Editor = BIT(5)
 	};
 
 	class Event {
