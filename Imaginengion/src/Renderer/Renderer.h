@@ -75,6 +75,14 @@ namespace IM {
 			static void DrawRotatedRect(const glm::mat4& transform, const RefPtr<Texture2D> texture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f));
 
 			static void DrawSprite(const glm::mat4& transform, const C_SpriteRenderer& src, uint32_t entityID);
+			static void DrawCircle(const glm::mat4& transform, const glm::vec4& color, float thickness = 1.0f, float fade = 0.005f, uint32_t entityID = 0);
+			
+			static void DrawEditorLine(const glm::vec3& p0, const glm::vec3& p1, const glm::vec4& color, float thickness = 1.0f);
+			static void DrawEditorRect(const glm::vec3& position, const glm::vec2& scale, const glm::vec4& color);
+			static void DrawEditorRect(const glm::mat4& transform, const glm::vec4& color);
+
+			static const float GetEditorLineThickness();
+			static void SetEditorLineThickness(float thickness);
 
 			struct Statistics {
 				uint32_t DrawCalls = 0;

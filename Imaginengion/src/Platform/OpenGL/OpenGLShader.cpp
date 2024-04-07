@@ -1,12 +1,14 @@
 #include "impch.h"
-#include "OpenGLShader.h"
+
+#ifdef IMAGINE_OPENGL
+#include "Renderer/Shader.h"
 
 #include <sstream>
 #include <glad/glad.h>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <shaderc/shaderc.hpp>
 #include <spirv_cross.hpp>
+#include <shaderc/shaderc.hpp>
 #include <spirv_glsl.hpp>
 
 namespace IM {
@@ -71,7 +73,7 @@ namespace IM {
 			return (shaderc_shader_kind)0;
 		}
 
-		static ShaderDataType SpirTypeToType(spirv_cross::SPIRType type) {
+		ShaderDataType SpirTypeToType(spirv_cross::SPIRType type) {
 			if (type.vecsize == 1 && type.columns == 1) {
 				if (type.basetype == spirv_cross::SPIRType::Float) {
 					return ShaderDataType::Float;
@@ -119,73 +121,56 @@ namespace IM {
 			IMAGINE_CORE_ASSERT(0, "Unknown spirv_cross::SPIRType in SpirTypeToType");
 			return ShaderDataType::None;
 		}
+
+		void Reflect(GLenum stage, const std::vector<uint32_t>& shaderData, std::string& filepath) {
+			spirv_cross::Compiler compiler(shaderData);
+			spirv_cross::ShaderResources resources = compiler.get_shader_resources();
+
+			IMAGINE_CORE_TRACE("OpenGLShader::Reflect - {} {}", GLShaderStageToString(stage), filepath);
+
+			IMAGINE_CORE_TRACE("Stage Inputs:");
+			for (const auto& resource : resources.stage_inputs) {
+				const auto& type = compiler.get_type(resource.base_type_id);
+				const std::string name = compiler.get_name(resource.id);
+			}
+			IMAGINE_CORE_TRACE("UniformBuffers:");
+			for (const auto& resource : resources.uniform_buffers) {
+				IMAGINE_CORE_TRACE("\t{}", resource.name);
+			}
+		}
+
+		void CompileOrGetOpenGLBinaries(std::string& filepath) {
+
+		}
+
+		void CreateProgram(std::string& filepath) {
+
+		}
+
+		std::unordered_map<GLenum, std::string> shaderSources;
+		std::unordered_map<GLenum, std::vector<uint32_t>> _VulkanSPIRV;
+		std::unordered_map<GLenum, std::vector<uint32_t>> _OpenGLSPIRV;
+		std::unordered_map<GLenum, std::string> _OpenGLSourceCode;
 	}
 
-
-	OpenGLShader::OpenGLShader(const std::string& filepath){
-
-		IMAGINE_PROFILE_FUNCTION();
-
-		_Filepath = filepath;
-
-		std::string source = ReadFile(filepath);
-		auto shaderSources = PreProcess(source);
-		CompileOrGetVulkanBinaries(shaderSources);
-		CompileOrGetOpenGLBinaries();
-		CreateProgram();
-
-		//extract name from filepath
-		std::filesystem::path path = filepath;
-		_Name = path.stem().string();
-	}
-	OpenGLShader::~OpenGLShader() {
-
+	Shader::~Shader() {
 		IMAGINE_PROFILE_FUNCTION();
 
 		glDeleteProgram(_ProgramID);
 	}
 
-	void OpenGLShader::Bind() const {
-
+	void Shader::Bind() const {
 		IMAGINE_PROFILE_FUNCTION();
 
 		glUseProgram(_ProgramID);
 	}
-	void OpenGLShader::Unbind() const {
+
+	void Shader::Unbind() const {
 		glUseProgram(0);
 	}
 
-	std::string OpenGLShader::ReadFile(const std::string& filepath) {
-
+	void Shader::PreProcess(std::string& source) {
 		IMAGINE_PROFILE_FUNCTION();
-
-		std::string result;
-		std::ifstream in(filepath, std::ios::in | std::ios::binary);
-		if (in) {
-			in.seekg(0, std::ios::end);
-
-			size_t size = in.tellg();
-			if (size != -1) {
-				result.resize(in.tellg());
-				in.seekg(0, std::ios::beg);
-				in.read(&result[0], result.size());
-				in.close();
-			}
-			else {
-				IMAGINE_CORE_ERROR("Could not read from file '{}'", filepath);
-			}
-		}
-		else {
-			IMAGINE_CORE_ERROR("Could not open file '{}' in OpenGLShader", filepath);
-		}
-		return result;
-	}
-
-	std::unordered_map<GLenum, std::string> OpenGLShader::PreProcess(std::string& source) {
-
-		IMAGINE_PROFILE_FUNCTION();
-
-		std::unordered_map<GLenum, std::string> shaderSources;
 
 		std::istringstream stream(source);
 		std::string line;
@@ -213,11 +198,9 @@ namespace IM {
 		if (!currentShaderType.empty() && !currentShaderSource.empty()) {
 			shaderSources[ShaderTypeFromStr(currentShaderType)] = currentShaderSource;
 		}
-		return shaderSources;
 	}
 
-	void OpenGLShader::CompileOrGetVulkanBinaries(const std::unordered_map<GLenum, std::string>& shaderSources)
-	{
+	void Shader::CompileOrGetVulkanBinaries() {
 		GLuint program = glCreateProgram();
 
 		shaderc::Compiler compiler;
@@ -264,14 +247,45 @@ namespace IM {
 				}
 			}
 		}
-		CreateBufferLayout(shaderData[GL_VERTEX_SHADER]);
-		for (auto&& [stage, data] : shaderData) {
-			Reflect(stage, data);
+	}
+
+	void Shader::CreateVertexBufferLayout() {
+		spirv_cross::Compiler compiler(_VulkanSPIRV[GL_VERTEX_SHADER]);
+		spirv_cross::ShaderResources resources = compiler.get_shader_resources();
+
+		std::sort(resources.stage_inputs.begin(), resources.stage_inputs.end(),
+			[&compiler](const spirv_cross::Resource& a, const spirv_cross::Resource& b) {
+				return compiler.get_decoration(a.id, spv::DecorationLocation) < compiler.get_decoration(b.id, spv::DecorationLocation);
+			});
+		for (const auto& resource : resources.stage_inputs) {
+			const auto& type = compiler.get_type(resource.base_type_id);
+			const std::string name = compiler.get_name(resource.id);
+			_VertexBufferElements.emplace_back(SpirTypeToType(type), name);
+		}
+		CalculateVertexBufferOffsets();
+		CalculateVertexBufferStride();
+		GL_MAX_ELEMENTS_INDICES;
+	}
+	void Shader::Reflect() {
+		for (auto&& [stage, data] : _VulkanSPIRV) {
+			spirv_cross::Compiler compiler(data);
+			spirv_cross::ShaderResources resources = compiler.get_shader_resources();
+
+			IMAGINE_CORE_TRACE("OpenGLShader::Reflect - {} {}", GLShaderStageToString(stage), _Filepath);
+
+			IMAGINE_CORE_TRACE("Stage Inputs:");
+			for (const auto& resource : resources.stage_inputs) {
+				const auto& type = compiler.get_type(resource.base_type_id);
+				const std::string name = compiler.get_name(resource.id);
+			}
+			IMAGINE_CORE_TRACE("UniformBuffers:");
+			for (const auto& resource : resources.uniform_buffers) {
+				IMAGINE_CORE_TRACE("\t{}", resource.name);
+			}
 		}
 	}
 
-	void OpenGLShader::CompileOrGetOpenGLBinaries()
-	{
+	void Shader::CompileOrGetRenderPlatformBinaries() {
 		auto& shaderData = _OpenGLSPIRV;
 
 		shaderc::Compiler compiler;
@@ -289,7 +303,7 @@ namespace IM {
 		for (auto&& [stage, spirv] : _VulkanSPIRV) {
 			std::filesystem::path shaderFilePath = _Filepath;
 			std::filesystem::path cachedPath = cacheDirectory / (shaderFilePath.filename().string() + GLShaderStageCachedOpenGLFileExtension(stage));
-			
+
 			std::ifstream in(cachedPath, std::ios::in | std::ios::binary);
 			if (in.is_open()) {
 				in.seekg(0, std::ios::end);
@@ -321,11 +335,9 @@ namespace IM {
 				}
 			}
 		}
-
 	}
 
-	void OpenGLShader::CreateProgram()
-	{
+	void Shader::CreateProgram() {
 		GLuint program = glCreateProgram();
 		std::vector<GLuint> shaderIDs;
 		for (auto&& [stage, spirv] : _OpenGLSPIRV) {
@@ -355,77 +367,42 @@ namespace IM {
 		_ProgramID = program;
 	}
 
-	void OpenGLShader::CreateBufferLayout(std::vector<uint32_t>& shaderData) {
-		spirv_cross::Compiler compiler(shaderData);
-		spirv_cross::ShaderResources resources = compiler.get_shader_resources();
-
-		std::sort(resources.stage_inputs.begin(), resources.stage_inputs.end(),
-			[&compiler](const spirv_cross::Resource& a, const spirv_cross::Resource& b) {
-				return compiler.get_decoration(a.id, spv::DecorationLocation) < compiler.get_decoration(b.id, spv::DecorationLocation);
-			});
-		for (const auto& resource : resources.stage_inputs) {
-			const auto& type = compiler.get_type(resource.base_type_id);
-			const std::string name = compiler.get_name(resource.id);
-			_BufferElements.emplace_back(SpirTypeToType(type), name);
-		}
-
-		CalculateOffsets();
-		CalculateStride();
-	}
-
-	void OpenGLShader::Reflect(GLenum stage, const std::vector<uint32_t>& shaderData)
-	{
-		spirv_cross::Compiler compiler(shaderData);
-		spirv_cross::ShaderResources resources = compiler.get_shader_resources();
-
-		IMAGINE_CORE_TRACE("OpenGLShader::Reflect - {} {}", GLShaderStageToString(stage), _Filepath);
-
-		IMAGINE_CORE_TRACE("Stage Inputs:");
-		for (const auto& resource : resources.stage_inputs) {
-			const auto& type = compiler.get_type(resource.base_type_id);
-			const std::string name = compiler.get_name(resource.id);
-		}
-		IMAGINE_CORE_TRACE("UniformBuffers:");
-		for (const auto& resource : resources.uniform_buffers) {
-			IMAGINE_CORE_TRACE("\t{}", resource.name);
-		}
-	}
-
-	void OpenGLShader::SetValue(const std::string& name, bool value) {
+	void Shader::SetValue(const std::string& name, bool value) {
 		IMAGINE_CORE_ASSERT(_Uniforms.contains(name), "Cannot find union with the given name in OpenGLShader::Setbool");
 		glUniform1i(_Uniforms[name], (int)value);
 	}
-	void OpenGLShader::SetValue(const std::string& name, int value) {
+	void Shader::SetValue(const std::string& name, int value) {
 		IMAGINE_CORE_ASSERT(_Uniforms.contains(name), "Cannot find union with the given name in OpenGLShader::SetInt");
 		glUniform1i(_Uniforms[name], value);
 	}
-	void OpenGLShader::SetValue(const std::string& name, int* values, uint32_t count)
+	void Shader::SetValue(const std::string& name, int* values, uint32_t count)
 	{
 		IMAGINE_CORE_ASSERT(_Uniforms.contains(name), "Cannot find union with the given name in OpenGLShader::SetIntArray");
 		glUniform1iv(_Uniforms[name], count, values);
 	}
-	void OpenGLShader::SetValue(const std::string& name, float value) {
+	void Shader::SetValue(const std::string& name, float value) {
 		IMAGINE_CORE_ASSERT(_Uniforms.contains(name), "Cannot find union with the given name in OpenGLShader::SetFloat");
 		glUniform1f(_Uniforms[name], value);
 	}
-	void OpenGLShader::SetValue(const std::string& name, glm::vec2 value) {
+	void Shader::SetValue(const std::string& name, glm::vec2 value) {
 		IMAGINE_CORE_ASSERT(_Uniforms.contains(name), "Cannot find union with the given name in OpenGLShader::SetVec2");
 		glUniform2f(_Uniforms[name], value.x, value.y);
 	}
-	void OpenGLShader::SetValue(const std::string& name, glm::vec3 value) {
+	void Shader::SetValue(const std::string& name, glm::vec3 value) {
 		IMAGINE_CORE_ASSERT(_Uniforms.contains(name), "Cannot find union with the given name in OpenGLShader::SetVec3");
 		glUniform3f(_Uniforms[name], value.x, value.y, value.z);
 	}
-	void OpenGLShader::SetValue(const std::string& name, glm::vec4 value) {
+	void Shader::SetValue(const std::string& name, glm::vec4 value) {
 		IMAGINE_CORE_ASSERT(_Uniforms.contains(name), "Cannot find union with the given name in OpenGLShader::SetVec4");
 		glUniform4f(_Uniforms[name], value.x, value.y, value.z, value.w);
 	}
-	void OpenGLShader::SetValue(const std::string& name, glm::mat3 value) {
+	void Shader::SetValue(const std::string& name, glm::mat3 value) {
 		IMAGINE_CORE_ASSERT(_Uniforms.contains(name), "Cannot find union with the given name in OpenGLShader::SetMat3");
 		glUniformMatrix3fv(_Uniforms[name], 1, GL_FALSE, glm::value_ptr(value));
 	}
-	void OpenGLShader::SetValue(const std::string& name, glm::mat4 value) {
+	void Shader::SetValue(const std::string& name, glm::mat4 value) {
 		IMAGINE_CORE_ASSERT(_Uniforms.contains(name), "Cannot find union with the given name in OpenGLShader::SetMat4");
 		glUniformMatrix4fv(_Uniforms[name], 1, GL_FALSE, glm::value_ptr(value));
 	}
 }
+#endif

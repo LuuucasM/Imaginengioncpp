@@ -14,7 +14,7 @@ namespace IM {
 
 		void SetData(const void* data, size_t size);
 
-		void SetLayout(const std::vector<BufferElement>& layout) {
+		void SetLayout(const std::vector<VertexBufferElement>& layout) {
 			_Layout = layout;
 		}
 
@@ -22,7 +22,7 @@ namespace IM {
 			_Stride = stride;
 		}
 
-		const std::vector<BufferElement>& GetLayout() {
+		const std::vector<VertexBufferElement>& GetLayout() {
 			return _Layout;
 		}
 		const uint32_t GetStride() {
@@ -38,7 +38,7 @@ namespace IM {
 		
 	protected:
 		uint32_t _BufferID;
-		std::vector<BufferElement> _Layout;
+		std::vector<VertexBufferElement> _Layout;
 		uint32_t _Stride;
 	};
 }

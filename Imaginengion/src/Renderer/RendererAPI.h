@@ -20,6 +20,8 @@ namespace IM {
 		void Clear();
 
 		void DrawIndexed(const RefPtr<VertexArray>& vertexArray, uint32_t indexCount = 0);
+		void DrawLines(const RefPtr<VertexArray>& vertexArray, uint32_t vertexCount);
+		void SetEditorLineThickness(float thickness);
 
 		static API GetCurrentAPI() { return _API; }
 		static ScopePtr<RendererAPI> Create() {

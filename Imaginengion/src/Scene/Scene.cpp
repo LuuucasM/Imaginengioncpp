@@ -179,10 +179,21 @@ namespace IM {
 		if (mainCamera) {
 			//RENDER SYSTEM
 			Renderer::R2D::BeginScene(*mainCamera, *cameraTransform);
-			auto& group = _ECSManager.GetGroup<C_Transform, C_SpriteRenderer>();
-			for (auto entity : group) {
-				auto [transform, sprite] = _ECSManager.GetComponents<C_Transform, C_SpriteRenderer>(entity);
-				Renderer::R2D::DrawSprite(transform.GetTransform(), sprite, entity);
+
+			{
+				auto& group = _ECSManager.GetGroup<C_Transform, C_SpriteRenderer>();
+				for (auto entity : group) {
+					auto [transform, sprite] = _ECSManager.GetComponents<C_Transform, C_SpriteRenderer>(entity);
+					Renderer::R2D::DrawSprite(transform.GetTransform(), sprite, entity);
+				}
+			}
+
+			{
+				auto& group = _ECSManager.GetGroup<C_Transform, C_CircleRenderer>();
+				for (auto entity : group) {
+					auto [transform, circle] = _ECSManager.GetComponents<C_Transform, C_CircleRenderer>(entity);
+					Renderer::R2D::DrawCircle(transform.GetTransform(), circle.Color, circle.Thickness, circle.Fade, entity);
+				}
 			}
 			Renderer::R2D::EndScene();
 		}
@@ -192,10 +203,20 @@ namespace IM {
 		_FPS = 1.0f / dt;
 		//RENDER SYSTEM
 		Renderer::R2D::BeginScene(camera);
-		auto& group = _ECSManager.GetGroup<C_Transform, C_SpriteRenderer>();
-		for (auto entity : group) {
-			auto [transform, sprite] = _ECSManager.GetComponents<C_Transform, C_SpriteRenderer>(entity);
-			Renderer::R2D::DrawSprite(transform.GetTransform(), sprite, entity);
+		{
+			auto& group = _ECSManager.GetGroup<C_Transform, C_SpriteRenderer>();
+			for (auto entity : group) {
+				auto [transform, sprite] = _ECSManager.GetComponents<C_Transform, C_SpriteRenderer>(entity);
+				Renderer::R2D::DrawSprite(transform.GetTransform(), sprite, entity);
+			}
+		}
+
+		{
+			auto& group = _ECSManager.GetGroup<C_Transform, C_CircleRenderer>();
+			for (auto entity : group) {
+				auto [transform, circle] = _ECSManager.GetComponents<C_Transform, C_CircleRenderer>(entity);
+				Renderer::R2D::DrawCircle(transform.GetTransform(), circle.Color, circle.Thickness, circle.Fade, entity);
+			}
 		}
 		Renderer::R2D::EndScene();
 	}

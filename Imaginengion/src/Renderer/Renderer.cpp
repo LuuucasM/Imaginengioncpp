@@ -61,6 +61,22 @@ namespace IM {
 		uint32_t EntityID;
 	};
 
+	struct CircleVertex {
+		glm::vec3 Position;
+		glm::vec3 LocalPosition;
+		glm::vec4 Color;
+		float Thickness;
+		float Fade;
+		// TODO: maskid
+		//Editor only
+		uint32_t EntityID;
+	};
+
+	struct EditorLineVertex { //to be used for editor and debug not production
+		glm::vec3 Position;
+		glm::vec4 Color;
+	};
+
 	struct Renderer2DData {
 
 		static const uint32_t MaxRect = 10000; //TODO: MAKE CLASS RENDERER CAPABILITIES
@@ -68,19 +84,39 @@ namespace IM {
 		static const uint32_t MaxIndices = MaxRect * 6;
 		static const uint32_t MaxTextureSlots = 32; //TODO: MAKE CLASS RENDERER CAPABILITIES
 
-		RefPtr<VertexArray> _VertexArray;
-		RefPtr<VertexBuffer> _VertexBuffer;
-		RefPtr<Shader> _TextureShader;
+		RefPtr<VertexArray> _SpriteVertexArray;
+		RefPtr<VertexBuffer> _SpriteVertexBuffer;
+		RefPtr<Shader> _SpriteShader;
+
+		RefPtr<VertexArray> _CircleVertexArray;
+		RefPtr<VertexBuffer> _CircleVertexBuffer;
+		RefPtr<Shader> _CircleShader;
+
+		RefPtr<VertexArray> _EditorLineVertexArray;
+		RefPtr<VertexBuffer> _EditorLineVertexBuffer;
+		RefPtr<Shader> _EditorLineShader;
+
 		RefPtr<Texture2D> _WhiteTexture;
 
 		uint32_t RectIndexCount = 0;
 		RectVertex* RectVertexBufferBase = nullptr;
 		RectVertex* RectVertexBufferPtr = nullptr;
 
+		uint32_t CircleIndexCount = 0;
+		CircleVertex* CircleVertexBufferBase = nullptr;
+		CircleVertex* CircleVertexBufferPtr = nullptr;
+
+		uint32_t EditorLineVertexCount = 0;
+		EditorLineVertex* EditorLineVertexBufferBase = nullptr;
+		EditorLineVertex* EditorLineVertexBufferPtr = nullptr;
+
+		float EditorLineThickness = 2.0f;
+
 		std::array<RefPtr<Texture2D>, MaxTextureSlots> TextureSlots;
 		uint32_t TextureSlotIndex = 1; // texture slot 0 == white texture
 
 		glm::vec4 RectVertexPositions[4];
+		glm::vec4 CircleVertexPositions[4];
 
 		Renderer::R2D::Statistics Stats;
 
@@ -97,29 +133,20 @@ namespace IM {
 
 		IMAGINE_PROFILE_FUNCTION();
 
-		_Data._VertexArray = VertexArray::Create();
+		_Data._SpriteVertexArray = VertexArray::Create();
+		_Data._CircleVertexArray = VertexArray::Create();
+		_Data._EditorLineVertexArray = VertexArray::Create();
 
-		//_Data._Texture Shader = Shader::Create(filepath)
-		//_Data.VertexBuffer->VertexBuffer::Create(blah)
-		//_Data._VertexBuffer->SetLayout(Shader.GetLayout);
+		_Data._SpriteShader = Shader::Create("assets/shaders/Render2D_Sprite.glsl");
+		_Data._CircleShader = Shader::Create("assets/shaders/Render2D_Circle.glsl");
+		_Data._EditorLineShader = Shader::Create("assets/shaders/Render2D_EditorLine.glsl");
 
 		int samplers[_Data.MaxTextureSlots];
 		for (uint32_t i = 0; i < _Data.MaxTextureSlots; i++) {
 			samplers[i] = i;
 		}
 
-		_Data._TextureShader = Shader::Create("assets/shaders/Texture.glsl");
-
-		_Data._VertexBuffer = VertexBuffer::Create(_Data.MaxVerticies * sizeof(RectVertex));
-		_Data._VertexBuffer->SetLayout(_Data._TextureShader->GetLayout());
-		_Data._VertexBuffer->SetStride(_Data._TextureShader->GetStride());
-
-		_Data._VertexArray->AddVertexBuffer(_Data._VertexBuffer);
-
-		_Data.RectVertexBufferBase = new RectVertex[_Data.MaxVerticies];
-
 		uint32_t* rectIndices = new uint32_t[_Data.MaxIndices];
-
 		uint32_t offset = 0;
 		for (uint32_t i = 0; i < _Data.MaxIndices; i += 6) {
 			rectIndices[i + 0] = offset + 0;
@@ -132,12 +159,44 @@ namespace IM {
 
 			offset += 4;
 		}
-
-
 		RefPtr<IndexBuffer> rectIB = IndexBuffer::Create(rectIndices, _Data.MaxIndices);
-		_Data._VertexArray->SetIndexBuffer(rectIB);
+
+		//sprite stuff
+		_Data._SpriteVertexBuffer = VertexBuffer::Create(_Data.MaxVerticies * sizeof(RectVertex));
+		_Data._SpriteVertexBuffer->SetLayout(_Data._SpriteShader->GetLayout());
+		_Data._SpriteVertexBuffer->SetStride(_Data._SpriteShader->GetStride());
+
+		_Data._SpriteVertexArray->AddVertexBuffer(_Data._SpriteVertexBuffer);
+		
+		_Data._SpriteVertexArray->SetIndexBuffer(rectIB);
+
+		_Data.RectVertexBufferBase = new RectVertex[_Data.MaxVerticies];
+
+		//circle stuff
+		_Data._CircleVertexBuffer = VertexBuffer::Create(_Data.MaxVerticies * sizeof(CircleVertex));
+		_Data._CircleVertexBuffer->SetStride(_Data._CircleShader->GetStride());
+		_Data._CircleVertexBuffer->SetLayout(_Data._CircleShader->GetLayout());
+
+		_Data._CircleVertexArray->AddVertexBuffer(_Data._CircleVertexBuffer);
+
+		_Data._CircleVertexArray->SetIndexBuffer(rectIB); //use rectIB
+
+		_Data.CircleVertexBufferBase = new CircleVertex[_Data.MaxVerticies];
+
+
+		_Data._EditorLineVertexBuffer = VertexBuffer::Create(_Data.MaxVerticies * sizeof(EditorLineVertex));
+		_Data._EditorLineVertexBuffer->SetStride(_Data._EditorLineShader->GetStride());
+		_Data._EditorLineVertexBuffer->SetLayout(_Data._EditorLineShader->GetLayout());
+
+		_Data._EditorLineVertexArray->AddVertexBuffer(_Data._EditorLineVertexBuffer);
+
+		_Data._EditorLineVertexArray->SetIndexBuffer(rectIB); //use rectIB
+
+		_Data.EditorLineVertexBufferBase = new EditorLineVertex[_Data.MaxVerticies];
+
 		delete[] rectIndices;
 
+		//white texture
 		_Data._WhiteTexture = Texture2D::Create(1, 1);
 		uint32_t whiteTextureData = 0;
 		whiteTextureData = ~whiteTextureData;
@@ -161,8 +220,8 @@ namespace IM {
 	{
 		IMAGINE_PROFILE_FUNCTION();
 
-		_Data._TextureShader->Bind();
-		_Data._TextureShader->SetValue("u_ViewProjection", camera.GetViewProjectionMatrix());
+		_Data._SpriteShader->Bind();
+		_Data._SpriteShader->SetValue("u_ViewProjection", camera.GetViewProjectionMatrix());
 
 		StartBatch();
 
@@ -187,19 +246,24 @@ namespace IM {
 	}
 	void Renderer::R2D::EndScene()
 	{
-		//nothing right now :)
 		IMAGINE_PROFILE_FUNCTION();
 
 		__int64 dataSize = (uint8_t*)_Data.RectVertexBufferPtr - (uint8_t*)_Data.RectVertexBufferBase;
-		_Data._VertexBuffer->SetData(_Data.RectVertexBufferBase, dataSize);
+		_Data._SpriteVertexBuffer->SetData(_Data.RectVertexBufferBase, dataSize);
 
 		FlushScene();
 	}
 
 	void Renderer::R2D::StartBatch() {
-		_Data.RectIndexCount = 0;
 
+		_Data.RectIndexCount = 0;
 		_Data.RectVertexBufferPtr = _Data.RectVertexBufferBase;
+
+		_Data.CircleIndexCount = 0;
+		_Data.CircleVertexBufferPtr = _Data.CircleVertexBufferBase;
+
+		_Data.EditorLineVertexCount = 0;
+		_Data.EditorLineVertexBufferPtr = _Data.EditorLineVertexBufferBase;
 
 		_Data.TextureSlotIndex = 1;
 	}
@@ -210,21 +274,38 @@ namespace IM {
 	}
 	void Renderer::R2D::FlushScene()
 	{
-		if (_Data.RectIndexCount == 0) {
-			return;
+		if (_Data.RectIndexCount) {
+			uint32_t dataSize = (uint32_t)((uint8_t*)_Data.RectVertexBufferPtr - (uint8_t*)_Data.RectVertexBufferBase);
+			_Data._SpriteVertexBuffer->SetData(_Data.RectVertexBufferBase, dataSize);
+
+			//Bind Textures;
+			for (uint32_t i = 0; i < _Data.TextureSlotIndex; i++) {
+				_Data.TextureSlots[i]->Bind(i);
+			}
+
+			_Data._SpriteShader->Bind();
+			RenderCommand::DrawIndexed(_Data._SpriteVertexArray, _Data.RectIndexCount);
+			++_Data.Stats.DrawCalls;
 		}
 
-		uint32_t dataSize = (uint32_t)((uint8_t*)_Data.RectVertexBufferPtr - (uint8_t*)_Data.RectVertexBufferBase);
-		_Data._VertexBuffer->SetData(_Data.RectVertexBufferBase, dataSize);
+		if (_Data.CircleIndexCount) {
+			uint32_t dataSize = (uint32_t)((uint8_t*)_Data.CircleVertexBufferPtr - (uint8_t*)_Data.CircleVertexBufferBase);
+			_Data._CircleVertexBuffer->SetData(_Data.CircleVertexBufferBase, dataSize);
 
-		//Bind Textures;
-		for (uint32_t i = 0; i < _Data.TextureSlotIndex; i++){
-			_Data.TextureSlots[i]->Bind(i);
+			_Data._CircleShader->Bind();
+			RenderCommand::DrawIndexed(_Data._CircleVertexArray, _Data.CircleIndexCount);
+			++_Data.Stats.DrawCalls;
 		}
 
-		_Data._TextureShader->Bind();
-		RenderCommand::DrawIndexed(_Data._VertexArray, _Data.RectIndexCount);
-		++_Data.Stats.DrawCalls;
+		if (_Data.EditorLineVertexCount) {
+			uint32_t dataSize = (uint32_t)((uint8_t*)_Data.EditorLineVertexBufferPtr - (uint8_t*)_Data.EditorLineVertexBufferBase);
+			_Data._EditorLineVertexBuffer->SetData(_Data.EditorLineVertexBufferBase, dataSize);
+
+			_Data._EditorLineShader->Bind();
+			RenderCommand::SetEditorLineThickness(_Data.EditorLineThickness);
+			RenderCommand::DrawLines(_Data._EditorLineVertexArray, _Data.EditorLineVertexCount);
+			++_Data.Stats.DrawCalls;
+		}
 	}
 
 	void Renderer::R2D::DrawRect(const glm::vec2& position, const glm::vec2& scale, const glm::vec4& color)
@@ -648,6 +729,69 @@ namespace IM {
 		_Data.Stats.RectCount++;
 	}
 
+	void Renderer::R2D::DrawCircle(const glm::mat4& transform, const glm::vec4& color, float thickness, float fade, uint32_t entityID)
+	{
+		IMAGINE_PROFILE_FUNCTION();
+
+		//TODO: IMPLMENENT FOR CIRCLES
+		//if (_Data.RectIndexCount + 6 > Renderer2DData::MaxIndices) {
+		//	NextBatch();
+		//}
+		for (size_t i = 0; i < 4; ++i) {
+			_Data.CircleVertexBufferPtr->Position = transform * _Data.RectVertexPositions[i];
+			_Data.CircleVertexBufferPtr->LocalPosition = _Data.RectVertexPositions[i] * 2.0f;
+			_Data.CircleVertexBufferPtr->Color = color;
+			_Data.CircleVertexBufferPtr->Thickness = thickness;
+			_Data.CircleVertexBufferPtr->Fade = fade;
+			_Data.CircleVertexBufferPtr->EntityID = entityID;
+			_Data.CircleVertexBufferPtr++;
+		}
+
+		_Data.CircleIndexCount += 6;
+
+		//TODO: seperate rect count and circle count
+		_Data.Stats.RectCount++;
+	}
+
+	void Renderer::R2D::DrawEditorLine(const glm::vec3& p0, const glm::vec3& p1, const glm::vec4& color, float thickness)
+	{
+		_Data.EditorLineVertexBufferPtr->Position = p0;
+		_Data.EditorLineVertexBufferPtr->Color = color;
+		_Data.EditorLineVertexBufferPtr++;
+
+		_Data.EditorLineVertexBufferPtr->Position = p1;
+		_Data.EditorLineVertexBufferPtr->Color = color;
+		_Data.EditorLineVertexBufferPtr++;
+
+		_Data.EditorLineVertexCount += 2;
+	}
+
+	void Renderer::R2D::DrawEditorRect(const glm::vec3& position, const glm::vec2& scale, const glm::vec4& color)
+	{
+		glm::vec3 p0 = glm::vec3(position.x - scale.x * 0.5f, position.y - scale.y * 0.5f, position.z);
+		glm::vec3 p1 = glm::vec3(position.x + scale.x * 0.5f, position.y - scale.y * 0.5f, position.z);
+		glm::vec3 p2 = glm::vec3(position.x + scale.x * 0.5f, position.y + scale.y * 0.5f, position.z);
+		glm::vec3 p3 = glm::vec3(position.x - scale.x * 0.5f, position.y + scale.y * 0.5f, position.z);
+
+		DrawEditorLine(p0, p1, color);
+		DrawEditorLine(p1, p2, color);
+		DrawEditorLine(p2, p3, color);
+		DrawEditorLine(p3, p0, color);
+	}
+
+	void Renderer::R2D::DrawEditorRect(const glm::mat4& transform, const glm::vec4& color)
+	{
+		glm::vec3 lineVertices[4];
+		for (size_t i = 0; i < 4; ++i) {
+			lineVertices[i] = transform * _Data.RectVertexPositions[i];
+		}
+
+		DrawEditorLine(lineVertices[0], lineVertices[1], color);
+		DrawEditorLine(lineVertices[1], lineVertices[2], color);
+		DrawEditorLine(lineVertices[2], lineVertices[3], color);
+		DrawEditorLine(lineVertices[3], lineVertices[0], color);
+	}
+
 	void Renderer::R2D::DrawSprite(const glm::mat4& transform, const C_SpriteRenderer& src, uint32_t entityID)
 	{
 		if (src.Texture) {
@@ -656,6 +800,16 @@ namespace IM {
 		else {
 			DrawRect(transform, src.Color, entityID);
 		}
+	}
+
+	const float Renderer::R2D::GetEditorLineThickness()
+	{
+		return _Data.EditorLineThickness;
+	}
+
+	void Renderer::R2D::SetEditorLineThickness(float thickness)
+	{
+		_Data.EditorLineThickness = thickness;
 	}
 
 	Renderer::R2D::Statistics Renderer::R2D::GetStats() {

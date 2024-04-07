@@ -19,8 +19,15 @@ namespace IM {
 		static void Clear() {
 			_RendererAPI->Clear();
 		}
-		static void DrawIndexed(const RefPtr<VertexArray>& vertexArray, uint32_t count = 0) {
-			_RendererAPI->DrawIndexed(vertexArray, count);
+		static void DrawIndexed(const RefPtr<VertexArray>& vertexArray, uint32_t indexCount = 0) {
+			_RendererAPI->DrawIndexed(vertexArray, indexCount);
+		}
+		static void DrawLines(const RefPtr<VertexArray>& vertexArray, uint32_t vertexCount) {
+			_RendererAPI->DrawLines(vertexArray, vertexCount);
+		}
+
+		static void SetEditorLineThickness(float thickness) {
+			_RendererAPI->SetEditorLineThickness(thickness);
 		}
 	private:
 		static ScopePtr<RendererAPI> _RendererAPI;

@@ -186,7 +186,6 @@ namespace IM {
 			out << YAML::BeginMap;
 			auto& circleRenderer = entity.GetComponent<C_CircleRenderer>();
 			out << YAML::Key << "Color" << YAML::Value << circleRenderer.Color;
-			out << YAML::Key << "Radius" << YAML::Value << circleRenderer.Radius;
 			out << YAML::Key << "Thickness" << YAML::Value << circleRenderer.Thickness;
 			out << YAML::Key << "Fade" << YAML::Value << circleRenderer.Fade;
 			out << YAML::EndMap;
@@ -305,7 +304,6 @@ namespace IM {
 				if (circleRendererComponent) {
 					auto& src = e.AddComponent<C_CircleRenderer>();
 					src.Color = circleRendererComponent["Color"].as<glm::vec4>();
-					src.Radius = circleRendererComponent["Radius"].as<float>();
 					src.Thickness = circleRendererComponent["Thickness"].as<float>();
 					src.Fade = circleRendererComponent["Fade"].as<float>();
 				}

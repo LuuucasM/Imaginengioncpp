@@ -65,16 +65,16 @@ namespace IM {
 		{"bool", ShaderDataType::Int}
 	};
 
-	struct BufferElement {
+	struct VertexBufferElement {
 		std::string Name;
 		ShaderDataType Type;
 		uint32_t Offset;
 		uint32_t Size;
 		bool bNormalized;
 
-		BufferElement() = default;
+		VertexBufferElement() = default;
 
-		BufferElement(ShaderDataType type, const std::string& name, bool normalized = false)
+		VertexBufferElement(ShaderDataType type, const std::string& name, bool normalized = false)
 			: Name(name), Type(type), Size(ShaderDataTypeSize(type)), Offset(0), bNormalized(normalized) {
 
 		}
@@ -98,56 +98,70 @@ namespace IM {
 			return 0;
 		}
 	};
+
 	class Shader {
 	public:
-		virtual ~Shader() = default;
+		Shader(const std::string& filepath);
+		~Shader();
 
-		virtual void Bind() const = 0;
-		virtual void Unbind() const = 0;
+		void Bind() const;
+		void Unbind() const;
 
-		const std::vector<BufferElement>& GetLayout() {
-			return _BufferElements;
+		const std::vector<VertexBufferElement>& GetLayout() {
+			return _VertexBufferElements;
 		}
 
 		const uint32_t GetStride() {
-			return _BufferStride;
+			return _VertexBufferStride;
 		}
 
-		virtual void SetValue(const std::string& name, bool value) = 0;
-		virtual void SetValue(const std::string& name, int value) = 0;
-		virtual void SetValue(const std::string& name, int* values, uint32_t count) = 0;
-		virtual void SetValue(const std::string& name, float value) = 0;
-		virtual void SetValue(const std::string& name, glm::vec2 value) = 0;
-		virtual void SetValue(const std::string& name, glm::vec3 value) = 0;
-		virtual void SetValue(const std::string& name, glm::vec4 value) = 0;
-		virtual void SetValue(const std::string& name, glm::mat3 value) = 0;
-		virtual void SetValue(const std::string& name, glm::mat4 value) = 0;
+		void SetValue(const std::string& name, bool value);
+		void SetValue(const std::string& name, int value);
+		void SetValue(const std::string& name, int* values, uint32_t count);
+		void SetValue(const std::string& name, float value);
+		void SetValue(const std::string& name, glm::vec2 value);
+		void SetValue(const std::string& name, glm::vec3 value);
+		void SetValue(const std::string& name, glm::vec4 value);
+		void SetValue(const std::string& name, glm::mat3 value);
+		void SetValue(const std::string& name, glm::mat4 value);
 
-		virtual const std::string& GetName() const { return _Name; }
+		const std::string& GetName() const { return _Name; }
 
-		static RefPtr<Shader> Create(const std::string& filepath);
-	protected:
-		uint32_t _ProgramID = 0;
-		std::string _Filepath;
-		std::string _Name;
+		static RefPtr<Shader> Create(const std::string& filepath) {
+			return CreateRefPtr<Shader>(filepath);
+		}
+	private:
+		std::string ReadFile(const std::string& filepath);
+		void PreProcess(std::string& source);//Preprocess
+		void CompileOrGetVulkanBinaries();//CompileOrGetVulkanBinaries
+		void CreateVertexBufferLayout();//CreateBufferLayout
+		void Reflect();//Reflect
+		void CompileOrGetRenderPlatformBinaries();//CompileOrGetOpenGLBinaries
+		void CreateProgram();//CreateProgram
 
-		void CalculateOffsets() {
+		void CalculateVertexBufferOffsets() {
 			uint32_t offset = 0;
-			for (auto& element : _BufferElements) {
+			for (auto& element : _VertexBufferElements) {
 				element.Offset = offset;
 				offset += element.Size;
 			}
 		}
-
-		void CalculateStride() {
-			_BufferStride = 0;
-			for (auto& element : _BufferElements) {
-				_BufferStride += element.Size;
+		void CalculateVertexBufferStride() {
+			_VertexBufferStride = 0;
+			for (auto& element : _VertexBufferElements) {
+				_VertexBufferStride += element.Size;
 			}
 		}
-
-		std::vector<BufferElement> _BufferElements;
+	private:
+		std::string _Filepath;
+		std::string _Name;
+		uint32_t _ProgramID = 0;
+		
 		std::unordered_map<std::string, int> _Uniforms;
-		uint32_t _BufferStride = 0;
+
+		std::vector<VertexBufferElement> _VertexBufferElements;
+		uint32_t _VertexBufferStride = 0;
+		
+		
 	};
 }

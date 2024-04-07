@@ -42,7 +42,7 @@ Entities:
       Name: flooor
     Transform Component:
       Translation: [0, -1.58000004, 0]
-      Rotation: [0, 0, 0]
+      Rotation: [0, 0, -0.152716309]
       Scale: [12.6199999, 1, 1]
     Sprite Renderer Component:
       Color: [1, 1, 1, 1]
