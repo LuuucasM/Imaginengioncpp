@@ -13,6 +13,8 @@
 
 #include "Log.h"
 
+#include "Profiler/CPUProfiler.h"
+
 int main(int argc, char** argv);
 
 namespace IM {
@@ -87,6 +89,7 @@ namespace IM {
 		friend int ::main(int argc, char** argv);
 
 		TimeStep _Timestep;
+		CPUProfiler _CPUProfiler;
 	};
 
 	//to be defined in client

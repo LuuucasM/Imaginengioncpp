@@ -119,11 +119,11 @@ namespace IM {
 		void SetValue(const std::string& name, int value);
 		void SetValue(const std::string& name, int* values, uint32_t count);
 		void SetValue(const std::string& name, float value);
-		void SetValue(const std::string& name, glm::vec2 value);
-		void SetValue(const std::string& name, glm::vec3 value);
-		void SetValue(const std::string& name, glm::vec4 value);
-		void SetValue(const std::string& name, glm::mat3 value);
-		void SetValue(const std::string& name, glm::mat4 value);
+		void SetValue(const std::string& name, glm::vec2& value);
+		void SetValue(const std::string& name, glm::vec3& value);
+		void SetValue(const std::string& name, glm::vec4& value);
+		void SetValue(const std::string& name, glm::mat3& value);
+		void SetValue(const std::string& name, const glm::mat4& value);
 
 		const std::string& GetName() const { return _Name; }
 

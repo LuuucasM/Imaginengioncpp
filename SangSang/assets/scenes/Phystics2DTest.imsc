@@ -4,7 +4,7 @@ Entities:
     Name Component:
       Name: What
     Transform Component:
-      Translation: [0, 1.79999995, 0]
+      Translation: [-0.286608934, 2.99421382, 0]
       Rotation: [0, -0, 0.357334316]
       Scale: [0.999999821, 0.999999821, 1]
     Sprite Renderer Component:
@@ -12,7 +12,7 @@ Entities:
     Rigid Body 2D:
       BodyType: Dynamic
       FixedRotation: false
-    Collider 2D:
+    RectCollider 2D:
       Offset: [0, 0]
       Size: [0.5, 0.5]
       Density: 1
@@ -41,17 +41,57 @@ Entities:
     Name Component:
       Name: flooor
     Transform Component:
-      Translation: [0, -1.58000004, 0]
-      Rotation: [0, 0, -0.152716309]
-      Scale: [12.6199999, 1, 1]
+      Translation: [-9.72572209e-08, -1.58000004, 0]
+      Rotation: [0, -0, -0.684332728]
+      Scale: [12.6199999, 0.999999821, 1]
     Sprite Renderer Component:
       Color: [1, 1, 1, 1]
     Rigid Body 2D:
       BodyType: Static
       FixedRotation: false
-    Collider 2D:
+    RectCollider 2D:
       Offset: [0, 0]
       Size: [0.5, 0.5]
+      Density: 1
+      Friction: 0.5
+      Restitution: 0
+      RestitutionThreshold: 0.5
+  - Entity: 7856825805028784989
+    Name Component:
+      Name: flooor
+    Transform Component:
+      Translation: [6.12395144, -0.98960197, 0]
+      Rotation: [0, -0, 0.676163137]
+      Scale: [12.6199942, 0.999999881, 1]
+    Sprite Renderer Component:
+      Color: [1, 1, 1, 1]
+    Rigid Body 2D:
+      BodyType: Static
+      FixedRotation: false
+    RectCollider 2D:
+      Offset: [0, 0]
+      Size: [0.5, 0.5]
+      Density: 1
+      Friction: 0.5
+      Restitution: 0
+      RestitutionThreshold: 0.5
+  - Entity: 13506387448088247813
+    Name Component:
+      Name: Circle
+    Transform Component:
+      Translation: [-0.253881216, 1.48448133, 6.10348361e-05]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    Circle Renderer Component:
+      Color: [0.856540084, 0.195161045, 0.195161045, 1]
+      Thickness: 0.224999994
+      Fade: 0.00499999989
+    Rigid Body 2D:
+      BodyType: Dynamic
+      FixedRotation: false
+    CircleCollider 2D:
+      Offset: [0, 0]
+      Radius: 0.5
       Density: 1
       Friction: 0.5
       Restitution: 0

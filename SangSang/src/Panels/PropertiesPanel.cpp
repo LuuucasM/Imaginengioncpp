@@ -204,9 +204,14 @@ namespace IM {
 					ImGui::CloseCurrentPopup();
 				}
 			}
-			if (!_SceneHierarchyPanel.lock()->_SelectionContext.HasComponent<C_Collider2D>()) {
-				if (ImGui::MenuItem("Collider 2D")) {
-					_SceneHierarchyPanel.lock()->_SelectionContext.AddComponent<C_Collider2D>();
+			if (!_SceneHierarchyPanel.lock()->_SelectionContext.HasComponent<C_RectCollider2D>()
+				&& !_SceneHierarchyPanel.lock()->_SelectionContext.HasComponent<C_CircleCollider2D>()) {
+				if (ImGui::MenuItem("Rect Collider 2D")) {
+					_SceneHierarchyPanel.lock()->_SelectionContext.AddComponent<C_RectCollider2D>();
+					ImGui::CloseCurrentPopup();
+				}
+				if (ImGui::MenuItem("Circle Collider 2D")) {
+					_SceneHierarchyPanel.lock()->_SelectionContext.AddComponent<C_CircleCollider2D>();
 					ImGui::CloseCurrentPopup();
 				}
 			}
@@ -234,16 +239,16 @@ namespace IM {
 		}
 		DrawComponent<C_Camera>("Camera", entity,
 			[](auto& component) {
-				ImGui::Checkbox("Primary Camera", &component._bPrimary);
+				ImGui::Checkbox("Primary Camera", &component.bPrimary);
 
 				std::array<const char*, 2> projectionTypeStrings = { "Perspective", "Orthographic" };
-				const char* currentProjectionTypeString = projectionTypeStrings[(int)component._ProjectionType];
+				const char* currentProjectionTypeString = projectionTypeStrings[(int)component.Type];
 				if (ImGui::BeginCombo("Projection", currentProjectionTypeString)) {
 					for (int i = 0; i < projectionTypeStrings.size(); ++i) {
 						bool isSelected = currentProjectionTypeString == projectionTypeStrings[i];
 						if (ImGui::Selectable(projectionTypeStrings[i], isSelected)) {
 							currentProjectionTypeString = projectionTypeStrings[i];
-							component._ProjectionType = (C_Camera::ProjectionType)i;
+							component.Type = (C_Camera::ProjectionType)i;
 							component.RecalculateProjection();
 						}
 
@@ -254,46 +259,46 @@ namespace IM {
 					ImGui::EndCombo();
 				}
 
-				if (component._ProjectionType == C_Camera::ProjectionType::Perspective) {
-					float perspectiveFOV = glm::degrees(component._PerspectiveFOV);
+				if (component.Type == C_Camera::ProjectionType::Perspective) {
+					float perspectiveFOV = glm::degrees(component.PerspectiveFOV);
 					if (ImGui::DragFloat("FOV", &perspectiveFOV)) {
-						component._PerspectiveFOV = glm::radians(perspectiveFOV);
+						component.PerspectiveFOV = glm::radians(perspectiveFOV);
 						component.RecalculateProjection();
 					}
 
-					float perspectiveNear = component._PerspectiveicNear;
+					float perspectiveNear = component.PerspectiveicNear;
 					if (ImGui::DragFloat("Near", &perspectiveNear)) {
-						component._PerspectiveicNear = perspectiveNear;
+						component.PerspectiveicNear = perspectiveNear;
 						component.RecalculateProjection();
 					}
 
-					float perspectiveFar = component._PerspectiveFar;
+					float perspectiveFar = component.PerspectiveFar;
 					if (ImGui::DragFloat("Far", &perspectiveFar)) {
-						component._PerspectiveFar = perspectiveFar;
+						component.PerspectiveFar = perspectiveFar;
 						component.RecalculateProjection();
 					}
 				}
 
-				if (component._ProjectionType == C_Camera::ProjectionType::Orthographic) {
-					float orthoSize = component._OrthographicSize;
+				if (component.Type == C_Camera::ProjectionType::Orthographic) {
+					float orthoSize = component.OrthographicSize;
 					if (ImGui::DragFloat("Size", &orthoSize)) {
-						component._OrthographicSize = orthoSize;
+						component.OrthographicSize = orthoSize;
 						component.RecalculateProjection();
 					}
 
-					float orthoNear = component._OrthographicNear;
+					float orthoNear = component.OrthographicNear;
 					if (ImGui::DragFloat("Near", &orthoNear)) {
-						component._OrthographicNear = orthoNear;
+						component.OrthographicNear = orthoNear;
 						component.RecalculateProjection();
 					}
 
-					float orthoFar = component._OrthographicFar;
+					float orthoFar = component.OrthographicFar;
 					if (ImGui::DragFloat("Far", &orthoFar)) {
-						component._OrthographicFar = orthoFar;
+						component.OrthographicFar = orthoFar;
 						component.RecalculateProjection();
 					}
 
-					ImGui::Checkbox("Fixed Aspect Ratio", &component._bFixedAspectRatio);
+					ImGui::Checkbox("Fixed Aspect Ratio", &component.bFixedAspectRatio);
 				}
 			});
 
@@ -327,13 +332,13 @@ namespace IM {
 		DrawComponent<C_RigidBody2D>("RigidBody 2D", entity,
 			[&](auto& component) {
 				std::array<const char*, 3> bodyTypeStrings = { "Static", "Dynamic", "Kinematic"};
-				const char* currentBodyTypeString = bodyTypeStrings[(int)component._Type];
+				const char* currentBodyTypeString = bodyTypeStrings[(int)component.Type];
 				if (ImGui::BeginCombo("Body Type", currentBodyTypeString)) {
 					for (int i = 0; i < bodyTypeStrings.size(); ++i) {
 						bool isSelected = currentBodyTypeString == bodyTypeStrings[i];
 						if (ImGui::Selectable(bodyTypeStrings[i], isSelected)) {
 							currentBodyTypeString = bodyTypeStrings[i];
-							component._Type = (C_RigidBody2D::BodyType)i;
+							component.Type = (C_RigidBody2D::BodyType)i;
 						}
 
 						if (isSelected) {
@@ -343,17 +348,27 @@ namespace IM {
 					ImGui::EndCombo();
 				}
 
-				ImGui::Checkbox("Fixed Rotation", &component._bFixedRotation);
+				ImGui::Checkbox("Fixed Rotation", &component.bFixedRotation);
 			});
 
-		DrawComponent<C_Collider2D>("Collider 2D", entity,
+		DrawComponent<C_RectCollider2D>("Collider 2D", entity,
 			[&](auto& component) {
-				ImGui::DragFloat2("Offset", glm::value_ptr(component._Offset));
-				ImGui::DragFloat2("Size", glm::value_ptr(component._Size));
-				ImGui::DragFloat("Density", &component._Density, 0.01f, 0.0f, 1.0f);
-				ImGui::DragFloat("Friction", &component._Friction, 0.01f, 0.0f, 1.0f);
-				ImGui::DragFloat("Restitution", &component._Restitution, 0.01f, 0.0f, 1.0f);
-				ImGui::DragFloat("Restitution Threshold", &component._RestitutionThreshold, 0.01f, 0.0f);
+				ImGui::DragFloat2("Offset", glm::value_ptr(component.Offset));
+				ImGui::DragFloat2("Size", glm::value_ptr(component.Size));
+				ImGui::DragFloat("Density", &component.Density, 0.01f, 0.0f, 1.0f);
+				ImGui::DragFloat("Friction", &component.Friction, 0.01f, 0.0f, 1.0f);
+				ImGui::DragFloat("Restitution", &component.Restitution, 0.01f, 0.0f, 1.0f);
+				ImGui::DragFloat("Restitution Threshold", &component.RestitutionThreshold, 0.01f, 0.0f);
+			});
+
+		DrawComponent<C_CircleCollider2D>("Collider 2D", entity,
+			[&](auto& component) {
+				ImGui::DragFloat2("Offset", glm::value_ptr(component.Offset));
+				ImGui::DragFloat("Radius", &component.Radius);
+				ImGui::DragFloat("Density", &component.Density, 0.01f, 0.0f, 1.0f);
+				ImGui::DragFloat("Friction", &component.Friction, 0.01f, 0.0f, 1.0f);
+				ImGui::DragFloat("Restitution", &component.Restitution, 0.01f, 0.0f, 1.0f);
+				ImGui::DragFloat("Restitution Threshold", &component.RestitutionThreshold, 0.01f, 0.0f);
 			});
 	}
 }

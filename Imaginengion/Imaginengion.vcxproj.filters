@@ -129,7 +129,7 @@
     <ClInclude Include="src\ECS\Components\C_Camera.h">
       <Filter>src\ECS\Components</Filter>
     </ClInclude>
-    <ClInclude Include="src\ECS\Components\C_Collider2D.h">
+    <ClInclude Include="src\ECS\Components\C_RectCollider2D.h">
       <Filter>src\ECS\Components</Filter>
     </ClInclude>
     <ClInclude Include="src\ECS\Components\C_Name.h">
@@ -1516,6 +1516,8 @@
     <ClInclude Include="src\ECS\Components\C_ID.h" />
     <ClInclude Include="src\Events\EditorEvents.h" />
     <ClInclude Include="src\ECS\Components\C_CircleRenderer.h" />
+    <ClInclude Include="src\ECS\Components\C_CircleCollider2D.h" />
+    <ClInclude Include="src\Profiler\CPUProfiler.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Application.cpp">
@@ -1624,5 +1626,6 @@
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\UUID.cpp" />
+    <ClCompile Include="src\Profiler\CPUProfiler.cpp" />
   </ItemGroup>
 </Project>

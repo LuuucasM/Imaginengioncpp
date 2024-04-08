@@ -319,16 +319,20 @@ namespace IM {
         }
         switch (e.GetKeyCode()) {
             case Key::Q:
-                _GizmoType = -1;
+                if (!ImGuizmo::IsUsing())
+                    _GizmoType = -1;
                 break;
             case Key::W:
-                _GizmoType = ImGuizmo::OPERATION::TRANSLATE;
+                if (!ImGuizmo::IsUsing())
+                    _GizmoType = ImGuizmo::OPERATION::TRANSLATE;
                 break;
             case Key::E:
-                _GizmoType = ImGuizmo::OPERATION::ROTATE;
+                if (!ImGuizmo::IsUsing())
+                    _GizmoType = ImGuizmo::OPERATION::ROTATE;
                 break;
             case Key::R:
-                _GizmoType = ImGuizmo::OPERATION::SCALE;
+                if (!ImGuizmo::IsUsing())
+                    _GizmoType = ImGuizmo::OPERATION::SCALE;
                 break;
         }
 

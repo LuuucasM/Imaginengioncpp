@@ -159,17 +159,17 @@ namespace IM {
 			auto& camera = entity.GetComponent<C_Camera>();
 			out << YAML::Key << "Camera" << YAML::Value;
 			out << YAML::BeginMap;
-			out << YAML::Key << "ProjectionType" << YAML::Value << (int)camera._ProjectionType;
-			out << YAML::Key << "PerspectiveFOV" << YAML::Value << camera._PerspectiveFOV;
-			out << YAML::Key << "PerspectiveNear" << YAML::Value << camera._PerspectiveicNear;
-			out << YAML::Key << "PerspectiveFar" << YAML::Value << camera._PerspectiveFar;
-			out << YAML::Key << "OrthographicSize" << YAML::Value << camera._OrthographicSize;
-			out << YAML::Key << "OrthographicNear" << YAML::Value << camera._OrthographicNear;
-			out << YAML::Key << "OrthographicFar" << YAML::Value << camera._OrthographicFar;
+			out << YAML::Key << "ProjectionType" << YAML::Value << (int)camera.Type;
+			out << YAML::Key << "PerspectiveFOV" << YAML::Value << camera.PerspectiveFOV;
+			out << YAML::Key << "PerspectiveNear" << YAML::Value << camera.PerspectiveicNear;
+			out << YAML::Key << "PerspectiveFar" << YAML::Value << camera.PerspectiveFar;
+			out << YAML::Key << "OrthographicSize" << YAML::Value << camera.OrthographicSize;
+			out << YAML::Key << "OrthographicNear" << YAML::Value << camera.OrthographicNear;
+			out << YAML::Key << "OrthographicFar" << YAML::Value << camera.OrthographicFar;
 			out << YAML::EndMap;
 
-			out << YAML::Key << "Primary" << YAML::Value << camera._bPrimary;
-			out << YAML::Key << "FixedAspectRatio" << YAML::Value << camera._bFixedAspectRatio;
+			out << YAML::Key << "Primary" << YAML::Value << camera.bPrimary;
+			out << YAML::Key << "FixedAspectRatio" << YAML::Value << camera.bFixedAspectRatio;
 			out << YAML::EndMap;
 		}
 		if (entity.HasComponent<C_SpriteRenderer>()) {
@@ -195,21 +195,34 @@ namespace IM {
 
 			out << YAML::BeginMap;
 			auto& rigidBody = entity.GetComponent<C_RigidBody2D>();
-			out << YAML::Key << "BodyType" << YAML::Value << RigidBody2DBodyTypeToString(rigidBody._Type);
-			out << YAML::Key << "FixedRotation" << YAML::Value << rigidBody._bFixedRotation;
+			out << YAML::Key << "BodyType" << YAML::Value << RigidBody2DBodyTypeToString(rigidBody.Type);
+			out << YAML::Key << "FixedRotation" << YAML::Value << rigidBody.bFixedRotation;
 			out << YAML::EndMap;
 		}
-		if (entity.HasComponent<C_Collider2D>()) {
-			out << YAML::Key << "Collider 2D";
+		if (entity.HasComponent<C_RectCollider2D>()) {
+			out << YAML::Key << "RectCollider 2D";
 
 			out << YAML::BeginMap;
-			auto& collider = entity.GetComponent<C_Collider2D>();
-			out << YAML::Key << "Offset" << YAML::Value << collider._Offset;
-			out << YAML::Key << "Size" << YAML::Value << collider._Size;
-			out << YAML::Key << "Density" << YAML::Value << collider._Density;
-			out << YAML::Key << "Friction" << YAML::Value << collider._Friction;
-			out << YAML::Key << "Restitution" << YAML::Value << collider._Restitution;
-			out << YAML::Key << "RestitutionThreshold" << YAML::Value << collider._RestitutionThreshold;
+			auto& collider = entity.GetComponent<C_RectCollider2D>();
+			out << YAML::Key << "Offset" << YAML::Value << collider.Offset;
+			out << YAML::Key << "Size" << YAML::Value << collider.Size;
+			out << YAML::Key << "Density" << YAML::Value << collider.Density;
+			out << YAML::Key << "Friction" << YAML::Value << collider.Friction;
+			out << YAML::Key << "Restitution" << YAML::Value << collider.Restitution;
+			out << YAML::Key << "RestitutionThreshold" << YAML::Value << collider.RestitutionThreshold;
+			out << YAML::EndMap;
+		}
+		if (entity.HasComponent<C_CircleCollider2D>()) {
+			out << YAML::Key << "CircleCollider 2D";
+
+			out << YAML::BeginMap;
+			auto& collider = entity.GetComponent<C_CircleCollider2D>();
+			out << YAML::Key << "Offset" << YAML::Value << collider.Offset;
+			out << YAML::Key << "Radius" << YAML::Value << collider.Radius;
+			out << YAML::Key << "Density" << YAML::Value << collider.Density;
+			out << YAML::Key << "Friction" << YAML::Value << collider.Friction;
+			out << YAML::Key << "Restitution" << YAML::Value << collider.Restitution;
+			out << YAML::Key << "RestitutionThreshold" << YAML::Value << collider.RestitutionThreshold;
 			out << YAML::EndMap;
 		}
 
@@ -242,11 +255,7 @@ namespace IM {
 	}
 	bool SceneSerializer::DeSerializeText(const std::string& filepath)
 	{
-		std::ifstream stream(filepath);
-		std::stringstream strStream;
-		strStream << stream.rdbuf();
-
-		YAML::Node data = YAML::Load(strStream.str());
+		YAML::Node data = YAML::LoadFile(filepath);
 		if (!data["Scene"]) {
 			return false;
 		}
@@ -281,17 +290,17 @@ namespace IM {
 				if (cameraComponent) {
 					auto& cc = e.AddComponent<C_Camera>();
 					auto cameraProps = cameraComponent["Camera"];
-					cc._ProjectionType = (IM::C_Camera::ProjectionType)cameraProps["ProjectionType"].as<int>();
+					cc.Type = (IM::C_Camera::ProjectionType)cameraProps["ProjectionType"].as<int>();
 
-					cc._PerspectiveFOV = cameraProps["PerspectiveFOV"].as<float>();
-					cc._PerspectiveicNear = cameraProps["PerspectiveNear"].as<float>();
-					cc._PerspectiveFar = cameraProps["PerspectiveFar"].as<float>();
-					cc._OrthographicSize = cameraProps["OrthographicSize"].as<float>();
-					cc._OrthographicNear = cameraProps["OrthographicNear"].as<float>();
-					cc._OrthographicFar = cameraProps["OrthographicFar"].as<float>();
+					cc.PerspectiveFOV = cameraProps["PerspectiveFOV"].as<float>();
+					cc.PerspectiveicNear = cameraProps["PerspectiveNear"].as<float>();
+					cc.PerspectiveFar = cameraProps["PerspectiveFar"].as<float>();
+					cc.OrthographicSize = cameraProps["OrthographicSize"].as<float>();
+					cc.OrthographicNear = cameraProps["OrthographicNear"].as<float>();
+					cc.OrthographicFar = cameraProps["OrthographicFar"].as<float>();
 
-					cc._bPrimary = cameraComponent["Primary"].as<bool>();
-					cc._bFixedAspectRatio = cameraComponent["FixedAspectRatio"].as<bool>();
+					cc.bPrimary = cameraComponent["Primary"].as<bool>();
+					cc.bFixedAspectRatio = cameraComponent["FixedAspectRatio"].as<bool>();
 				}
 
 				auto spriteRendererComponent = entity["Sprite Renderer Component"];
@@ -302,28 +311,38 @@ namespace IM {
 
 				auto circleRendererComponent = entity["Circle Renderer Component"];
 				if (circleRendererComponent) {
-					auto& src = e.AddComponent<C_CircleRenderer>();
-					src.Color = circleRendererComponent["Color"].as<glm::vec4>();
-					src.Thickness = circleRendererComponent["Thickness"].as<float>();
-					src.Fade = circleRendererComponent["Fade"].as<float>();
+					auto& crc = e.AddComponent<C_CircleRenderer>();
+					crc.Color = circleRendererComponent["Color"].as<glm::vec4>();
+					crc.Thickness = circleRendererComponent["Thickness"].as<float>();
+					crc.Fade = circleRendererComponent["Fade"].as<float>();
 				}
 
 				auto rigidBody = entity["Rigid Body 2D"];
 				if (rigidBody) {
-					auto& src = e.AddComponent<C_RigidBody2D>();
-					src._Type = RigidBody2DBodyTypeFromString(rigidBody["BodyType"].as<std::string>());
-					src._bFixedRotation = rigidBody["FixedRotation"].as<bool>();
+					auto& rb = e.AddComponent<C_RigidBody2D>();
+					rb.Type = RigidBody2DBodyTypeFromString(rigidBody["BodyType"].as<std::string>());
+					rb.bFixedRotation = rigidBody["FixedRotation"].as<bool>();
 				}
 
-				auto collider = entity["Collider 2D"];
-				if (collider) {
-					auto& src = e.AddComponent<C_Collider2D>();
-					src._Offset = collider["Offset"].as<glm::vec2>();
-					src._Size = collider["Size"].as<glm::vec2>();
-					src._Density = collider["Density"].as<float>();
-					src._Friction = collider["Friction"].as<float>();
-					src._Restitution = collider["Restitution"].as<float>();
-					src._RestitutionThreshold = collider["RestitutionThreshold"].as<float>();
+				auto rectCollider = entity["RectCollider 2D"];
+				if (rectCollider) {
+					auto& rc = e.AddComponent<C_RectCollider2D>();
+					rc.Offset = rectCollider["Offset"].as<glm::vec2>();
+					rc.Size = rectCollider["Size"].as<glm::vec2>();
+					rc.Density = rectCollider["Density"].as<float>();
+					rc.Friction = rectCollider["Friction"].as<float>();
+					rc.Restitution = rectCollider["Restitution"].as<float>();
+					rc.RestitutionThreshold = rectCollider["RestitutionThreshold"].as<float>();
+				}
+				auto circleCollider = entity["CircleCollider 2D"];
+				if (circleCollider) {
+					auto& cc = e.AddComponent<C_CircleCollider2D>();
+					cc.Offset = circleCollider["Offset"].as<glm::vec2>();
+					cc.Radius = circleCollider["Radius"].as<float>();
+					cc.Density = circleCollider["Density"].as<float>();
+					cc.Friction = circleCollider["Friction"].as<float>();
+					cc.Restitution = circleCollider["Restitution"].as<float>();
+					cc.RestitutionThreshold = circleCollider["RestitutionThreshold"].as<float>();
 				}
 			}
 		}

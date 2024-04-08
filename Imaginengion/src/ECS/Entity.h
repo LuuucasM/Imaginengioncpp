@@ -49,7 +49,7 @@ namespace IM {
 			return _Scene->_ECSManager.HasComponent<C_Type>(_EntityID); 
 		}
 
-		const UUID GetUUID() { return GetComponent<C_ID>()._ID; }
+		const UUID GetUUID() { return GetComponent<C_ID>().ID; }
 
 		const std::string& GetName() { return GetComponent<C_Name>().Name; }
 

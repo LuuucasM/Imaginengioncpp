@@ -15,7 +15,7 @@ namespace IM {
 		//Application is singleton so check it does not already exist
 		IMAGINE_CORE_ASSERT(!_Instance, "Application already exists!");
 		_Instance = this;
-
+		IMAGINE_CORE_TRACE("number of possible threads: {}", _CPUProfiler.GetThreadCount());
 		//create window and bind windowcloseevent to application function
 		_Window = Window::Create(WindowProps(name));
 		_Window->SetEventCallback(IMAGINE_BIND_EVENT(Application::OnEvent));

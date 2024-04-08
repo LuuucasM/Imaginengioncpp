@@ -16,6 +16,7 @@
 #include "box2d/b2_body.h"
 #include "box2d/b2_fixture.h"
 #include "box2d/b2_polygon_shape.h"
+#include "box2d/b2_circle_shape.h"
 
 
 namespace IM {
@@ -86,7 +87,8 @@ namespace IM {
 		CopyComponentIfExists<C_Camera>(newEntity, oldEntity);
 		CopyComponentIfExists<C_NativeScript>(newEntity, oldEntity);
 		CopyComponentIfExists<C_RigidBody2D>(newEntity, oldEntity);
-		CopyComponentIfExists<C_Collider2D>(newEntity, oldEntity);
+		CopyComponentIfExists<C_RectCollider2D>(newEntity, oldEntity);
+		CopyComponentIfExists<C_CircleCollider2D>(newEntity, oldEntity);
 		return newEntity;
 
 	}
@@ -100,25 +102,41 @@ namespace IM {
 			auto& rb2d = entity.GetComponent<C_RigidBody2D>();
 
 			b2BodyDef bodyDef;
-			bodyDef.type = RigidBody2DTypeToBox2DType(rb2d._Type);
+			bodyDef.type = RigidBody2DTypeToBox2DType(rb2d.Type);
 			bodyDef.position.Set(transform.Translation.x, transform.Translation.y);
 			bodyDef.angle = transform.Rotation.z;
+
 			b2Body *body = _PhysicsWorld->CreateBody(&bodyDef);
-			body->SetFixedRotation(rb2d._bFixedRotation);
+			body->SetFixedRotation(rb2d.bFixedRotation);
 			rb2d.RuntimeBody = body;
 
-			if (entity.HasComponent<C_Collider2D>()) {
-				auto& bc2d = entity.GetComponent<C_Collider2D>();
+			if (entity.HasComponent<C_RectCollider2D>()) {
+				auto& bc2d = entity.GetComponent<C_RectCollider2D>();
 
 				b2PolygonShape polygonShape;
-				polygonShape.SetAsBox(bc2d._Size.x * transform.Scale.x, bc2d._Size.y * transform.Scale.y);
+				polygonShape.SetAsBox(bc2d.Size.x * transform.Scale.x, bc2d.Size.y * transform.Scale.y);
 
 				b2FixtureDef fixtureDef;
 				fixtureDef.shape = &polygonShape;
-				fixtureDef.density = bc2d._Density;
-				fixtureDef.friction = bc2d._Friction;
-				fixtureDef.restitution = bc2d._Restitution;
-				fixtureDef.restitutionThreshold = bc2d._RestitutionThreshold;
+				fixtureDef.density = bc2d.Density;
+				fixtureDef.friction = bc2d.Friction;
+				fixtureDef.restitution = bc2d.Restitution;
+				fixtureDef.restitutionThreshold = bc2d.RestitutionThreshold;
+				body->CreateFixture(&fixtureDef);
+			}
+			if (entity.HasComponent<C_CircleCollider2D>()) {
+				auto& cc2d = entity.GetComponent<C_CircleCollider2D>();
+
+				b2CircleShape circleShape;
+				circleShape.m_p.Set(cc2d.Offset.x, cc2d.Offset.y);
+				circleShape.m_radius = cc2d.Radius;
+
+				b2FixtureDef fixtureDef;
+				fixtureDef.shape = &circleShape;
+				fixtureDef.density = cc2d.Density;
+				fixtureDef.friction = cc2d.Friction;
+				fixtureDef.restitution = cc2d.Restitution;
+				fixtureDef.restitutionThreshold = cc2d.RestitutionThreshold;
 				body->CreateFixture(&fixtureDef);
 			}
 		}
@@ -169,7 +187,7 @@ namespace IM {
 		auto& entities = _ECSManager.GetGroup<C_Transform, C_Camera>();
 		for (auto ent : entities) {
 			auto ent_cam = _ECSManager.GetComponent<C_Camera>(ent);
-			if (ent_cam._bPrimary) {
+			if (ent_cam.bPrimary) {
 				mainCamera = &ent_cam;
 				cameraTransform = &_ECSManager.GetComponent<C_Transform>(ent);
 				break;
@@ -230,7 +248,7 @@ namespace IM {
 		for (auto ent : entities) {
 			//auto& cam = _ECSManager.GetComponent<C_Camera>(ent);
 			auto [transform, cam] = _ECSManager.GetComponents<C_Transform, C_Camera>(ent);
-			if (!cam._bFixedAspectRatio) {
+			if (!cam.bFixedAspectRatio) {
 				cam.SetViewportSize(viewportWidth, viewportHeight);
 			}
 		}
@@ -241,7 +259,7 @@ namespace IM {
 		auto& group = _ECSManager.GetGroup<C_Camera>();
 		for (auto entity : group) {
 			auto& cameraComponent = _ECSManager.GetComponent<C_Camera>(entity);
-			if (cameraComponent._bPrimary) {
+			if (cameraComponent.bPrimary) {
 				return Entity(entity, this);
 			}
 		}
@@ -289,7 +307,11 @@ namespace IM {
 
 	}
 	template<>
-	void Scene::OnComponentAdded<C_Collider2D>(Entity entity, C_Collider2D& component) {
+	void Scene::OnComponentAdded<C_RectCollider2D>(Entity entity, C_RectCollider2D& component) {
+
+	}
+	template<>
+	void Scene::OnComponentAdded<C_CircleCollider2D>(Entity entity, C_CircleCollider2D& component) {
 
 	}
 }

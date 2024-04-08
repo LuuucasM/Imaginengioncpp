@@ -4,10 +4,10 @@
 
 namespace IM {
 	struct C_ID {
-		UUID _ID;
+		UUID ID;
 		C_ID() = default;
 		C_ID(UUID id) 
-			: _ID(id){}
+			: ID(id){}
 		C_ID(const C_ID&) = default;
 	};
 }

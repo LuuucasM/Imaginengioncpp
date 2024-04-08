@@ -147,6 +147,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Profiler\CPUProfiler.h" />
     <ClInclude Include="src\Core\Application.h" />
     <ClInclude Include="src\Core\Assert.h" />
     <ClInclude Include="src\Core\Core.h" />
@@ -166,8 +167,9 @@
     <ClInclude Include="src\ECS\ComponentManager.h" />
     <ClInclude Include="src\ECS\Components.h" />
     <ClInclude Include="src\ECS\Components\C_Camera.h" />
+    <ClInclude Include="src\ECS\Components\C_CircleCollider2D.h" />
     <ClInclude Include="src\ECS\Components\C_CircleRenderer.h" />
-    <ClInclude Include="src\ECS\Components\C_Collider2D.h" />
+    <ClInclude Include="src\ECS\Components\C_RectCollider2D.h" />
     <ClInclude Include="src\ECS\Components\C_ID.h" />
     <ClInclude Include="src\ECS\Components\C_Name.h" />
     <ClInclude Include="src\ECS\Components\C_NativeScript.h" />
@@ -632,6 +634,7 @@
     <ClInclude Include="vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Profiler\CPUProfiler.cpp" />
     <ClCompile Include="src\Core\Application.cpp" />
     <ClCompile Include="src\Core\Layer.cpp" />
     <ClCompile Include="src\Core\LayerManager.cpp" />
