@@ -49,13 +49,15 @@ namespace IM {
 
 		bool _PrimaryCamera = true;
 
-		EditorCamera _EditorCamera;
+		
 
 		bool _bViewportFocus = false, _bViewportHovered = false;
 		glm::vec2 _ViewportSize = glm::vec2(0.0f);
 		glm::vec2 _ViewportBounds[2];
 
 		int _GizmoType = -1;
+
+		EditorCamera _EditorCamera;
 
 		//Panels
 		RefPtr<Render2DStatsPanel> _Render2DStatsPanel;

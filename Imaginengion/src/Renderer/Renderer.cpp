@@ -183,7 +183,7 @@ namespace IM {
 
 		_Data.CircleVertexBufferBase = new CircleVertex[_Data.MaxVerticies];
 
-
+		//Editor Line Stuff
 		_Data._EditorLineVertexBuffer = VertexBuffer::Create(_Data.MaxVerticies * sizeof(EditorLineVertex));
 		_Data._EditorLineVertexBuffer->SetStride(_Data._EditorLineShader->GetStride());
 		_Data._EditorLineVertexBuffer->SetLayout(_Data._EditorLineShader->GetLayout());

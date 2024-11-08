@@ -385,17 +385,20 @@ namespace IM {
             _EditorScenePath = path;
         }
     }
+
     void EditorLayer::SerializeScene(RefPtr<Scene> scene, std::filesystem::path& path)
     {
         SceneSerializer serializer(scene);
         serializer.SerializeText(path.string());
     }
+
     void EditorLayer::SaveScene()
     {
         if (!_EditorScenePath.empty()) {
             SerializeScene(_EditorScene, _EditorScenePath);
         }
     }
+
     void EditorLayer::SaveSceneAs()
     {
         std::string filepath = FileDialogs::SaveFile("Imagine Scene (*.imsc)\0*.imsc\0");

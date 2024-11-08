@@ -61,5 +61,6 @@ namespace IM {
 		float _ViewportWidth = 1280, _ViewportHeight = 720;
 
 		glm::mat4 _ProjectionMatrix = glm::mat4(1.0f);
+		
 	};
 }

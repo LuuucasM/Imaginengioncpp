@@ -17,12 +17,6 @@ namespace IM {
 		Delegate() = default;
 		~Delegate() = default;
 
-		/*
-		* Adds a listener to this Delegate
-		* @template T: The type of the object that contains the function this Delegate calls when Delegate calls braodcast
-		* @param object: A reference to the object that contains the function this Delegate calls when this Delegate calls broadcast
-		* @param func: A pointer to the member function of the given object
-		*/
 		template<class T>
 		void AddListener(T *object, void (T::*func)(Args...)) {
 
@@ -34,10 +28,7 @@ namespace IM {
 			};
 			listeners.emplace_back(listenerObj, listenerFunc);
 		}
-		/*
-		* Removes a listener from the list of listeners on this Delegate
-		* @param object: A reference to the object that we want to remove
-		*/
+
 		void RemoveListener(std::any object) {
 
 			IMAGINE_PROFILE_FUNCTION();
@@ -47,10 +38,7 @@ namespace IM {
 				[object](const Listener& listener) {return listener.object == object; }),
 				listeners.end());
 		}
-		/*
-		* Broadcast to all listeners to activate their On Delegate function
-		* @param args: the arguments that we will call each listeners Delegate function with
-		*/
+
 		void Broadcast(Args... args) {
 
 			IMAGINE_PROFILE_FUNCTION();
@@ -65,14 +53,6 @@ namespace IM {
 			}
 			//IMAGINE_CORE_INFO("Event: {} Args: ", event_name);
 		}
-
-		/*
-		* Helper functions to get the Delegate type and Delegate category
-		* NOTE: Delegate type and Delegate category are currently unused in the program
-		* but I am keeping it around in case I might need it later. I know this current
-		* Delegate implmentation does not cover some cases in an ideal Delegate system so
-		* until then I will keep this
-		*/
 
 	private:
 		struct Listener {
